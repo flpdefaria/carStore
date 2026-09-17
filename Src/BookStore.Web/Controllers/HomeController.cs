@@ -6,12 +6,8 @@ namespace BookStore.Web.Controllers;
 
 public class HomeController : Controller
 {
+    // Serves the single SPA shell page; Vue Router owns every other client-side route.
     public IActionResult Index()
-    {
-        return View();
-    }
-
-    public IActionResult Privacy()
     {
         return View();
     }

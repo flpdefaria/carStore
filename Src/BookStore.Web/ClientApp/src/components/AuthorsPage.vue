@@ -7,9 +7,7 @@ import Button from "primevue/button";
 import { primaryButtonClass } from "../styles/buttonStyles";
 import { useCreateEntity } from "../composables/useCreateEntity";
 
-const props = defineProps<{
-  apiUrl: string;
-}>();
+const apiUrl = "/api/authors";
 
 const authorsTable = ref<InstanceType<typeof AuthorsTable> | null>(null);
 
@@ -20,7 +18,7 @@ const {
   open: openCreate,
   submit: onCreateSubmit,
 } = useCreateEntity<CreateAuthorPayload>({
-  apiUrl: props.apiUrl,
+  apiUrl,
   entityLabel: "author",
   onCreated: () => authorsTable.value?.reload(),
 });
@@ -43,7 +41,7 @@ const {
       </template>
     </PageHeader>
 
-    <AuthorsTable ref="authorsTable" :api-url="props.apiUrl" />
+    <AuthorsTable ref="authorsTable" :api-url="apiUrl" />
 
     <CreateAuthorDialog
       v-model:visible="createDialogVisible"

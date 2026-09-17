@@ -37,8 +37,8 @@ The solution is intentionally split into Domain, Application, and Web layers so 
 
 ### Web (`BookStore.Web`)
 
-- ASP.NET Core 10 MVC project.
-- Controllers handle model binding, call services, and return views/redirects.
+- ASP.NET Core 10 MVC project, hosting a Vue 3 single-page app (SPA).
+- `HomeController` is the only page-serving controller (SPA shell + error page); `Controllers/Api/*` expose JSON data to Vue Router pages. See [[Controllers]] and [[Frontend-SPA]].
 - No business logic in controllers.
 - Source: `Src/BookStore.Web/Controllers/`.
 
@@ -78,4 +78,5 @@ No authentication or authorization scheme is registered. `app.UseAuthorization()
 - [[Domain-Overview]]
 - [[Application-Services]]
 - [[Controllers]]
+- [[Frontend-SPA]]
 - [[Operations-Overview]]

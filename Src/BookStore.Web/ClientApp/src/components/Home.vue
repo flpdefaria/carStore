@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import Card from "primevue/card";
 import Button from "primevue/button";
+import { RouterLink } from "vue-router";
 import PoweredByBadge from "./PoweredByBadge.vue";
-
-defineProps<{
-  booksUrl: string;
-  authorsUrl: string;
-}>();
 </script>
 
 <template>
@@ -33,7 +29,7 @@ defineProps<{
           </p>
         </template>
         <template #footer>
-          <Button as="a" :href="booksUrl" class="w-fit border-surface-700! bg-surface-700! text-white! hover:bg-surface-800!">
+          <Button :as="RouterLink" to="/books" class="w-fit border-surface-700! bg-surface-700! text-white! hover:bg-surface-800!">
             <i class="pi pi-book" />
             Open Books
           </Button>
@@ -54,7 +50,7 @@ defineProps<{
           </p>
         </template>
         <template #footer>
-          <Button as="a" :href="authorsUrl" class="w-fit border-surface-700! bg-surface-700! text-white! hover:bg-surface-800!">
+          <Button :as="RouterLink" to="/authors" class="w-fit border-surface-700! bg-surface-700! text-white! hover:bg-surface-800!">
             <i class="pi pi-users" />
             Open Authors
           </Button>

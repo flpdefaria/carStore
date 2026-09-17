@@ -1,21 +1,18 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useRoute } from "vue-router";
 import Avatar from "primevue/avatar";
 
-const props = defineProps<{
-  active: string;
-  homeUrl: string;
-  booksUrl: string;
-  authorsUrl: string;
-  customersUrl: string;
-}>();
+const route = useRoute();
 
-const navItems = computed(() => [
-  { key: "Home", label: "Home", icon: "pi-home", href: props.homeUrl },
-  { key: "Books", label: "Books", icon: "pi-book", href: props.booksUrl },
-  { key: "Authors", label: "Authors", icon: "pi-users", href: props.authorsUrl },
-  { key: "Customers", label: "Customers", icon: "pi-address-book", href: props.customersUrl },
-]);
+const navItems = [
+  { key: "home", label: "Home", icon: "pi-home", to: "/" },
+  { key: "books", label: "Books", icon: "pi-book", to: "/books" },
+  { key: "authors", label: "Authors", icon: "pi-users", to: "/authors" },
+  { key: "customers", label: "Customers", icon: "pi-address-book", to: "/customers" },
+];
+
+const activeKey = computed(() => route.name as string);
 </script>
 
 <template>
@@ -35,16 +32,16 @@ const navItems = computed(() => [
     <div class="h-px w-full bg-surface-300"></div>
 
     <nav class="flex w-full flex-col gap-1.75 py-[17.5px]">
-      <a
+      <router-link
         v-for="item in navItems"
         :key="item.key"
-        :href="item.href"
+        :to="item.to"
         class="flex w-full items-center gap-1.75 rounded-lg border border-surface-300 p-[11.5px] text-sm font-medium no-underline text-color"
-        :class="item.key === active ? 'bg-blue-100' : 'bg-surface-0 hover:bg-surface-50'"
+        :class="item.key === activeKey ? 'bg-blue-100' : 'bg-surface-0 hover:bg-surface-50'"
       >
         <i class="pi text-sm" :class="item.icon" />
         <span>{{ item.label }}</span>
-      </a>
+      </router-link>
     </nav>
 
     <div class="flex-1"></div>
@@ -58,3 +55,4 @@ const navItems = computed(() => [
     </div>
   </aside>
 </template>
+

@@ -8,16 +8,14 @@ import { primaryButtonClass } from "../styles/buttonStyles";
 import { useCreateEntity } from "../composables/useCreateEntity";
 import type { AuthorOption } from "../types";
 
-const props = defineProps<{
-  apiUrl: string;
-  authorsUrl: string;
-}>();
+const apiUrl = "/api/books";
+const authorsUrl = "/api/authors";
 
 const booksTable = ref<InstanceType<typeof BooksTable> | null>(null);
 const authorOptions = ref<AuthorOption[]>([]);
 
 async function loadAuthorOptions() {
-  const response = await fetch(`${props.authorsUrl}/options`);
+  const response = await fetch(`${authorsUrl}/options`);
   if (response.ok) authorOptions.value = await response.json();
 }
 
@@ -28,7 +26,7 @@ const {
   open: openCreate,
   submit: onCreateSubmit,
 } = useCreateEntity<CreateBookPayload>({
-  apiUrl: props.apiUrl,
+  apiUrl,
   entityLabel: "book",
   onCreated: () => booksTable.value?.reload(),
 });
@@ -54,7 +52,7 @@ onMounted(loadAuthorOptions);
       </template>
     </PageHeader>
 
-    <BooksTable ref="booksTable" :api-url="props.apiUrl" :authors="authorOptions" />
+    <BooksTable ref="booksTable" :api-url="apiUrl" :authors="authorOptions" />
 
     <CreateBookDialog
       v-model:visible="createDialogVisible"

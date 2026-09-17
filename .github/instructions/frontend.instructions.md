@@ -26,7 +26,7 @@ Never hand-edit vault notes; always go through `/vault-write`.
 
 | Concern | Choice | Notes |
 |---|---|---|
-| Framework | Vue 3.5 SFC, `<script setup lang="ts">` | No Vue Router, no Pinia, no SPA shell. |
+| Framework | Vue 3.5 SFC, `<script setup lang="ts">` | Single-page app: `vue-router` (history mode) owns client-side navigation. No Pinia yet. |
 | Build | Vite 6 + `@vitejs/plugin-vue` | Output goes to `../wwwroot/dist`. |
 | UI kit | PrimeVue 4.3 + `@primeuix/themes` (Aura preset) | Registered in `src/main.ts`, `darkModeSelector: false` (light-only app). |
 | Icons | `primeicons` 7 (`pi pi-*`) | Imported in `src/style.css`. Never Bootstrap Icons (`bi-*`), never a raw SVG when a `pi-*` glyph exists. |
@@ -42,7 +42,9 @@ Src/BookStore.Web/ClientApp/
   tsconfig.json              # strict, noEmit, includes src/**/*.ts + src/**/*.vue
   package.json               # dev | build | preview scripts
   src/
-    main.ts                  # single entry: mounts one Vue app per Razor mount point
+    main.ts                  # single entry: mounts the App shell once, on #app
+    App.vue                  # SPA shell: Sidebar + <RouterView />
+    router/index.ts          # vue-router routes ("/", "/books", "/authors", "/customers")
     style.css                # Tailwind + primeui + primeicons imports, @source, @layer components
     types.ts                 # shared DTO interfaces mirroring Models/Api/*Dto.cs
     shims-vue.d.ts
@@ -54,7 +56,7 @@ Src/BookStore.Web/ClientApp/
         dialog/              # <Verb><Entity>Dialog.vue + dialogStyles.ts
         form/                # FormField.vue (label + input slot), DetailField.vue (label + value)
         pageheader/          # PageHeader.vue (title, description, #actions slot)
-        sidebar/             # Sidebar.vue (global nav, mounted from _Layout.cshtml)
+        sidebar/             # Sidebar.vue (global nav, uses vue-router RouterLink/useRoute)
         table/               # DataTableCommon.vue (generic lazy paged DataTable)
     composables/             # usePagedFetch.ts, useEntityCrud.ts, useCreateEntity.ts
     styles/                  # buttonStyles.ts - shared Tailwind class-string constants
@@ -91,31 +93,30 @@ Creating/repairing that file is Frontend-Tooling-Specialist's job.
 
 ## How a component reaches the page
 
-`src/main.ts` is the only entry point. It mounts one app per Razor mount point, and each `data-*` attribute
-on the mount `<div>` becomes a prop:
+`src/main.ts` is the only entry point. It mounts a **single** app once, on `#app` (the only mount point,
+declared in `Views/Home/Index.cshtml`), wired with `vue-router`:
 
 ```ts
-function mount(component: Component, selector: string) {
-  const el = document.querySelector<HTMLElement>(selector);
-  if (!el) return;                       // page without this mount point: no-op, never throw
-  const props = { ...el.dataset };       // data-api-url -> apiUrl
-  createApp(component, props)
+const el = document.querySelector<HTMLElement>("#app");
+if (el) {
+  createApp(App)
+    .use(router)
     .use(PrimeVue, { theme: { preset: Aura, options: { darkModeSelector: false } } })
     .mount(el);
 }
-
-mount(Home, "#home-app");
-mount(Sidebar, "#sidebar-app");
-mount(BooksPage, "#books-app");
-// ...
 ```
 
-Consequences to respect:
+`App.vue` renders `<Sidebar />` next to `<RouterView />`; `router/index.ts` maps each path to a `<Feature>Page.vue`
+component. Consequences to respect:
 
-- **Every `data-*` prop arrives as a `string`.** Declare those props as `string` and parse (`Number(...)`, `=== "true"`) inside the component. Never declare a mount-level prop as `number`/`boolean`.
-- URLs are never hardcoded in Vue: Razor passes them (`data-api-url="/api/books"`, `data-create-url="@Url.Action(...)"`).
-- Adding a new page = add the component, add one `mount(...)` line, add the mount `<div>` in the Razor view.
-- Each mount is an independent app instance; there is no shared client-side store. Cross-page state travels through the URL or the API, not through globals.
+- API URLs are static (`/api/books`, `/api/authors`, `/api/customers`) and are declared as constants inside
+  each page component - they are no longer threaded through Razor `data-*` attributes, since there is only one
+  mount point left.
+- Adding a new page = add the route in `router/index.ts`, add the component, add a nav item in `Sidebar.vue`.
+  No new Razor view or mount `<div>` is needed - MVC's fallback route (`Program.cs`) serves the same SPA shell
+  for any unmatched path.
+- Cross-page state still travels through the URL or the API; there is no Pinia store yet. Add one if two or
+  more pages need to share client-side state.
 
 ## Data access
 
@@ -176,10 +177,9 @@ Rules:
 
 ## Never
 
-- Never turn the app into an SPA (no Vue Router, no client-side routing) - navigation stays MVC.
 - Never introduce a second UI framework (Bootstrap, Bulma) or a second JS framework (React, Angular).
 - Never paginate client-side.
-- Never hardcode API/route URLs inside Vue components - receive them as `data-*` props.
+- Never hardcode a `/api/*` base URL other than the documented constants; keep them colocated in the page component that owns the fetch.
 - Never edit `wwwroot/dist/*` by hand; it is generated.
 - Never change `vite.config.ts`, `package.json` deps, or `.vscode/mcp.json` from a component task - that is Frontend-Tooling-Specialist scope.
 

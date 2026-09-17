@@ -37,4 +37,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+// Any route not matched by an API/MVC endpoint (e.g. /books, /authors/123) is a Vue Router route.
+app.MapFallbackToController("Index", "Home");
+
 app.Run();

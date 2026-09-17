@@ -3,15 +3,16 @@ import { onMounted, ref } from "vue";
 import { type DataTablePageEvent } from "primevue/datatable";
 import Message from "primevue/message";
 import DataTableCommon, { type DataTableColumn } from "./common/table/DataTableCommon.vue";
+import ConfirmDeleteDialog from "./common/dialog/ConfirmDeleteDialog.vue";
+import EditCustomerDialog, { type EditCustomerPayload } from "./common/dialog/EditCustomerDialog.vue";
+import DetailsCustomerDialog from "./common/dialog/DetailsCustomerDialog.vue";
 import { usePagedFetch } from "../composables/usePagedFetch";
+import { useEntityCrud } from "../composables/useEntityCrud";
 import { formatDate } from "../utils/format";
 import type { CustomerDto } from "../types";
 
 const props = defineProps<{
   apiUrl: string;
-  detailsUrl: string;
-  editUrl: string;
-  deleteUrl: string;
 }>();
 
 const rows = ref(10);
@@ -31,7 +32,31 @@ function onPage(event: DataTablePageEvent) {
   load(event.page + 1, event.rows);
 }
 
+const {
+  deleteDialogVisible,
+  deleteTarget,
+  deleteLoading,
+  deleteError,
+  onDeleteRequest,
+  onDeleteConfirm,
+  editDialogVisible,
+  editTarget,
+  editLoading,
+  editError,
+  onEditRequest,
+  onEditSubmit,
+  detailsDialogVisible,
+  detailsTarget,
+  onDetailsRequest,
+} = useEntityCrud<CustomerDto, EditCustomerPayload>({
+  apiUrl: props.apiUrl,
+  entityLabel: "customer",
+  reload: () => load(Math.floor(first.value / rows.value) + 1, rows.value),
+});
+
 onMounted(() => load(1, rows.value));
+
+defineExpose({ reload: () => load(1, rows.value) });
 </script>
 
 <template>
@@ -43,13 +68,37 @@ onMounted(() => load(1, rows.value));
     :total-records="totalRecords"
     :first="first"
     :rows="rows"
-    :details-url="props.detailsUrl"
-    :edit-url="props.editUrl"
-    :delete-url="props.deleteUrl"
+    confirm-details
+    confirm-delete
+    confirm-edit
     @page="onPage"
+    @delete="onDeleteRequest"
+    @edit="onEditRequest"
+    @details="onDetailsRequest"
   >
     <template #col-createdAt="{ data }">
       <span class="text-xs text-muted-color">{{ formatDate(data.createdAt) }}</span>
     </template>
   </DataTableCommon>
+
+  <ConfirmDeleteDialog
+    v-model:visible="deleteDialogVisible"
+    title="Delete Customer"
+    message="Are you sure you want to delete this customer?"
+    :details="deleteTarget ? [{ label: 'Full name', value: deleteTarget.fullName }, { label: 'Email', value: deleteTarget.email }] : []"
+    :loading="deleteLoading"
+    :error="deleteError"
+    @confirm="onDeleteConfirm"
+  />
+
+  <EditCustomerDialog
+    v-model:visible="editDialogVisible"
+    :customer="editTarget"
+    :loading="editLoading"
+    :error="editError"
+    @submit="onEditSubmit"
+  />
+
+  <DetailsCustomerDialog v-model:visible="detailsDialogVisible" :customer="detailsTarget" />
 </template>
+

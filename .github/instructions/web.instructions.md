@@ -9,7 +9,7 @@ How `BookStore.Web` serves a Vue 3 + PrimeVue front-end from classic MVC. Compan
 `vault.instructions.md`.
 
 This is the **reference implementation** for migrating a classic MVC + Razor + Bootstrap app to
-MVC + Vue.js. The last section lists what to reproduce in a new project.
+an MVC-hosted Vue 3 single-page app (SPA).
 
 ## Mandatory vault workflow
 
@@ -20,81 +20,80 @@ MVC + Vue.js. The last section lists what to reproduce in a new project.
 
 ## The hosting model in one paragraph
 
-MVC still owns routing, navigation and full page loads. Each Razor view renders an (almost) empty
-`<div id="<feature>-app" data-*="...">`; `_Layout.cshtml` loads the single Vite bundle
-(`~/dist/main.css`, `~/dist/main.js` as `type="module"`); `ClientApp/src/main.ts` finds whichever mount
-points exist on the current page and mounts a Vue app into each. Data is **not** pushed through the Razor
-model - the Vue components fetch it from JSON endpoints under `/api/*`. This is a multi-page app with Vue
-islands, **not** an SPA: there is no client-side router and no shared client store.
+ASP.NET Core MVC serves exactly one shell page (`HomeController.Index` -> `Views/Home/Index.cshtml`), which
+renders a single `<div id="app">`. `_Layout.cshtml` loads the single Vite bundle (`~/dist/main.css`,
+`~/dist/main.js` as `type="module"`); `ClientApp/src/main.ts` mounts one Vue app onto `#app`, wired with
+`vue-router` (history mode). Vue Router - not MVC - owns in-app navigation between `/`, `/books`, `/authors`,
+`/customers`. `Program.cs` maps a fallback route (`MapFallbackToController("Index", "Home")`) so a deep link
+or a full page refresh on any client route still resolves to the same shell, and Vue Router then renders the
+right page from the current URL. Data is **not** pushed through the Razor model - Vue components fetch it
+from JSON endpoints under `/api/*`.
 
 ```
-Browser GET /Books
-  └─ BooksController.Index          -> Views/Books/Index.cshtml  (mount div only)
+Browser GET /books (first load or refresh)
+  └─ No BooksController exists -> MVC fallback -> HomeController.Index -> Views/Home/Index.cshtml (div#app only)
        └─ _Layout.cshtml            -> ~/dist/main.css + ~/dist/main.js
-            └─ main.ts mount()      -> BooksPage.vue mounted on #books-app
-                 └─ fetch /api/books?page=1&pageSize=10  -> BooksApiController -> IBookService.GetPagedAsync
+            └─ main.ts mount()      -> App.vue (Sidebar + RouterView) mounted on #app
+                 └─ vue-router resolves "/books" -> BooksPage.vue
+                      └─ fetch /api/books?page=1&pageSize=10  -> BooksApiController -> IBookService.GetPagedAsync
+
+Browser click on a Sidebar nav item (already loaded)
+  └─ vue-router intercepts, swaps <RouterView> content client-side - no server round-trip, no full reload
 ```
 
 ## Layout contract (`Views/Shared/_Layout.cshtml`)
 
 - `<head>`: `~/dist/main.css`, then `~/css/site.css`, then the scoped-CSS bundle - all with `asp-append-version="true"` for cache busting.
 - `<body class="h-screen overflow-hidden bg-surface-0">` - the shell layout itself uses Tailwind classes, which is why `ClientApp/src/style.css` declares `@source "../../Views";`.
-- The global sidebar is a mount point in the layout, fed by the current route:
-  ```cshtml
-  var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
-  <div id="sidebar-app"
-       data-active="@currentController"
-       data-home-url="@Url.Action("Index", "Home")"
-       data-books-url="@Url.Action("Index", "Books")" ... ></div>
-  ```
-- Scripts, in order: `jquery.min.js` (only for unobtrusive validation on the remaining Razor forms), `~/dist/main.js` (`type="module"`), `~/js/site.js`, then `@await RenderSectionAsync("Scripts", required: false)`.
-- The bundle is loaded **globally, once**, in the layout. Do **not** add per-view `<script src="~/dist/main.js">` inside a `@section Scripts` block - that would mount every app twice.
+- `@RenderBody()` is the **only** body content. `Views/Home/Index.cshtml` is the sole page that renders anything meaningful there - a single `<div id="app" class="flex h-full w-full gap-3 p-4">`, which `App.vue` (Sidebar + `<RouterView />`) mounts into. Any other Razor view (e.g. `Home/Error.cshtml`) renders without the SPA shell.
+- Scripts, in order: `~/dist/main.js` (`type="module"`), `~/js/site.js`, then `@await RenderSectionAsync("Scripts", required: false)`. jQuery was removed together with the last Razor CRUD forms (Customers) - do not reintroduce it.
+- The bundle is loaded **globally, once**, in the layout. Do **not** add per-view `<script src="~/dist/main.js">` inside a `@section Scripts` block - that would mount the app twice.
 
-## Writing a Razor view that hosts a Vue component
+## Writing the SPA shell / adding a route
 
 ```cshtml
 @{
-    ViewData["Title"] = "Books";
+    ViewData["Title"] = "Book Store";
 }
 
-<div id="books-app"
-     data-api-url="/api/books"
-     data-authors-url="/api/authors"></div>
+<div id="app" class="flex h-full w-full gap-3 p-4"></div>
 ```
 
 Rules:
 
-- One `id="<feature>-app"` per feature; it must match the `mount(Component, "#<feature>-app")` call in `ClientApp/src/main.ts`.
-- Pass every URL the component needs as a `data-*` attribute - use `@Url.Action(...)` for MVC routes so route changes never break the front-end. Only the JSON API paths are written literally (`/api/books`), matching the `[Route("api/...")]` attribute.
-- `data-*` values are strings on the Vue side; never expect a typed value.
-- Serialize domain objects into the view only when there is no alternative. The default is: markup in Razor, data over `/api`.
-- Keep the view otherwise empty. Any conditional UI belongs in the Vue component.
+- There is exactly **one** mount point (`id="app"`), declared once in `Views/Home/Index.cshtml`. Do not add
+  per-feature Razor views or mount `<div>`s anymore - new pages are added entirely on the Vue side (see
+  `frontend.instructions.md` -> "How a component reaches the page").
+- `Program.cs` maps `app.MapFallbackToController("Index", "Home")` after the default MVC route, so any path
+  vue-router owns (`/books`, `/authors/123`, ...) that doesn't match a real MVC/API endpoint falls back to
+  this same shell on a full load or refresh.
+- Serialize domain objects into the view only when there is no alternative. The default is: markup in Razor,
+  data over `/api`.
 
 ### Current page inventory
 
-| Route | View | Rendering |
+| Route (client-side, via vue-router) | Component | Rendering |
 |---|---|---|
-| `/` | `Views/Home/Index.cshtml` | Vue (`Home.vue`) |
-| `/Books` | `Views/Books/Index.cshtml` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
-| `/Authors` | `Views/Authors/Index.cshtml` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
-| `/Customers` | `Views/Customers/Index.cshtml` | Vue list; row actions **navigate to the Razor pages** below |
-| `/Customers/Create|Edit|Details|Delete` | `Views/Customers/*.cshtml` | Classic Razor forms, Tailwind-styled via the `@layer components` classes in `ClientApp/src/style.css`, jQuery unobtrusive validation via `_ValidationScriptsPartial` |
-| Any | `Views/Shared/_Layout.cshtml` | Vue sidebar island |
+| `/` | `Home.vue` | Vue |
+| `/books` | `BooksPage.vue` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
+| `/authors` | `AuthorsPage.vue` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
+| `/customers` | `CustomersPage.vue` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
 
-Customers is deliberately the "half-migrated" reference: it shows the intermediate state of a migration
-(Vue list over Razor CRUD) next to the finished state (Books/Authors). When migrating a page fully, switch
-`DataTableCommon` from `detailsUrl`/`editUrl`/`deleteUrl` (navigate) to `confirmDetails`/`confirmEdit`/`confirmDelete`
-(emit + dialog), add the dialogs, and delete the Razor CRUD views.
+| Server route | View | Purpose |
+|---|---|---|
+| `/` (and any unmatched path) | `Views/Home/Index.cshtml` | SPA shell (`div#app`); served directly for `/` and via `MapFallbackToController` for every vue-router path |
+| `/Home/Error` | `Views/Home/Error.cshtml` | Server-rendered error page (`UseExceptionHandler`), intentionally outside the SPA shell |
 
-`Views/Shared/_Pagination.cshtml` is a leftover from the Bootstrap era and is no longer referenced by any
-view - all paging now happens in the PrimeVue paginator against the API.
+Customers was the last page migrated off Razor CRUD forms (`Create/Edit/Details/Delete.cshtml` + jQuery
+unobtrusive validation) - there are no surviving Razor forms in the app. `Views/Shared/_Pagination.cshtml`
+and `_ValidationScriptsPartial.cshtml` were removed for the same reason.
 
 ## MVC controllers
 
-Unchanged from classic MVC: thin, `Index(int page = 1)` calling `IXxxService.GetPagedAsync`, returning the
-view. The Index views still declare `@model PagedResult<Entity>` even though the Vue table refetches over
-`/api` - harmless, and it keeps server-side rendering available as a fallback. Do not add business logic
-here (see `.github/copilot-instructions.md`).
+`HomeController` is the only page-serving controller left: `Index()` (SPA shell) and `Error()`
+(`UseExceptionHandler` target). `BooksController`, `AuthorsController` and `CustomersController` were removed
+- their former responsibility (paged Index views) is now owned entirely by vue-router + the `/api/*`
+controllers. Do not add business logic to `HomeController` (see `.github/copilot-instructions.md`).
 
 ## JSON API controllers (`Controllers/Api/`)
 
@@ -120,14 +119,15 @@ Conventions:
 - Catch `DomainException` and return `BadRequest(new { message = ex.Message })`. The front-end composables read `body.message` and show it in the dialog, so the domain message is the user-facing error.
 - Return `NotFound()` for a missing id, `NoContent()` for a successful delete.
 - Dropdown/lookup data gets its own endpoint (`GET /api/authors/options` -> `AuthorOptionDto[]`), never a full paged fetch.
-- API controllers use `[ApiController]` + `ControllerBase` (no views) and are **not** anti-forgery protected, unlike the Razor POST actions which keep `[ValidateAntiForgeryToken]`. There is no authentication in this solution; add auth before exposing mutating endpoints publicly.
+- API controllers use `[ApiController]` + `ControllerBase` (no views). There is no authentication in this solution; add auth before exposing mutating endpoints publicly.
 - Keep the JSON casing default (camelCase) - `types.ts` depends on it.
 
 ## Static assets
 
 - `wwwroot/dist/` - Vite output (`main.js`, `main.css`, PrimeIcons fonts). **Generated, but committed**: `dotnet build`/`publish` never runs npm, so the deployed app would otherwise ship no front-end. Never hand-edit.
 - `wwwroot/images/` - Figma-exported assets, referenced by absolute path from Vue (`/images/home/books.jpg`).
-- `wwwroot/lib/` - jquery, jquery-validation, jquery-validation-unobtrusive only. **No bootstrap folder** - do not reintroduce one.
+- `wwwroot/lib/` - leftover jquery/jquery-validation packages from the pre-SPA Customers forms; no longer
+  referenced by any view. **No bootstrap folder** - do not reintroduce one.
 - `wwwroot/css/site.css` - base font sizing only; app styling belongs to Tailwind/PrimeVue.
 - `Program.cs` uses `app.MapStaticAssets()` + `.WithStaticAssets()` (ASP.NET Core 10 static asset pipeline), so fingerprinting/compression is handled for files present at build time.
 
@@ -157,9 +157,9 @@ data resets on restart, and every mutation done through the API disappears with 
 - [ ] `/vault-search` before, `/vault-write` after.
 - [ ] Controller stays thin; business rules stay in the domain.
 - [ ] New/changed API shape mirrored in `ClientApp/src/types.ts`.
-- [ ] Mount `id` matches a `mount(...)` call in `main.ts`; all URLs passed as `data-*`.
+- [ ] New client-side page added as a `router/index.ts` route + `Sidebar.vue` nav item, not a new Razor view/mount point.
 - [ ] `dotnet build Src/BookStore.slnx` clean; `npm run build` re-run if ClientApp changed.
-- [ ] Page loaded in the browser and the network tab shows the expected `/api/*` call.
+- [ ] Page loaded in the browser (including a hard refresh on a deep route) and the network tab shows the expected `/api/*` call.
 
 ## Never
 
@@ -169,12 +169,14 @@ data resets on restart, and every mutation done through the API disappears with 
 - Never serialize EF entities directly to JSON - always a DTO.
 - Never move paging or validation logic into an API controller.
 - Never add EF Core migrations or change the persistence provider.
+- Never add a page-serving MVC controller/Razor view for a route vue-router already owns - extend `router/index.ts` instead.
 
 ## Porting to a new project
 
-1. Keep MVC routing and controllers; add `Controllers/Api/` + `Models/Api/` DTOs over the existing services.
-2. Add the `ClientApp/` Vite project (see `frontend.instructions.md` -> "Porting to a new project").
-3. In `_Layout.cshtml`: drop the Bootstrap `<link>`/`<script>`, add `~/dist/main.css` and `~/dist/main.js` (`type="module"`, `asp-append-version`), keep jQuery only if Razor forms still validate with it, and add the sidebar/nav mount point.
-4. Migrate page by page: Index view -> mount `<div>` with `data-*` URLs -> Vue list over the paged API -> then the CRUD dialogs -> then delete the obsolete Razor views and partials (including the old pagination partial).
-5. Commit `wwwroot/dist` if the deployment pipeline does not run npm; otherwise add an npm build step to CI and gitignore it.
-6. Record the resulting structure in that project's vault with `/vault-write`.
+1. Keep a single `HomeController` (SPA shell) + `Controllers/Api/` + `Models/Api/` DTOs over the existing services.
+2. Add the `ClientApp/` Vite project with `vue-router` (see `frontend.instructions.md` -> "Porting to a new project").
+3. In `_Layout.cshtml`: drop Bootstrap, add `~/dist/main.css` and `~/dist/main.js` (`type="module"`, `asp-append-version`), keep `@RenderBody()` only for genuinely server-rendered pages (errors, etc.).
+4. `Views/Home/Index.cshtml` renders the single `<div id="app">`; add `app.MapFallbackToController("Index", "Home")` in `Program.cs` after the default route.
+5. Migrate page by page: add a vue-router route + `<Feature>Page.vue` -> Vue list over the paged API -> then the CRUD dialogs -> then delete the obsolete Razor controller/views for that feature.
+6. Commit `wwwroot/dist` if the deployment pipeline does not run npm; otherwise add an npm build step to CI and gitignore it.
+7. Record the resulting structure in that project's vault with `/vault-write`.

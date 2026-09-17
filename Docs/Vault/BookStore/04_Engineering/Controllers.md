@@ -1,7 +1,7 @@
 ---
 type: guide
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-09-17
 tags:
   - note
   - type/guide
@@ -12,88 +12,59 @@ tags:
 
 # Controllers
 
-Thin MVC controller pattern used by `BooksController`, `AuthorsController`, `CustomersController`, and `HomeController`.
+MVC controllers in `BookStore.Web`, post-SPA migration (see [[Frontend-SPA]]). There is exactly one
+page-serving controller left; everything else is JSON API controllers under `Controllers/Api/`.
 
 ## Context
 
-Controllers handle model binding, invoke application services, and return views or redirects. They contain no business logic.
+`BooksController`, `AuthorsController` and `CustomersController` (the old paged-Index-view controllers) were
+removed when the app became a Vue SPA. Their former responsibility — serving a paged list page per entity —
+is now owned entirely by `vue-router` (client-side) plus the existing `/api/*` controllers (data).
 
-## Common shape
-
-Most CRUD controllers follow this structure:
-
-- `Index(int page = 1)` — paged list via `GetPagedAsync`.
-- `Details(int id)` — fetch by id, return `NotFound()` if missing.
-- `Create` GET/POST — show form, validate `ModelState`, call service, catch `DomainException`.
-- `Edit` GET/POST — same pattern, plus id mismatch check.
-- `Delete` GET/POST — confirm view, then delete.
-
-## POST action pattern
+## HomeController (the only page controller)
 
 ```csharp
-// Src/BookStore.Web/Controllers/BooksController.cs
-[HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Create(Book book, int numberOfPages)
+// Src/BookStore.Web/Controllers/HomeController.cs
+public class HomeController : Controller
 {
-    if (!ModelState.IsValid)
-    {
-        await PopulateAuthorsAsync(book.AuthorId);
-        return View(book);
-    }
+    // Serves the single SPA shell page; Vue Router owns every other client-side route.
+    public IActionResult Index() => View();
 
-    try
-    {
-        await _bookService.CreateAsync(book, numberOfPages);
-        return RedirectToAction(nameof(Index));
-    }
-    catch (DomainException ex)
-    {
-        ModelState.AddModelError(string.Empty, ex.Message);
-        await PopulateAuthorsAsync(book.AuthorId);
-        return View(book);
-    }
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error() => View(new ErrorViewModel { RequestId = ... });
 }
 ```
 
-## DomainException handling
+- `Index()` renders `Views/Home/Index.cshtml`, which contains the single `<div id="app">` mount point.
+- `Program.cs` maps `app.MapFallbackToController("Index", "Home")` after the default route, so any
+  unmatched path (e.g. `/books`, `/authors/42`) also resolves to this same action — vue-router then renders
+  the right page client-side from the URL.
+- `Error()` is the `UseExceptionHandler` target; it renders outside the SPA shell (no `div#app`), so it is
+  plain server-rendered HTML.
 
-Controllers catch `DomainException` from services and add the message to `ModelState` so the view can re-display the form with the error.
+## JSON API controllers own all data access
 
-## Author dropdown
-
-`BooksController` uses `ViewBag.Authors` with a `SelectList` populated by `PopulateAuthorsAsync` for Create/Edit forms.
-
-## CustomersController
-
-`CustomersController` follows the same shape with no navigation-property concerns (`Customer` has none). It binds directly to the `Customer` entity for Create/Edit (no separate view-model), same as `AuthorsController`:
-
-```csharp
-// Src/BookStore.Web/Controllers/CustomersController.cs
-public async Task<IActionResult> Index(int page = 1)
-{
-    var result = await _customerService.GetPagedAsync(page, pageSize: 10);
-    return View(result);
-}
-```
-
-Views live in `Src/BookStore.Web/Views/Customers/` (`Index`, `Details`, `Create`, `Edit`, `Delete`), mirroring `Views/Authors/*.cshtml`, and `Index.cshtml` uses the shared `_Pagination` partial (see [[Pagination]]).
-
-`ICustomerService`/`CustomerService` are registered in `Src/BookStore.Web/Program.cs` via `AddScoped<ICustomerService, CustomerService>()`.
+`BooksApiController`, `AuthorsApiController`, `CustomersApiController` (all in `Controllers/Api/`) are
+unchanged in shape by the SPA migration — see [[Application-Services]] and `pagination.instructions.md` for
+their conventions (DTO mapping, `DomainException` → 400, paging). `CustomersApiController` gained
+`Create`/`Update`/`Delete` actions as part of the migration (previously GET-only, since Customer CRUD used to
+be classic Razor forms).
 
 ## Anti-forgery
 
-All mutating POST actions use `[ValidateAntiForgeryToken]`.
+No controller uses `[ValidateAntiForgeryToken]` anymore — the last Razor POST forms (Customers) were removed.
+API controllers were never anti-forgery protected (there is no authentication in this solution).
 
 ## Source
 
-- `Src/BookStore.Web/Controllers/BooksController.cs`
-- `Src/BookStore.Web/Controllers/AuthorsController.cs`
-- `Src/BookStore.Web/Controllers/CustomersController.cs`
 - `Src/BookStore.Web/Controllers/HomeController.cs`
+- `Src/BookStore.Web/Controllers/Api/BooksApiController.cs`
+- `Src/BookStore.Web/Controllers/Api/AuthorsApiController.cs`
+- `Src/BookStore.Web/Controllers/Api/CustomersApiController.cs`
 
 ## Related
 
+- [[Frontend-SPA]]
 - [[Application-Services]]
 - [[Pagination]]
 - [[Architecture-Overview]]

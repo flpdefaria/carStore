@@ -39,6 +39,7 @@ Full list of notes in the BookStore vault, grouped by folder.
 - [[Application-Services]]
 - [[Pagination]]
 - [[Controllers]]
+- [[Frontend-SPA]]
 - [[Testing]]
 - [[Sidebar-Logo-Icon]]
 

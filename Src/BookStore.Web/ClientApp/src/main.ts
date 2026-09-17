@@ -1,25 +1,15 @@
 import "./style.css";
-import { createApp, type Component } from "vue";
+import { createApp } from "vue";
 import PrimeVue from "primevue/config";
 import Aura from "@primeuix/themes/aura";
-import Home from "./components/Home.vue";
-import Sidebar from "./components/common/sidebar/Sidebar.vue";
-import BooksPage from "./components/BooksPage.vue";
-import AuthorsPage from "./components/AuthorsPage.vue";
-import CustomersPage from "./components/CustomersPage.vue";
+import App from "./App.vue";
+import router from "./router";
 
-function mount(component: Component, selector: string) {
-  const el = document.querySelector<HTMLElement>(selector);
-  if (!el) return;
-
-  const props = { ...el.dataset };
-  createApp(component, props)
+const el = document.querySelector<HTMLElement>("#app");
+if (el) {
+  createApp(App)
+    .use(router)
     .use(PrimeVue, { theme: { preset: Aura, options: { darkModeSelector: false } } })
     .mount(el);
 }
 
-mount(Home, "#home-app");
-mount(Sidebar, "#sidebar-app");
-mount(BooksPage, "#books-app");
-mount(AuthorsPage, "#authors-app");
-mount(CustomersPage, "#customers-app");
