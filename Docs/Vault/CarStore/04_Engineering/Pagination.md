@@ -42,10 +42,10 @@ public class PagedResult<T>
 // Src/CarStore.Application/Services/BookService.cs
 pageNumber = Math.Max(1, pageNumber);
 pageSize = Math.Clamp(pageSize, 1, 100);
-var query = _db.Books.Include(b => b.Author).OrderBy(b => b.Title);
+var query = _db.Cars.Include(b => b.Brand).OrderBy(b => b.Title);
 var total = await query.CountAsync();
 var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
-return new PagedResult<Book> { Items = items, PageNumber = pageNumber, PageSize = pageSize, TotalItems = total };
+return new PagedResult<Car> { Items = items, PageNumber = pageNumber, PageSize = pageSize, TotalItems = total };
 ```
 
 `CustomerService` follows the same clamp/count/page shape, ordered by `FullName` with no `.Include(...)` (no navigation properties):

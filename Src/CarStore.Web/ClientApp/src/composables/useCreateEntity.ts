@@ -1,7 +1,7 @@
 import { ref } from "vue";
 
 interface UseCreateEntityOptions {
-  /** REST endpoint to POST the new entity to, e.g. "/api/books". */
+  /** REST endpoint to POST the new entity to, e.g. "/api/cars". */
   apiUrl: string;
   /** Lower-case noun used in the fallback error message, e.g. "book". */
   entityLabel: string;
@@ -11,7 +11,7 @@ interface UseCreateEntityOptions {
 
 /**
  * Shared "create entity" dialog state machine used by the entity pages
- * (BooksPage, AuthorsPage, ...). Encapsulates dialog visibility, loading/error
+ * (CarsPage, BrandsPage, ...). Encapsulates dialog visibility, loading/error
  * state and the POST fetch call that were previously duplicated per page.
  */
 export function useCreateEntity<TPayload>(options: UseCreateEntityOptions) {

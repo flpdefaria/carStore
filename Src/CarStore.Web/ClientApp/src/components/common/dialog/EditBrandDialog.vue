@@ -8,45 +8,45 @@ import Textarea from "primevue/textarea";
 import Message from "primevue/message";
 import FormField from "../form/FormField.vue";
 import { dialogShellPt, dialogSecondaryButtonClass, dialogPrimaryButtonClass } from "./dialogStyles";
-import type { AuthorDto } from "../../../types";
+import type { BrandDto } from "../../../types";
 
-export interface EditAuthorPayload {
+export interface EditBrandPayload {
   name: string;
-  nationality: string;
-  birthDate: string;
-  bio: string;
+  country: string;
+  foundedDate: string;
+  description: string;
 }
 
 const props = defineProps<{
   visible: boolean;
-  author: AuthorDto | null;
+  brand: BrandDto | null;
   loading?: boolean;
   error?: string | null;
 }>();
 
 const emit = defineEmits<{
   "update:visible": [value: boolean];
-  submit: [payload: EditAuthorPayload];
+  submit: [payload: EditBrandPayload];
   cancel: [];
 }>();
 
-function formFromAuthor(author: AuthorDto | null) {
+function formFromBrand(brand: BrandDto | null) {
   return {
-    name: author?.name ?? "",
-    nationality: author?.nationality ?? "",
-    birthDate: author ? new Date(author.birthDate) : (null as Date | null),
-    bio: author?.bio ?? "",
+    name: brand?.name ?? "",
+    country: brand?.country ?? "",
+    foundedDate: brand ? new Date(brand.foundedDate) : (null as Date | null),
+    description: brand?.description ?? "",
   };
 }
 
-const form = reactive(formFromAuthor(props.author));
+const form = reactive(formFromBrand(props.brand));
 const validationError = ref<string | null>(null);
 
 watch(
   () => props.visible,
   (visible) => {
     if (visible) {
-      Object.assign(form, formFromAuthor(props.author));
+      Object.assign(form, formFromBrand(props.brand));
       validationError.value = null;
     }
   },
@@ -58,16 +58,16 @@ function onUpdateVisible(value: boolean) {
 }
 
 function onSave() {
-  if (!form.name.trim() || !form.birthDate) {
-    validationError.value = "Name and Birth date are required.";
+  if (!form.name.trim() || !form.foundedDate) {
+    validationError.value = "Name and Founded date are required.";
     return;
   }
   validationError.value = null;
   emit("submit", {
     name: form.name.trim(),
-    nationality: form.nationality.trim(),
-    birthDate: form.birthDate.toISOString(),
-    bio: form.bio.trim(),
+    country: form.country.trim(),
+    foundedDate: form.foundedDate.toISOString(),
+    description: form.description.trim(),
   });
 }
 
@@ -86,24 +86,24 @@ const dialogPt = dialogShellPt("w-[480px]");
     :pt="dialogPt"
   >
     <template #header>
-      <span class="text-[21px] font-bold text-color">Edit author</span>
+      <span class="text-[21px] font-bold text-color">Edit brand</span>
     </template>
 
     <FormField label="Name">
       <InputText v-model="form.name" class="w-full" />
     </FormField>
 
-    <FormField label="Nationality">
-      <InputText v-model="form.nationality" class="w-full" />
+    <FormField label="Country">
+      <InputText v-model="form.country" class="w-full" />
     </FormField>
 
-    <FormField label="Birth date">
-      <DatePicker v-model="form.birthDate" date-format="dd/mm/yy" show-icon class="w-full" />
+    <FormField label="Founded date">
+      <DatePicker v-model="form.foundedDate" date-format="dd/mm/yy" show-icon class="w-full" />
     </FormField>
 
     <div class="flex h-[138px] w-full flex-col gap-1.75">
-      <label class="text-sm font-semibold text-color">Bio</label>
-      <Textarea v-model="form.bio" class="h-[110px] w-full resize-none" />
+      <label class="text-sm font-semibold text-color">Description</label>
+      <Textarea v-model="form.description" class="h-[110px] w-full resize-none" />
     </div>
 
     <Message v-if="validationError || props.error" severity="error" :closable="false">

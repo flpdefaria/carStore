@@ -7,32 +7,32 @@ public class CarStoreContext : DbContext
 {
     public CarStoreContext(DbContextOptions<CarStoreContext> options) : base(options) { }
 
-    public DbSet<Author> Authors => Set<Author>();
-    public DbSet<Book> Books => Set<Book>();
+    public DbSet<Brand> Brands => Set<Brand>();
+    public DbSet<Car> Cars => Set<Car>();
     public DbSet<Customer> Customers => Set<Customer>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Author>(entity =>
+        modelBuilder.Entity<Brand>(entity =>
         {
             entity.HasKey(a => a.Id);
             entity.Property(a => a.Name).IsRequired().HasMaxLength(150);
-            entity.Property(a => a.Bio).HasMaxLength(2000);
-            entity.Property(a => a.Nationality).HasMaxLength(100);
+            entity.Property(a => a.Description).HasMaxLength(2000);
+            entity.Property(a => a.Country).HasMaxLength(100);
         });
 
-        modelBuilder.Entity<Book>(entity =>
+        modelBuilder.Entity<Car>(entity =>
         {
             entity.HasKey(b => b.Id);
-            entity.Property(b => b.Title).IsRequired().HasMaxLength(250);
-            entity.Property(b => b.Isbn).HasMaxLength(20);
+            entity.Property(b => b.Model).IsRequired().HasMaxLength(250);
+            entity.Property(b => b.Vin).HasMaxLength(20);
             entity.Property(b => b.Description).HasMaxLength(2000);
-            entity.Property(b => b.Genre).HasMaxLength(60);
+            entity.Property(b => b.BodyType).HasMaxLength(60);
             entity.Property(b => b.Price).HasPrecision(18, 2);
 
-            entity.HasOne(b => b.Author)
-                .WithMany(a => a.Books)
-                .HasForeignKey(b => b.AuthorId)
+            entity.HasOne(b => b.Brand)
+                .WithMany(a => a.Cars)
+                .HasForeignKey(b => b.BrandId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 

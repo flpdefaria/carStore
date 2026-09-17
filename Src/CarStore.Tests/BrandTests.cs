@@ -4,29 +4,29 @@ using FluentAssertions;
 
 namespace CarStore.Tests;
 
-public class AuthorTests
+public class BrandTests
 {
     // ── Helpers ──────────────────────────────────────────────────────────────
 
-    private static Author ValidAuthor(DateTime? birthDate = null) =>
-        Author.Create("George Orwell", "British novelist.", "British",
-            birthDate ?? DateTime.UtcNow.AddYears(-50));
+    private static Brand ValidBrand(DateTime? foundedDate = null) =>
+        Brand.Create("Toyota", "Japanese multinational automaker.", "Japan",
+            foundedDate ?? DateTime.UtcNow.AddYears(-50));
 
-    // ── Author.Create – happy path ───────────────────────────────────────────
+    // ── Brand.Create – happy path ───────────────────────────────────────────
 
     [Fact]
-    public void Create_WithValidData_ReturnsNonNullAuthor()
+    public void Create_WithValidData_ReturnsNonNullBrand()
     {
         // Arrange & Act
-        var author = Author.Create("Jane Austen", "English novelist.", "British",
+        var brand = Brand.Create("Ford", "American automaker.", "USA",
             DateTime.UtcNow.AddYears(-40));
 
         // Assert
-        author.Should().NotBeNull();
-        author.Name.Should().Be("Jane Austen");
+        brand.Should().NotBeNull();
+        brand.Name.Should().Be("Ford");
     }
 
-    // ── Author.Create – validation ───────────────────────────────────────────
+    // ── Brand.Create – validation ───────────────────────────────────────────
 
     [Theory]
     [InlineData("")]
@@ -34,55 +34,55 @@ public class AuthorTests
     public void Create_WithEmptyOrWhitespaceName_ThrowsDomainException(string name)
     {
         // Arrange & Act
-        var act = () => Author.Create(name, "Bio", "British", DateTime.UtcNow.AddYears(-30));
+        var act = () => Brand.Create(name, "Description", "USA", DateTime.UtcNow.AddYears(-30));
 
         // Assert
         act.Should().Throw<DomainException>()
-            .WithMessage("Author name is required.");
+            .WithMessage("Brand name is required.");
     }
 
     [Fact]
-    public void Create_WithFutureBirthDate_ThrowsDomainException()
+    public void Create_WithFutureFoundedDate_ThrowsDomainException()
     {
         // Arrange & Act
-        var act = () => Author.Create("Valid Name", "Bio", "British",
+        var act = () => Brand.Create("Valid Name", "Description", "USA",
             DateTime.UtcNow.AddDays(1));
 
         // Assert
         act.Should().Throw<DomainException>()
-            .WithMessage("Birth date cannot be in the future.");
+            .WithMessage("Founded date cannot be in the future.");
     }
 
-    // ── Author.Age – computed property ───────────────────────────────────────
+    // ── Brand.YearsInBusiness – computed property ───────────────────────────
 
     [Fact]
-    public void Age_WithBirthDateExactly30YearsAgo_Returns30()
+    public void YearsInBusiness_WithFoundedDateExactly30YearsAgo_Returns30()
     {
         // Arrange
-        // AddYears(-30).AddDays(-1) ensures we are one day past the 30th birthday,
+        // AddYears(-30).AddDays(-1) ensures we are one day past the 30-year mark,
         // making the formula (TotalDays / 365.25) reliably floor to 30 regardless
         // of how many leap years fall in the range.
-        var birthDate = DateTime.UtcNow.AddYears(-30).AddDays(-1);
-        var author = Author.Create("Test Author", "Bio", "British", birthDate);
+        var foundedDate = DateTime.UtcNow.AddYears(-30).AddDays(-1);
+        var brand = Brand.Create("Test Brand", "Description", "USA", foundedDate);
 
         // Act & Assert
-        author.Age.Should().Be(30);
+        brand.YearsInBusiness.Should().Be(30);
     }
 
-    // ── Author.EnsureCanBeDeleted ─────────────────────────────────────────────
+    // ── Brand.EnsureCanBeDeleted ─────────────────────────────────────────────
 
     [Fact]
-    public void EnsureCanBeDeleted_WithBooks_ThrowsDomainException()
+    public void EnsureCanBeDeleted_WithCars_ThrowsDomainException()
     {
         // Arrange
-        var author = ValidAuthor();
-        author.Books.Add(new Book()); // add a book directly to the collection
+        var brand = ValidBrand();
+        brand.Cars.Add(new Car()); // add a car directly to the collection
 
         // Act
-        var act = () => author.EnsureCanBeDeleted();
+        var act = () => brand.EnsureCanBeDeleted();
 
         // Assert
         act.Should().Throw<DomainException>()
-            .WithMessage("Cannot delete an author who still has books.");
+            .WithMessage("Cannot delete a brand that still has cars.");
     }
 }

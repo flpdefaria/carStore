@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import PageHeader from "./common/pageheader/PageHeader.vue";
-import BooksTable from "./BooksTable.vue";
-import CreateBookDialog, { type CreateBookPayload } from "./common/dialog/CreateBookDialog.vue";
+import CarsTable from "./CarsTable.vue";
+import CreateCarDialog, { type CreateCarPayload } from "./common/dialog/CreateCarDialog.vue";
 import Button from "primevue/button";
 import { primaryButtonClass } from "../styles/buttonStyles";
 import { useCreateEntity } from "../composables/useCreateEntity";
-import type { AuthorOption } from "../types";
+import type { BrandOption } from "../types";
 
-const apiUrl = "/api/books";
-const authorsUrl = "/api/authors";
+const apiUrl = "/api/cars";
+const brandsUrl = "/api/brands";
 
-const booksTable = ref<InstanceType<typeof BooksTable> | null>(null);
-const authorOptions = ref<AuthorOption[]>([]);
+const carsTable = ref<InstanceType<typeof CarsTable> | null>(null);
+const brandOptions = ref<BrandOption[]>([]);
 
-async function loadAuthorOptions() {
-  const response = await fetch(`${authorsUrl}/options`);
-  if (response.ok) authorOptions.value = await response.json();
+async function loadBrandOptions() {
+  const response = await fetch(`${brandsUrl}/options`);
+  if (response.ok) brandOptions.value = await response.json();
 }
 
 const {
@@ -25,21 +25,21 @@ const {
   error: createError,
   open: openCreate,
   submit: onCreateSubmit,
-} = useCreateEntity<CreateBookPayload>({
+} = useCreateEntity<CreateCarPayload>({
   apiUrl,
-  entityLabel: "book",
-  onCreated: () => booksTable.value?.reload(),
+  entityLabel: "car",
+  onCreated: () => carsTable.value?.reload(),
 });
 
-onMounted(loadAuthorOptions);
+onMounted(loadBrandOptions);
 </script>
 
 
 <template>
   <div class="flex flex-col gap-3">
     <PageHeader
-      title="Books"
-      description='"Manage the bookstore catalog: browse title, author, genre, price, stock and availability, and create, edit or remove entries."'
+      title="Cars"
+      description='"Manage the car inventory: browse model, brand, body type, price, stock and availability, and create, edit or remove entries."'
     >
       <template #actions>
         <Button
@@ -47,16 +47,16 @@ onMounted(loadAuthorOptions);
           @click="openCreate"
         >
           <i class="pi pi-plus text-xs" />
-          New book
+          New car
         </Button>
       </template>
     </PageHeader>
 
-    <BooksTable ref="booksTable" :api-url="apiUrl" :authors="authorOptions" />
+    <CarsTable ref="carsTable" :api-url="apiUrl" :brands="brandOptions" />
 
-    <CreateBookDialog
+    <CreateCarDialog
       v-model:visible="createDialogVisible"
-      :authors="authorOptions"
+      :brands="brandOptions"
       :loading="createLoading"
       :error="createError"
       @submit="onCreateSubmit"

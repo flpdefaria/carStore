@@ -6,8 +6,8 @@ tags:
   - note
   - type/overview
   - area/domain
-  - entity/author
-  - entity/book
+  - entity/brand
+  - entity/car
 ---
 
 # Domain Overview
@@ -20,15 +20,15 @@ All business rules are owned by `CarStore.Domain`. Services and controllers may 
 
 ## Entities
 
-- [[Author]] — author aggregate with name, bio, nationality, birth date, age, and book collection.
-- [[Book]] — book aggregate with title, ISBN, genre, price, stock, availability, page count, and author reference.
+- [[Brand]] — brand aggregate with name, description, country, founded date, years in business, and car collection.
+- [[Car]] — car aggregate with model, VIN, body type, price, stock, availability, mileage, and brand reference.
 
 ## Relationship
 
-- One author has many books (`Author.Books`).
-- Each book belongs to one author (`Book.AuthorId` → `Author`).
+- One brand has many cars (`Brand.Cars`).
+- Each car belongs to one brand (`Car.BrandId` → `Brand`).
 - EF Core mapping uses `OnDelete(DeleteBehavior.Restrict)` in `CarStoreContext.OnModelCreating`.
-- Domain-level guard: `Author.EnsureCanBeDeleted()` throws `DomainException` when the author still has books.
+- Domain-level guard: `Brand.EnsureCanBeDeleted()` throws `DomainException` when the brand still has cars.
 
 ## Error model
 
@@ -38,21 +38,21 @@ All business rules are owned by `CarStore.Domain`. Services and controllers may 
 
 ## Seed data
 
-- `DataSeeder.Seed(db)` (`Src/CarStore.Domain/Seed/DataSeeder.cs`) is a no-op if any author or book already exists.
-- Seeds 10 authors and 27 books across genres, some with `Stock = 0` to exercise the `IsAvailable` invariant.
+- `DataSeeder.Seed(db)` (`Src/CarStore.Domain/Seed/DataSeeder.cs`) is a no-op if any brand or car already exists.
+- Seeds 10 brands and 27 cars across body types, some with `Stock = 0` to exercise the `IsAvailable` invariant.
 - Persistence is EF Core In-Memory; data resets on every process restart.
 
 ## Source files
 
-- `Src/CarStore.Domain/Entities/Author.cs`
-- `Src/CarStore.Domain/Entities/Book.cs`
+- `Src/CarStore.Domain/Entities/Brand.cs`
+- `Src/CarStore.Domain/Entities/Car.cs`
 - `Src/CarStore.Domain/Data/CarStoreContext.cs`
 - `Src/CarStore.Domain/Seed/DataSeeder.cs`
 - `Src/CarStore.Domain/Exceptions/DomainException.cs`
 
 ## Related
 
-- [[Author]]
-- [[Book]]
+- [[Brand]]
+- [[Car]]
 - [[Architecture-Overview]]
 - [[Operations-Overview]]

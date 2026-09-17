@@ -19,19 +19,19 @@ import PoweredByBadge from "./PoweredByBadge.vue";
         class="flex flex-col overflow-hidden !rounded-xl !shadow-sm md:h-full md:min-h-0 [&_.p-card-body]:shrink-0 md:[&_.p-card-header]:min-h-0 md:[&_.p-card-header]:flex-1"
       >
         <template #header>
-          <img :src="'/images/home/books.jpg'" alt="Books" class="h-56 w-full object-cover md:h-full" />
+          <img :src="'/images/home/books.jpg'" alt="Cars" class="h-56 w-full object-cover md:h-full" />
         </template>
-        <template #title>Books</template>
+        <template #title>Cars</template>
         <template #content>
           <p class="text-sm leading-relaxed text-surface-700">
-            "Manage the bookstore catalog: browse title, author, genre, price, stock and availability, and
+            "Manage the car inventory: browse model, brand, body type, price, stock and availability, and
             create, edit or remove entries."
           </p>
         </template>
         <template #footer>
-          <Button :as="RouterLink" to="/books" class="w-fit border-surface-700! bg-surface-700! text-white! hover:bg-surface-800!">
-            <i class="pi pi-book" />
-            Open Books
+          <Button :as="RouterLink" to="/cars" class="w-fit border-surface-700! bg-surface-700! text-white! hover:bg-surface-800!">
+            <i class="pi pi-car" />
+            Open Cars
           </Button>
         </template>
       </Card>
@@ -40,19 +40,19 @@ import PoweredByBadge from "./PoweredByBadge.vue";
         class="flex flex-col overflow-hidden !rounded-xl !shadow-sm md:h-full md:min-h-0 [&_.p-card-body]:shrink-0 md:[&_.p-card-header]:min-h-0 md:[&_.p-card-header]:flex-1"
       >
         <template #header>
-          <img :src="'/images/home/authors.jpg'" alt="Authors" class="h-56 w-full object-cover md:h-full" />
+          <img :src="'/images/home/authors.jpg'" alt="Brands" class="h-56 w-full object-cover md:h-full" />
         </template>
-        <template #title>Authors</template>
+        <template #title>Brands</template>
         <template #content>
           <p class="text-sm leading-relaxed text-surface-700">
-            "Manage registered authors: browse name, age, nationality, birth date and number of books, and
+            "Manage registered car brands: browse name, country, founding date and number of cars, and
             create, edit or remove entries."
           </p>
         </template>
         <template #footer>
-          <Button :as="RouterLink" to="/authors" class="w-fit border-surface-700! bg-surface-700! text-white! hover:bg-surface-800!">
-            <i class="pi pi-users" />
-            Open Authors
+          <Button :as="RouterLink" to="/brands" class="w-fit border-surface-700! bg-surface-700! text-white! hover:bg-surface-800!">
+            <i class="pi pi-building" />
+            Open Brands
           </Button>
         </template>
       </Card>

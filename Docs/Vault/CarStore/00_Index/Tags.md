@@ -39,8 +39,8 @@ Authoritative list of tags used across the CarStore vault. Read this file live b
 
 ### entity/*
 
-- `entity/author` — `Author` domain entity
-- `entity/book` — `Book` domain entity
+- `entity/brand` — `Brand` domain entity
+- `entity/car` — `Car` domain entity
 - `entity/customer` — `Customer` domain entity
 
 ### Base

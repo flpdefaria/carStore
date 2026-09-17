@@ -5,29 +5,29 @@ import Tag from "primevue/tag";
 import Message from "primevue/message";
 import DataTableCommon, { type DataTableColumn } from "./common/table/DataTableCommon.vue";
 import ConfirmDeleteDialog from "./common/dialog/ConfirmDeleteDialog.vue";
-import EditBookDialog, { type EditBookPayload } from "./common/dialog/EditBookDialog.vue";
-import DetailsBookDialog from "./common/dialog/DetailsBookDialog.vue";
+import EditCarDialog, { type EditCarPayload } from "./common/dialog/EditCarDialog.vue";
+import DetailsCarDialog from "./common/dialog/DetailsCarDialog.vue";
 import { usePagedFetch } from "../composables/usePagedFetch";
 import { useEntityCrud } from "../composables/useEntityCrud";
 import { formatCurrency } from "../utils/format";
-import type { AuthorOption, BookDto } from "../types";
+import type { BrandOption, CarDto } from "../types";
 
 const props = defineProps<{
   apiUrl: string;
-  authors: AuthorOption[];
+  brands: BrandOption[];
 }>();
 
 const rows = ref(10);
 const first = ref(0);
-const { items: books, totalRecords, loading, error, load } = usePagedFetch<BookDto>(props.apiUrl);
+const { items: cars, totalRecords, loading, error, load } = usePagedFetch<CarDto>(props.apiUrl);
 
 const columns: DataTableColumn[] = [
-  { field: "title", header: "Title", primary: true },
-  { field: "authorName", header: "Author" },
-  { field: "genre", header: "Genre" },
+  { field: "model", header: "Model", primary: true },
+  { field: "brandName", header: "Brand" },
+  { field: "bodyType", header: "Body type" },
   { field: "price", header: "Price" },
   { field: "stock", header: "Stock" },
-  { field: "numberOfPages", header: "Pages" },
+  { field: "mileage", header: "Mileage" },
   { field: "isAvailable", header: "Available" },
 ];
 
@@ -53,9 +53,9 @@ const {
   detailsDialogVisible,
   detailsTarget,
   onDetailsRequest,
-} = useEntityCrud<BookDto, EditBookPayload>({
+} = useEntityCrud<CarDto, EditCarPayload>({
   apiUrl: props.apiUrl,
-  entityLabel: "book",
+  entityLabel: "car",
   reload: () => load(Math.floor(first.value / rows.value) + 1, rows.value),
 });
 
@@ -69,7 +69,7 @@ defineExpose({ reload: () => load(1, rows.value) });
 <template>
   <Message v-if="error" severity="error" :closable="false" class="mb-4">{{ error }}</Message>
   <DataTableCommon
-    :value="books"
+    :value="cars"
     :columns="columns"
     :loading="loading"
     :total-records="totalRecords"
@@ -93,13 +93,13 @@ defineExpose({ reload: () => load(1, rows.value) });
 
   <ConfirmDeleteDialog
     v-model:visible="deleteDialogVisible"
-    title="Delete Book"
-    message="Are you sure you want to delete this book?"
+    title="Delete Car"
+    message="Are you sure you want to delete this car?"
     :details="
       deleteTarget
         ? [
-            { label: 'Title', value: deleteTarget.title },
-            { label: 'Author', value: deleteTarget.authorName },
+            { label: 'Model', value: deleteTarget.model },
+            { label: 'Brand', value: deleteTarget.brandName },
             { label: 'Price', value: formatCurrency(deleteTarget.price) },
           ]
         : []
@@ -109,15 +109,15 @@ defineExpose({ reload: () => load(1, rows.value) });
     @confirm="onDeleteConfirm"
   />
 
-  <EditBookDialog
+  <EditCarDialog
     v-model:visible="editDialogVisible"
-    :book="editTarget"
-    :authors="props.authors"
+    :car="editTarget"
+    :brands="props.brands"
     :loading="editLoading"
     :error="editError"
     @submit="onEditSubmit"
   />
 
-  <DetailsBookDialog v-model:visible="detailsDialogVisible" :book="detailsTarget" />
+  <DetailsCarDialog v-model:visible="detailsDialogVisible" :car="detailsTarget" />
 </template>
 

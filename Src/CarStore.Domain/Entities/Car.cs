@@ -2,57 +2,57 @@ using CarStore.Domain.Exceptions;
 
 namespace CarStore.Domain.Entities;
 
-public class Book
+public class Car
 {
     public int Id { get; set; }
-    public string Title { get; set; } = string.Empty;
-    public string Isbn { get; set; } = string.Empty;
+    public string Model { get; set; } = string.Empty;
+    public string Vin { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public string Genre { get; set; } = string.Empty;
+    public string BodyType { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public int Stock { get; set; }
-    public DateTime PublishedDate { get; set; }
+    public int ModelYear { get; set; }
     public bool IsAvailable => Stock > 0;
-    public int NumberOfPages { get; private set; }
+    public int Mileage { get; private set; }
 
-    public int AuthorId { get; set; }
-    public Author? Author { get; set; }
+    public int BrandId { get; set; }
+    public Brand? Brand { get; set; }
 
-    public static Book Create(string title, string isbn, string description, string genre, decimal price, int stock, DateTime publishedDate, int authorId, int numberOfPages)
+    public static Car Create(string model, string vin, string description, string bodyType, decimal price, int stock, int modelYear, int brandId, int mileage)
     {
-        Validate(title, price, stock, publishedDate, numberOfPages);
-        return new Book
+        Validate(model, price, stock, modelYear, mileage);
+        return new Car
         {
-            Title = title.Trim(),
-            Isbn = (isbn ?? string.Empty).Trim(),
+            Model = model.Trim(),
+            Vin = (vin ?? string.Empty).Trim(),
             Description = (description ?? string.Empty).Trim(),
-            Genre = (genre ?? string.Empty).Trim(),
+            BodyType = (bodyType ?? string.Empty).Trim(),
             Price = price,
             Stock = stock,
-            PublishedDate = publishedDate,
-            AuthorId = authorId,
-            NumberOfPages = numberOfPages
+            ModelYear = modelYear,
+            BrandId = brandId,
+            Mileage = mileage
         };
     }
 
-    public void Update(string title, string isbn, string description, string genre, decimal price, int stock, DateTime publishedDate, int authorId, int numberOfPages)
+    public void Update(string model, string vin, string description, string bodyType, decimal price, int stock, int modelYear, int brandId, int mileage)
     {
-        Validate(title, price, stock, publishedDate, numberOfPages);
-        Title = title.Trim();
-        Isbn = (isbn ?? string.Empty).Trim();
+        Validate(model, price, stock, modelYear, mileage);
+        Model = model.Trim();
+        Vin = (vin ?? string.Empty).Trim();
         Description = (description ?? string.Empty).Trim();
-        Genre = (genre ?? string.Empty).Trim();
+        BodyType = (bodyType ?? string.Empty).Trim();
         Price = price;
         Stock = stock;
-        PublishedDate = publishedDate;
-        AuthorId = authorId;
-        NumberOfPages = numberOfPages;
+        ModelYear = modelYear;
+        BrandId = brandId;
+        Mileage = mileage;
     }
 
-    private static void Validate(string title, decimal price, int stock, DateTime publishedDate, int numberOfPages)
+    private static void Validate(string model, decimal price, int stock, int modelYear, int mileage)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new DomainException("Title is required.");
+        if (string.IsNullOrWhiteSpace(model))
+            throw new DomainException("Model is required.");
 
         if (price < 0)
             throw new DomainException("Price cannot be negative.");
@@ -60,10 +60,11 @@ public class Book
         if (stock < 0)
             throw new DomainException("Stock cannot be negative.");
 
-        if (publishedDate > DateTime.UtcNow)
-            throw new DomainException("Published date cannot be in the future.");
+        if (modelYear > DateTime.UtcNow.Year + 1)
+            throw new DomainException("Model year cannot be in the future.");
 
-        if (numberOfPages < 1)
-            throw new DomainException("NumberOfPages must be at least 1.");
+        if (mileage < 0)
+            throw new DomainException("Mileage cannot be negative.");
     }
 }
+

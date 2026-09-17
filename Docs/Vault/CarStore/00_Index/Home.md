@@ -20,7 +20,7 @@ This vault is the living documentation for the CarStore solution, reconciled fro
 - `00_Index` — Navigation, tag catalog, and glossary for this vault.
 - `01_Project` — [[Repository-Structure]], [[Dependencies]].
 - `02_Architecture` — [[Architecture-Overview]].
-- `03_Domain` — [[Domain-Overview]], [[Author]], [[Book]].
+- `03_Domain` — [[Domain-Overview]], [[Brand]], [[Car]].
 - `04_Engineering` — [[Engineering-Overview]], [[Application-Services]], [[Pagination]], [[Controllers]], [[Testing]].
 - `05_Operations` — [[Operations-Overview]], [[Deployment-Runbook]].
 - `06_References` — [[Dotnet-Aspnetcore-Ef-Docs]], [[Azure-App-Service-Docs]].

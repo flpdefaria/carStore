@@ -2,17 +2,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CarStore.Web.Models.Api;
 
-public class CreateBookRequest
+public class CreateCarRequest
 {
     [Required]
-    public string Title { get; init; } = string.Empty;
-    public string Isbn { get; init; } = string.Empty;
+    public string Model { get; init; } = string.Empty;
+    public string Vin { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
-    public string Genre { get; init; } = string.Empty;
+    public string BodyType { get; init; } = string.Empty;
     public decimal Price { get; init; }
     public int Stock { get; init; }
-    public DateTime PublishedDate { get; init; }
+    public int ModelYear { get; init; }
     [Required]
-    public int AuthorId { get; init; }
-    public int NumberOfPages { get; init; }
+    public int BrandId { get; init; }
+    public int Mileage { get; init; }
 }

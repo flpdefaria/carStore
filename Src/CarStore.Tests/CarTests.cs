@@ -4,65 +4,77 @@ using FluentAssertions;
 
 namespace CarStore.Tests;
 
-public class BookTests
+public class CarTests
 {
     // ── Helpers ──────────────────────────────────────────────────────────────
 
-    private static Book ValidBook(int numberOfPages = 200) =>
-        Book.Create("Clean Code", "978-0132350884", "A handbook of agile software.", "Technology",
-            29.99m, 10, DateTime.UtcNow.AddDays(-1), 1, numberOfPages);
+    private static Car ValidCar(int mileage = 200) =>
+        Car.Create("Model 3", "5YJ3E1EA9NF123456", "All-electric mass-market sedan.", "Sedan",
+            41000m, 10, DateTime.UtcNow.Year, 1, mileage);
 
-    // ── Book.Create – NumberOfPages happy path ───────────────────────────────
+    // ── Car.Create – Mileage happy path ──────────────────────────────────────
 
     [Fact]
-    public void Create_WithValidNumberOfPages_Succeeds()
+    public void Create_WithValidMileage_Succeeds()
     {
         // Arrange & Act
-        var book = Book.Create("Clean Code", "978-0132350884", "A handbook of agile software.", "Technology",
-            29.99m, 10, DateTime.UtcNow.AddDays(-1), 1, 300);
+        var car = Car.Create("Model 3", "5YJ3E1EA9NF123456", "All-electric mass-market sedan.", "Sedan",
+            41000m, 10, DateTime.UtcNow.Year, 1, 300);
 
         // Assert
-        book.Should().NotBeNull();
-        book.NumberOfPages.Should().Be(300);
+        car.Should().NotBeNull();
+        car.Mileage.Should().Be(300);
     }
 
-    // ── Book.Create – NumberOfPages validation ───────────────────────────────
+    // ── Car.Create – Mileage validation ─────────────────────────────────────
 
     [Fact]
-    public void Create_WithNumberOfPagesZero_ThrowsDomainException()
+    public void Create_WithMileageZero_Succeeds()
+    {
+        // Arrange & Act
+        var car = Car.Create("Model 3", "5YJ3E1EA9NF123456", "All-electric mass-market sedan.", "Sedan",
+            41000m, 10, DateTime.UtcNow.Year, 1, 0);
+
+        // Assert
+        car.Mileage.Should().Be(0);
+    }
+
+    [Fact]
+    public void Create_WithNegativeMileage_ThrowsDomainException()
     {
         // Arrange
-        Action act = () => Book.Create("Clean Code", "978-0132350884", "A handbook of agile software.", "Technology",
-            29.99m, 10, DateTime.UtcNow.AddDays(-1), 1, 0);
+        Action act = () => Car.Create("Model 3", "5YJ3E1EA9NF123456", "All-electric mass-market sedan.", "Sedan",
+            41000m, 10, DateTime.UtcNow.Year, 1, -1);
 
         // Act & Assert
-        act.Should().Throw<DomainException>().WithMessage("NumberOfPages must be at least 1.");
+        act.Should().Throw<DomainException>().WithMessage("Mileage cannot be negative.");
     }
 
     [Fact]
-    public void Create_WithNegativeNumberOfPages_ThrowsDomainException()
+    public void Create_WithModelYearTooFarInFuture_ThrowsDomainException()
     {
         // Arrange
-        Action act = () => Book.Create("Clean Code", "978-0132350884", "A handbook of agile software.", "Technology",
-            29.99m, 10, DateTime.UtcNow.AddDays(-1), 1, -1);
+        Action act = () => Car.Create("Model 3", "5YJ3E1EA9NF123456", "All-electric mass-market sedan.", "Sedan",
+            41000m, 10, DateTime.UtcNow.Year + 2, 1, 0);
 
         // Act & Assert
-        act.Should().Throw<DomainException>().WithMessage("NumberOfPages must be at least 1.");
+        act.Should().Throw<DomainException>().WithMessage("Model year cannot be in the future.");
     }
 
-    // ── Book.Update – NumberOfPages happy path ───────────────────────────────
+    // ── Car.Update – Mileage happy path ─────────────────────────────────────
 
     [Fact]
-    public void Update_WithValidNumberOfPages_Succeeds()
+    public void Update_WithValidMileage_Succeeds()
     {
         // Arrange
-        var book = ValidBook();
+        var car = ValidCar();
 
         // Act
-        book.Update("Clean Code", "978-0132350884", "A handbook of agile software.", "Technology",
-            29.99m, 10, DateTime.UtcNow.AddDays(-1), 1, 500);
+        car.Update("Model 3", "5YJ3E1EA9NF123456", "All-electric mass-market sedan.", "Sedan",
+            41000m, 10, DateTime.UtcNow.Year, 1, 500);
 
         // Assert
-        book.NumberOfPages.Should().Be(500);
+        car.Mileage.Should().Be(500);
     }
 }
+

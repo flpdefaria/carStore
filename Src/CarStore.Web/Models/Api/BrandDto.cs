@@ -1,19 +1,19 @@
 namespace CarStore.Web.Models.Api;
 
-public class AuthorDto
+public class BrandDto
 {
     public int Id { get; init; }
     public string Name { get; init; } = string.Empty;
-    public string Bio { get; init; } = string.Empty;
-    public string Nationality { get; init; } = string.Empty;
-    public DateTime BirthDate { get; init; }
-    public int Age { get; init; }
-    public int BooksCount { get; init; }
-    public List<AuthorBookSummaryDto> Books { get; init; } = new();
+    public string Description { get; init; } = string.Empty;
+    public string Country { get; init; } = string.Empty;
+    public DateTime FoundedDate { get; init; }
+    public int YearsInBusiness { get; init; }
+    public int CarsCount { get; init; }
+    public List<BrandCarSummaryDto> Cars { get; init; } = new();
 }
 
-public class AuthorBookSummaryDto
+public class BrandCarSummaryDto
 {
-    public string Title { get; init; } = string.Empty;
-    public int PublishedYear { get; init; }
+    public string Model { get; init; } = string.Empty;
+    public int ModelYear { get; init; }
 }

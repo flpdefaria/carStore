@@ -23,19 +23,19 @@ an MVC-hosted Vue 3 single-page app (SPA).
 ASP.NET Core MVC serves exactly one shell page (`HomeController.Index` -> `Views/Home/Index.cshtml`), which
 renders a single `<div id="app">`. `_Layout.cshtml` loads the single Vite bundle (`~/dist/main.css`,
 `~/dist/main.js` as `type="module"`); `ClientApp/src/main.ts` mounts one Vue app onto `#app`, wired with
-`vue-router` (history mode). Vue Router - not MVC - owns in-app navigation between `/`, `/books`, `/authors`,
+`vue-router` (history mode). Vue Router - not MVC - owns in-app navigation between `/`, `/cars`, `/brands`,
 `/customers`. `Program.cs` maps a fallback route (`MapFallbackToController("Index", "Home")`) so a deep link
 or a full page refresh on any client route still resolves to the same shell, and Vue Router then renders the
 right page from the current URL. Data is **not** pushed through the Razor model - Vue components fetch it
 from JSON endpoints under `/api/*`.
 
 ```
-Browser GET /books (first load or refresh)
+Browser GET /cars (first load or refresh)
   └─ No BooksController exists -> MVC fallback -> HomeController.Index -> Views/Home/Index.cshtml (div#app only)
        └─ _Layout.cshtml            -> ~/dist/main.css + ~/dist/main.js
             └─ main.ts mount()      -> App.vue (Sidebar + RouterView) mounted on #app
-                 └─ vue-router resolves "/books" -> BooksPage.vue
-                      └─ fetch /api/books?page=1&pageSize=10  -> BooksApiController -> IBookService.GetPagedAsync
+                 └─ vue-router resolves "/cars" -> BooksPage.vue
+                      └─ fetch /api/cars?page=1&pageSize=10  -> BooksApiController -> IBookService.GetPagedAsync
 
 Browser click on a Sidebar nav item (already loaded)
   └─ vue-router intercepts, swaps <RouterView> content client-side - no server round-trip, no full reload
@@ -53,7 +53,7 @@ Browser click on a Sidebar nav item (already loaded)
 
 ```cshtml
 @{
-    ViewData["Title"] = "Book Store";
+    ViewData["Title"] = "Car Store";
 }
 
 <div id="app" class="flex h-full w-full gap-3 p-4"></div>
@@ -65,7 +65,7 @@ Rules:
   per-feature Razor views or mount `<div>`s anymore - new pages are added entirely on the Vue side (see
   `frontend.instructions.md` -> "How a component reaches the page").
 - `Program.cs` maps `app.MapFallbackToController("Index", "Home")` after the default MVC route, so any path
-  vue-router owns (`/books`, `/authors/123`, ...) that doesn't match a real MVC/API endpoint falls back to
+  vue-router owns (`/cars`, `/brands/123`, ...) that doesn't match a real MVC/API endpoint falls back to
   this same shell on a full load or refresh.
 - Serialize domain objects into the view only when there is no alternative. The default is: markup in Razor,
   data over `/api`.
@@ -75,8 +75,8 @@ Rules:
 | Route (client-side, via vue-router) | Component | Rendering |
 |---|---|---|
 | `/` | `Home.vue` | Vue |
-| `/books` | `BooksPage.vue` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
-| `/authors` | `AuthorsPage.vue` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
+| `/cars` | `BooksPage.vue` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
+| `/brands` | `AuthorsPage.vue` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
 | `/customers` | `CustomersPage.vue` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
 
 | Server route | View | Purpose |
@@ -101,10 +101,10 @@ The bridge between MVC services and Vue components:
 
 ```csharp
 [ApiController]
-[Route("api/books")]
+[Route("api/cars")]
 public class BooksApiController : ControllerBase
 {
-    [HttpGet]                        // GET /api/books?page=1&pageSize=10 -> PagedResultDto<BookDto>
+    [HttpGet]                        // GET /api/cars?page=1&pageSize=10 -> PagedResultDto<BookDto>
     [HttpPost]                       // create      -> 201 + BookDto
     [HttpPut("{id}")]                // update      -> 200 + BookDto | 404
     [HttpDelete("{id}")]             // delete      -> 204 | 404
@@ -114,18 +114,18 @@ public class BooksApiController : ControllerBase
 Conventions:
 
 - **Reuse the existing application services** (`IBookService`, `IAuthorService`, `ICustomerService`). Never duplicate business rules, validation or paging logic in an API controller - see `pagination.instructions.md`.
-- **Always map to a DTO** in `Models/Api/`. Entities have circular navigation properties (`Book.Author` / `Author.Books`) that break JSON serialization, and DTOs also flatten what the table needs (`AuthorName`, `BooksCount`, `Age`).
+- **Always map to a DTO** in `Models/Api/`. Entities have circular navigation properties (`Car.Brand` / `Brand.Cars`) that break JSON serialization, and DTOs also flatten what the table needs (`AuthorName`, `BooksCount`, `Age`).
 - Paged responses use `PagedResultDto<T>` (`Items`, `PageNumber`, `PageSize`, `TotalItems`, `TotalPages`, `HasPrevious`, `HasNext`) - it mirrors `PagedResult<T>` and the `PagedResult<T>` interface in `ClientApp/src/types.ts`.
 - Catch `DomainException` and return `BadRequest(new { message = ex.Message })`. The front-end composables read `body.message` and show it in the dialog, so the domain message is the user-facing error.
 - Return `NotFound()` for a missing id, `NoContent()` for a successful delete.
-- Dropdown/lookup data gets its own endpoint (`GET /api/authors/options` -> `AuthorOptionDto[]`), never a full paged fetch.
+- Dropdown/lookup data gets its own endpoint (`GET /api/brands/options` -> `AuthorOptionDto[]`), never a full paged fetch.
 - API controllers use `[ApiController]` + `ControllerBase` (no views). There is no authentication in this solution; add auth before exposing mutating endpoints publicly.
 - Keep the JSON casing default (camelCase) - `types.ts` depends on it.
 
 ## Static assets
 
 - `wwwroot/dist/` - Vite output (`main.js`, `main.css`, PrimeIcons fonts). **Generated, but committed**: `dotnet build`/`publish` never runs npm, so the deployed app would otherwise ship no front-end. Never hand-edit.
-- `wwwroot/images/` - Figma-exported assets, referenced by absolute path from Vue (`/images/home/books.jpg`).
+- `wwwroot/images/` - Figma-exported assets, referenced by absolute path from Vue (`/images/home/cars.jpg`).
 - `wwwroot/lib/` - leftover jquery/jquery-validation packages from the pre-SPA Customers forms; no longer
   referenced by any view. **No bootstrap folder** - do not reintroduce one.
 - `wwwroot/css/site.css` - base font sizing only; app styling belongs to Tailwind/PrimeVue.

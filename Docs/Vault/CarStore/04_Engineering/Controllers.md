@@ -37,7 +37,7 @@ public class HomeController : Controller
 
 - `Index()` renders `Views/Home/Index.cshtml`, which contains the single `<div id="app">` mount point.
 - `Program.cs` maps `app.MapFallbackToController("Index", "Home")` after the default route, so any
-  unmatched path (e.g. `/books`, `/authors/42`) also resolves to this same action — vue-router then renders
+  unmatched path (e.g. `/cars`, `/brands/42`) also resolves to this same action — vue-router then renders
   the right page client-side from the URL.
 - `Error()` is the `UseExceptionHandler` target; it renders outside the SPA shell (no `div#app`), so it is
   plain server-rendered HTML.

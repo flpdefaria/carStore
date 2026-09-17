@@ -5,19 +5,14 @@ import Tag from "primevue/tag";
 import DetailField from "../form/DetailField.vue";
 import { formatCurrency } from "../../../utils/format";
 import { detailsDialogPt, dialogSecondaryButtonClass } from "./dialogStyles";
-import type { BookDto } from "../../../types";
+import type { CarDto } from "../../../types";
 
 const props = defineProps<{
   visible: boolean;
-  book: BookDto | null;
+  car: CarDto | null;
 }>();
 
 const emit = defineEmits<{ "update:visible": [value: boolean] }>();
-
-// API dates are ISO strings ("yyyy-MM-ddTHH:mm:ss"); slicing avoids a local-timezone shift.
-function formatIsoDate(value: string) {
-  return value.slice(0, 10);
-}
 
 const dialogPt = detailsDialogPt("w-[520px]");
 </script>
@@ -35,50 +30,50 @@ const dialogPt = detailsDialogPt("w-[520px]");
       <span class="text-[21px] font-bold text-color">Details</span>
     </template>
 
-    <template v-if="props.book">
-      <p class="text-xs font-bold uppercase tracking-wide text-color">{{ props.book.title }}</p>
+    <template v-if="props.car">
+      <p class="text-xs font-bold uppercase tracking-wide text-color">{{ props.car.model }}</p>
 
-      <DetailField label="Author">
-        <p class="text-sm font-medium text-color">{{ props.book.authorName }}</p>
+      <DetailField label="Brand">
+        <p class="text-sm font-medium text-color">{{ props.car.brandName }}</p>
       </DetailField>
 
       <div class="h-px w-full bg-surface-300 my-3.5" />
 
       <div class="flex w-full items-start gap-1.75">
-        <DetailField label="Genre">
-          <p class="text-sm font-medium text-color">{{ props.book.genre }}</p>
+        <DetailField label="Body type">
+          <p class="text-sm font-medium text-color">{{ props.car.bodyType }}</p>
         </DetailField>
-        <DetailField label="Published">
-          <p class="text-sm font-medium text-color">{{ formatIsoDate(props.book.publishedDate) }}</p>
+        <DetailField label="Model year">
+          <p class="text-sm font-medium text-color">{{ props.car.modelYear }}</p>
         </DetailField>
       </div>
 
       <div class="flex w-full items-start gap-1.75">
-        <DetailField label="ISBN">
-          <p class="text-sm font-medium text-color">{{ props.book.isbn }}</p>
+        <DetailField label="VIN">
+          <p class="text-sm font-medium text-color">{{ props.car.vin }}</p>
         </DetailField>
-        <DetailField label="Number of pages">
-          <p class="text-sm font-medium text-color">{{ props.book.numberOfPages }}</p>
+        <DetailField label="Mileage">
+          <p class="text-sm font-medium text-color">{{ props.car.mileage }}</p>
         </DetailField>
       </div>
 
       <div class="flex w-full items-start gap-1.75">
         <DetailField label="Price">
-          <p class="text-sm font-medium text-color">{{ formatCurrency(props.book.price) }}</p>
+          <p class="text-sm font-medium text-color">{{ formatCurrency(props.car.price) }}</p>
         </DetailField>
         <DetailField label="Stock">
-          <p class="text-sm font-medium text-color">{{ props.book.stock }}</p>
+          <p class="text-sm font-medium text-color">{{ props.car.stock }}</p>
         </DetailField>
       </div>
 
       <DetailField label="Available">
-        <Tag :value="props.book.isAvailable ? 'Yes' : 'No'" :severity="props.book.isAvailable ? 'success' : 'danger'" />
+        <Tag :value="props.car.isAvailable ? 'Yes' : 'No'" :severity="props.car.isAvailable ? 'success' : 'danger'" />
       </DetailField>
 
       <div class="h-px w-full bg-surface-300 my-3.5" />
 
       <DetailField label="Description">
-        <p class="text-sm font-medium text-color">{{ props.book.description }}</p>
+        <p class="text-sm font-medium text-color">{{ props.car.description }}</p>
       </DetailField>
     </template>
 

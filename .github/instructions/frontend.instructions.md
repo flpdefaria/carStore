@@ -44,7 +44,7 @@ Src/CarStore.Web/ClientApp/
   src/
     main.ts                  # single entry: mounts the App shell once, on #app
     App.vue                  # SPA shell: Sidebar + <RouterView />
-    router/index.ts          # vue-router routes ("/", "/books", "/authors", "/customers")
+    router/index.ts          # vue-router routes ("/", "/cars", "/brands", "/customers")
     style.css                # Tailwind + primeui + primeicons imports, @source, @layer components
     types.ts                 # shared DTO interfaces mirroring Models/Api/*Dto.cs
     shims-vue.d.ts
@@ -109,7 +109,7 @@ if (el) {
 `App.vue` renders `<Sidebar />` next to `<RouterView />`; `router/index.ts` maps each path to a `<Feature>Page.vue`
 component. Consequences to respect:
 
-- API URLs are static (`/api/books`, `/api/authors`, `/api/customers`) and are declared as constants inside
+- API URLs are static (`/api/cars`, `/api/brands`, `/api/customers`) and are declared as constants inside
   each page component - they are no longer threaded through Razor `data-*` attributes, since there is only one
   mount point left.
 - Adding a new page = add the route in `router/index.ts`, add the component, add a nav item in `Sidebar.vue`.
@@ -151,7 +151,7 @@ Rules:
 | Piece | What it gives you |
 |---|---|
 | `common/table/DataTableCommon.vue` | Lazy paged `DataTable` + Figma-matched paginator/menu `pt`, `columns: DataTableColumn[]` (`field`, `header`, `primary`), per-column `#col-<field>` slots, and a row-actions `Menu`. Actions either navigate (`detailsUrl`/`editUrl`/`deleteUrl`) or emit (`confirmDetails`/`confirmEdit`/`confirmDelete` -> `details`/`edit`/`delete`). |
-| `common/dialog/*` | `CreateBookDialog`, `EditBookDialog`, `DetailsBookDialog`, the Author equivalents, and `ConfirmDeleteDialog`. Copy the closest one's `pt` wiring instead of hand-rolling spacing. |
+| `common/dialog/*` | `CreateBookDialog`, `EditBookDialog`, `DetailsBookDialog`, the Brand equivalents, and `ConfirmDeleteDialog`. Copy the closest one's `pt` wiring instead of hand-rolling spacing. |
 | `common/form/FormField.vue` / `DetailField.vue` | Editable label + input slot / read-only label + value. |
 | `common/pageheader/PageHeader.vue` | `title`, optional `description`, `#actions` slot (used for the "New X" button). |
 | `common/sidebar/Sidebar.vue` | Global nav, mounted from `_Layout.cshtml`, highlights the active controller via `data-active`. |
@@ -162,7 +162,7 @@ Rules:
 1. Run `/figma-discovery` FIRST for any task that references a Figma URL/node or must match a design. It parses the URL, calls the Figma MCP tools, and maps raw values onto the token conventions above.
 2. Then run `/primevue-component-build` (or follow the equivalent manual steps) to implement.
 3. Query the `primevue` MCP server for component APIs/examples instead of guessing prop or `pt` section names.
-4. Exported image/icon assets go to `Src/CarStore.Web/wwwroot/images/<page>/...` and are referenced by absolute URL (`/images/home/books.jpg`) - not imported through Vite, so no hashing surprises.
+4. Exported image/icon assets go to `Src/CarStore.Web/wwwroot/images/<page>/...` and are referenced by absolute URL (`/images/home/cars.jpg`) - not imported through Vite, so no hashing surprises.
 5. Delete temporary screenshots/reference assets once the implementation is verified.
 
 ## Definition of done

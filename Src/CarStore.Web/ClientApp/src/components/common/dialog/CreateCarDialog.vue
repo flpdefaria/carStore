@@ -4,49 +4,48 @@ import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
-import DatePicker from "primevue/datepicker";
 import InputNumber from "primevue/inputnumber";
 import Textarea from "primevue/textarea";
 import Message from "primevue/message";
 import FormField from "../form/FormField.vue";
 import { dialogShellPt, dialogSecondaryButtonClass, dialogPrimaryButtonClass } from "./dialogStyles";
-import type { AuthorOption } from "../../../types";
+import type { BrandOption } from "../../../types";
 
-export interface CreateBookPayload {
-  title: string;
-  isbn: string;
-  authorId: number;
-  genre: string;
-  publishedDate: string;
+export interface CreateCarPayload {
+  model: string;
+  vin: string;
+  brandId: number;
+  bodyType: string;
+  modelYear: number;
   price: number;
   stock: number;
-  numberOfPages: number;
+  mileage: number;
   description: string;
 }
 
 const props = defineProps<{
   visible: boolean;
-  authors: AuthorOption[];
+  brands: BrandOption[];
   loading?: boolean;
   error?: string | null;
 }>();
 
 const emit = defineEmits<{
   "update:visible": [value: boolean];
-  submit: [payload: CreateBookPayload];
+  submit: [payload: CreateCarPayload];
   cancel: [];
 }>();
 
 function emptyForm() {
   return {
-    title: "",
-    isbn: "",
-    authorId: null as number | null,
-    genre: "",
-    publishedDate: null as Date | null,
+    model: "",
+    vin: "",
+    brandId: null as number | null,
+    bodyType: "",
+    modelYear: null as number | null,
     price: null as number | null,
     stock: null as number | null,
-    numberOfPages: null as number | null,
+    mileage: null as number | null,
     description: "",
   };
 }
@@ -70,20 +69,20 @@ function onUpdateVisible(value: boolean) {
 }
 
 function onSave() {
-  if (!form.title.trim() || !form.authorId) {
-    validationError.value = "Title and Author are required.";
+  if (!form.model.trim() || !form.brandId) {
+    validationError.value = "Model and Brand are required.";
     return;
   }
   validationError.value = null;
   emit("submit", {
-    title: form.title.trim(),
-    isbn: form.isbn.trim(),
-    authorId: form.authorId,
-    genre: form.genre.trim(),
-    publishedDate: (form.publishedDate ?? new Date()).toISOString(),
+    model: form.model.trim(),
+    vin: form.vin.trim(),
+    brandId: form.brandId,
+    bodyType: form.bodyType.trim(),
+    modelYear: form.modelYear ?? new Date().getFullYear(),
     price: form.price ?? 0,
     stock: form.stock ?? 0,
-    numberOfPages: form.numberOfPages ?? 0,
+    mileage: form.mileage ?? 0,
     description: form.description.trim(),
   });
 }
@@ -103,33 +102,33 @@ const dialogPt = dialogShellPt("w-[765px]");
     :pt="dialogPt"
   >
     <template #header>
-      <span class="text-[21px] font-bold text-color">Create book</span>
+      <span class="text-[21px] font-bold text-color">Create car</span>
     </template>
 
-    <FormField label="Title">
-      <InputText v-model="form.title" class="w-full" />
+    <FormField label="Model">
+      <InputText v-model="form.model" class="w-full" />
     </FormField>
 
-    <FormField label="ISBN">
-      <InputText v-model="form.isbn" class="w-full" />
+    <FormField label="VIN">
+      <InputText v-model="form.vin" class="w-full" />
     </FormField>
 
     <div class="flex w-full items-start gap-[21px]">
-      <FormField label="Author">
+      <FormField label="Brand">
         <Select
-          v-model="form.authorId"
-          :options="props.authors"
+          v-model="form.brandId"
+          :options="props.brands"
           option-label="name"
           option-value="id"
-          placeholder="Select an author"
+          placeholder="Select a brand"
           class="w-full"
         />
       </FormField>
-      <FormField label="Genre">
-        <InputText v-model="form.genre" class="w-full" />
+      <FormField label="Body type">
+        <InputText v-model="form.bodyType" class="w-full" />
       </FormField>
-      <FormField label="Published date">
-        <DatePicker v-model="form.publishedDate" date-format="dd/mm/yy" show-icon class="w-full" />
+      <FormField label="Model year">
+        <InputNumber v-model="form.modelYear" :use-grouping="false" class="w-full" />
       </FormField>
     </div>
 
@@ -140,8 +139,8 @@ const dialogPt = dialogShellPt("w-[765px]");
       <FormField label="Stock">
         <InputNumber v-model="form.stock" :min="0" class="w-full" />
       </FormField>
-      <FormField label="Number of pages">
-        <InputNumber v-model="form.numberOfPages" :min="1" class="w-full" />
+      <FormField label="Mileage">
+        <InputNumber v-model="form.mileage" :min="0" class="w-full" />
       </FormField>
     </div>
 

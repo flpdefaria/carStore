@@ -1,17 +1,17 @@
 namespace CarStore.Web.Models.Api;
 
-public class BookDto
+public class CarDto
 {
     public int Id { get; init; }
-    public string Title { get; init; } = string.Empty;
-    public string Isbn { get; init; } = string.Empty;
+    public string Model { get; init; } = string.Empty;
+    public string Vin { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
-    public string Genre { get; init; } = string.Empty;
+    public string BodyType { get; init; } = string.Empty;
     public decimal Price { get; init; }
     public int Stock { get; init; }
-    public int NumberOfPages { get; init; }
+    public int Mileage { get; init; }
     public bool IsAvailable { get; init; }
-    public DateTime PublishedDate { get; init; }
-    public int AuthorId { get; init; }
-    public string AuthorName { get; init; } = string.Empty;
+    public int ModelYear { get; init; }
+    public int BrandId { get; init; }
+    public string BrandName { get; init; } = string.Empty;
 }

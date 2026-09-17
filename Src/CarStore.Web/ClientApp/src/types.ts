@@ -8,38 +8,38 @@ export interface PagedResult<T> {
   hasNext: boolean;
 }
 
-export interface BookDto {
+export interface CarDto {
   id: number;
-  title: string;
-  isbn: string;
+  model: string;
+  vin: string;
   description: string;
-  genre: string;
+  bodyType: string;
   price: number;
   stock: number;
-  numberOfPages: number;
+  mileage: number;
   isAvailable: boolean;
-  publishedDate: string;
-  authorId: number;
-  authorName: string;
+  modelYear: number;
+  brandId: number;
+  brandName: string;
 }
 
-export interface AuthorBookSummary {
-  title: string;
-  publishedYear: number;
+export interface BrandCarSummary {
+  model: string;
+  modelYear: number;
 }
 
-export interface AuthorDto {
+export interface BrandDto {
   id: number;
   name: string;
-  bio: string;
-  nationality: string;
-  birthDate: string;
-  age: number;
-  booksCount: number;
-  books: AuthorBookSummary[];
+  description: string;
+  country: string;
+  foundedDate: string;
+  yearsInBusiness: number;
+  carsCount: number;
+  cars: BrandCarSummary[];
 }
 
-export interface AuthorOption {
+export interface BrandOption {
   id: number;
   name: string;
 }

@@ -30,8 +30,8 @@ Full list of notes in the CarStore vault, grouped by folder.
 ## 03_Domain
 
 - [[Domain-Overview]]
-- [[Author]]
-- [[Book]]
+- [[Brand]]
+- [[Car]]
 
 ## 04_Engineering
 

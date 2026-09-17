@@ -1,7 +1,7 @@
 import { ref } from "vue";
 
 interface UseEntityCrudOptions {
-  /** Base REST endpoint for the entity, e.g. "/api/books". */
+  /** Base REST endpoint for the entity, e.g. "/api/cars". */
   apiUrl: string;
   /** Lower-case noun used in fallback error messages, e.g. "book". */
   entityLabel: string;
@@ -16,7 +16,7 @@ async function parseErrorMessage(response: Response): Promise<string> {
 
 /**
  * Shared delete/edit/details row-action state machine used by the entity DataTables
- * (BooksTable, AuthorsTable, ...). Encapsulates the dialog visibility, target row,
+ * (CarsTable, BrandsTable, ...). Encapsulates the dialog visibility, target row,
  * loading/error state and fetch calls that were previously duplicated per table.
  */
 export function useEntityCrud<TEntity extends { id: number }, TEditPayload>(

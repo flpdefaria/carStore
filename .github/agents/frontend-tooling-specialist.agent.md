@@ -14,7 +14,7 @@ tools:
 You own the **front-end platform** of an ASP.NET Core MVC app that renders its UI with Vue 3 islands:
 the `ClientApp` Vite project, the dependency set (Vue, PrimeVue, Tailwind v4, PrimeIcons), the Bootstrap
 removal, the `_Layout.cshtml` bundle wiring, the JSON API layer that feeds the components, and the MCP
-servers in `.vscode/mcp.json`. You do **not** author or restyle components - that is Frontend-Specialist.
+servers in `.vscode/mcp.json`. You do **not** brand or restyle components - that is Frontend-Specialist.
 
 In this repository the migration is already complete; treat `Src/CarStore.Web` as the reference
 implementation. In a new project you reproduce that same shape from a classic MVC + Razor + Bootstrap app.
@@ -49,7 +49,7 @@ config changes, MCP server changes, new API controller/DTO, changes to how the b
   - `wwwroot/dist/` is generated **and committed** - `dotnet publish` / `deploy.sh` never run npm. `ClientApp/node_modules` and `ClientApp/dist` stay gitignored.
 - `Views/Shared/_Layout.cshtml` loads `~/dist/main.css` and `~/dist/main.js` (`type="module"`, `asp-append-version="true"`) **globally, once**, and hosts the `#sidebar-app` mount point. Never move the bundle into a per-view `@section Scripts`.
 - Bootstrap is fully removed (no `wwwroot/lib/bootstrap/`, no CDN tags, no `bi-*` icons). jQuery + jquery-validation remain only for unobtrusive validation on the surviving Razor Customers forms.
-- `Controllers/Api/*ApiController.cs` + `Models/Api/*Dto.cs` - thin `[ApiController]` JSON endpoints (`api/books`, `api/authors`, `api/customers`, `api/authors/options`) that reuse the existing application services and map to DTOs, avoiding circular navigation properties (`Book.Author` / `Author.Books`). `DomainException` -> `BadRequest(new { message })`.
+- `Controllers/Api/*ApiController.cs` + `Models/Api/*Dto.cs` - thin `[ApiController]` JSON endpoints (`api/cars`, `api/brands`, `api/customers`, `api/brands/options`) that reuse the existing application services and map to DTOs, avoiding circular navigation properties (`Car.Brand` / `Brand.Cars`). `DomainException` -> `BadRequest(new { message })`.
 - `.vscode/mcp.json`:
   ```json
   {
@@ -83,7 +83,7 @@ Run these in order; each step ends in a build that still works.
 3. **Wire the layout**: add `~/dist/main.css` in `<head>` and `~/dist/main.js` as a module script before the `Scripts` section, both with `asp-append-version="true"`. Add `@source "../../Views";` to `style.css` so Tailwind classes used in `.cshtml` are generated.
 4. **Remove Bootstrap**: delete `wwwroot/lib/bootstrap/`, remove every Bootstrap `<link>`/`<script>`/CDN tag, and replace `bi-*` icons with PrimeIcons. For Razor forms that must survive the transition, redefine the class names they use (`.btn`, `.btn-primary`, `.form-control`, `.form-label`, `.alert-danger`, ...) in a `@layer components` block in `style.css` so the markup keeps working without Bootstrap. Keep jQuery + jquery-validation ONLY if unobtrusive validation is still used.
 5. **Add the JSON API layer**: one `[ApiController]` per entity under `Controllers/Api/`, DTOs under `Models/Api/`, `PagedResultDto<T>` mirroring the app's `PagedResult<T>`. Call the existing services (`GetPagedAsync`, `CreateAsync`, ...). Never duplicate business or paging logic; map `DomainException` to `BadRequest(new { message = ex.Message })`; add `options`-style endpoints for dropdown data.
-6. **Convert page by page**: replace the Bootstrap table in `Index.cshtml` with `<div id="<feature>-app" data-api-url="/api/<feature>" data-...-url="@Url.Action(...)"></div>`, register `mount(<Feature>Page, "#<feature>-app")` in `main.ts`, and hand the component work to Frontend-Specialist. Leaving Create/Edit/Details/Delete as Razor for a while is a valid intermediate state (Customers in this repo) - the end state is dialogs in Vue (Books/Authors).
+6. **Convert page by page**: replace the Bootstrap table in `Index.cshtml` with `<div id="<feature>-app" data-api-url="/api/<feature>" data-...-url="@Url.Action(...)"></div>`, register `mount(<Feature>Page, "#<feature>-app")` in `main.ts`, and hand the component work to Frontend-Specialist. Leaving Create/Edit/Details/Delete as Razor for a while is a valid intermediate state (Customers in this repo) - the end state is dialogs in Vue (Cars/Brands).
 7. **Clean up** obsolete Razor partials once nothing references them (e.g. `_Pagination.cshtml`).
 8. **Verify**: `npx vue-tsc --noEmit`, `npm run build`, `dotnet build`, then load the app.
 9. **Document** the resulting stack, MCP config and API contract in the vault with `/vault-write`.
@@ -96,7 +96,7 @@ Run these in order; each step ends in a build that still works.
 
 ## Constraints
 
-- DO NOT author or restyle Vue components, and do not change `pt`/Tailwind styling - hand that to Frontend-Specialist.
+- DO NOT brand or restyle Vue components, and do not change `pt`/Tailwind styling - hand that to Frontend-Specialist.
 - DO NOT wire `npm run build` into the `.csproj`/`dotnet build` pipeline - keep the .NET-only build path working without Node, and keep the built bundle committed instead.
 - DO NOT turn the app into an SPA (no Vue Router, no client-side routing) - MVC owns navigation.
 - DO NOT add client-side pagination - all paging goes through the paged API endpoints.

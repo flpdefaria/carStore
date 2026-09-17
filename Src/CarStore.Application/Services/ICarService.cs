@@ -3,12 +3,12 @@ using CarStore.Domain.Entities;
 
 namespace CarStore.Application.Services;
 
-public interface IBookService
+public interface ICarService
 {
-    Task<List<Book>> GetAllAsync();
-    Task<PagedResult<Book>> GetPagedAsync(int pageNumber, int pageSize);
-    Task<Book?> GetByIdAsync(int id);
-    Task<Book> CreateAsync(Book book, int numberOfPages);
-    Task<Book?> UpdateAsync(int id, Book book, int numberOfPages);
+    Task<List<Car>> GetAllAsync();
+    Task<PagedResult<Car>> GetPagedAsync(int pageNumber, int pageSize);
+    Task<Car?> GetByIdAsync(int id);
+    Task<Car> CreateAsync(Car car, int mileage);
+    Task<Car?> UpdateAsync(int id, Car car, int mileage);
     Task<bool> DeleteAsync(int id);
 }

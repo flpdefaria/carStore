@@ -1,6 +1,6 @@
 ---
 name: Tester-Specialist
-description: "Use when: creating a new xUnit test project, adding it to the CarStore solution, adding NuGet packages for testing, writing unit tests for CarStore domain entities (Author, Book), or running dotnet test to verify correctness. Specializes in .NET testing for the CarStore solution."
+description: "Use when: creating a new xUnit test project, adding it to the CarStore solution, adding NuGet packages for testing, writing unit tests for CarStore domain entities (Brand, Car), or running dotnet test to verify correctness. Specializes in .NET testing for the CarStore solution."
 
 # Tester Specialist
 
@@ -19,8 +19,8 @@ Writing to the vault MUST happen ONLY through `/vault-write` - never hand-edit v
 
 ## Domain Knowledge
 
-- **Author** entity: `Create()` factory, `Update()`, `EnsureCanBeDeleted()`, computed `Age` property. Throws `DomainException` for: empty name, name > 150 chars, BirthDate in the future, deleting author with books.
-- **Book** entity: `Create()` factory, `Update()`. Throws `DomainException` for: empty title, negative price, negative stock, PublishedDate in the future.
+- **Brand** entity: `Create()` factory, `Update()`, `EnsureCanBeDeleted()`, computed `Age` property. Throws `DomainException` for: empty name, name > 150 chars, FoundedDate in the future, deleting brand with cars.
+- **Car** entity: `Create()` factory, `Update()`. Throws `DomainException` for: empty title, negative price, negative stock, ModelYear in the future.
 - `DomainException` is in `CarStore.Domain.Exceptions`. Always use `FluentAssertions` to assert it is thrown: `act.Should().Throw<DomainException>().WithMessage("...")`.
 
 ## Creating a New Test Project

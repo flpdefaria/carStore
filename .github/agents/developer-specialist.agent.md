@@ -19,7 +19,7 @@ Writing to the vault MUST happen ONLY through `/vault-write` - never hand-edit v
 
 ## Architecture
 
-- **CarStore.Domain** - rich entities (`Author`, `Book`). All invariants are enforced inside the entity by throwing `DomainException` (from `CarStore.Domain/Exceptions/DomainException.cs`). Never throw `InvalidOperationException` from entities.
+- **CarStore.Domain** - rich entities (`Brand`, `Car`). All invariants are enforced inside the entity by throwing `DomainException` (from `CarStore.Domain/Exceptions/DomainException.cs`). Never throw `InvalidOperationException` from entities.
 - **CarStore.Application** - pure orchestration: load aggregates via `CarStoreContext`, call entity domain methods, persist via `SaveChangesAsync`. No business rules here.
 - **CarStore.Web** - thin controllers (model binding -> service call -> view/redirect). No business logic in controllers or views.
 
@@ -52,5 +52,5 @@ Writing to the vault MUST happen ONLY through `/vault-write` - never hand-edit v
 - DO NOT throw `InvalidOperationException` from entities - always use `DomainException`.
 - DO NOT add EF Core migrations or change the persistence provider (In-Memory only).
 - DO NOT write or modify test files - that is outside this agent's scope.
-- DO NOT author or restyle Vue components under `ClientApp/src/` - stop at the DTO/`types.ts` boundary and hand the UI work to Frontend-Specialist.
+- DO NOT brand or restyle Vue components under `ClientApp/src/` - stop at the DTO/`types.ts` boundary and hand the UI work to Frontend-Specialist.
 - DO NOT skip the build step - always confirm a clean build before reporting completion.

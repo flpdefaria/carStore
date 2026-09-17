@@ -10,8 +10,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<CarStoreContext>(options =>
     options.UseInMemoryDatabase("CarStoreDb"));
 
-builder.Services.AddScoped<IAuthorService, AuthorService>();
-builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 var app = builder.Build();
@@ -37,7 +37,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-// Any route not matched by an API/MVC endpoint (e.g. /books, /authors/123) is a Vue Router route.
+// Any route not matched by an API/MVC endpoint (e.g. /cars, /brands/123) is a Vue Router route.
 app.MapFallbackToController("Index", "Home");
 
 app.Run();

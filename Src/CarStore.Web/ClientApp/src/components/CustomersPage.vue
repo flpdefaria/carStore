@@ -28,7 +28,7 @@ const {
   <div class="flex flex-col gap-3">
     <PageHeader
       title="Customers"
-      description="Manage the bookstore's customers: browse full name, email, phone number and sign-up date, and create, edit or remove entries."
+      description="Manage the dealership's customers: browse full name, email, phone number and sign-up date, and create, edit or remove entries."
     >
       <template #actions>
         <Button

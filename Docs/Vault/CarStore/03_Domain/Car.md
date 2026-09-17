@@ -6,72 +6,72 @@ tags:
   - note
   - type/reference
   - area/domain
-  - entity/book
+  - entity/car
 ---
 
-# Book
+# Car
 
-The `Book` domain entity: properties, computed members, factory/update methods, and invariants.
+The `Car` domain entity: properties, computed members, factory/update methods, and invariants.
 
 ## Source
 
-`Src/CarStore.Domain/Entities/Book.cs`
+`Src/CarStore.Domain/Entities/Car.cs`
 
 ## Properties
 
 | Property | Type | Notes |
 |----------|------|-------|
 | `Id` | `int` | Database-generated identity. |
-| `Title` | `string` | Required, max 250 characters, trimmed. |
-| `Isbn` | `string` | Max 20 characters, trimmed. |
+| `Model` | `string` | Required, max 250 characters, trimmed. |
+| `Vin` | `string` | Max 20 characters, trimmed. |
 | `Description` | `string` | Max 2000 characters, trimmed. |
-| `Genre` | `string` | Max 60 characters, trimmed. |
+| `BodyType` | `string` | Max 60 characters, trimmed. |
 | `Price` | `decimal` | Must be >= 0. |
 | `Stock` | `int` | Must be >= 0. |
-| `PublishedDate` | `DateTime` | Cannot be in the future. |
-| `NumberOfPages` | `int` | Private setter, must be >= 1. |
+| `ModelYear` | `int` | Cannot be more than one year in the future. |
+| `Mileage` | `int` | Private setter, must be >= 0. |
 | `IsAvailable` | `bool` | Computed as `Stock > 0`. |
-| `AuthorId` | `int` | Foreign key to `Author`. |
-| `Author` | `Author?` | Navigation property. |
+| `BrandId` | `int` | Foreign key to `Brand`. |
+| `Brand` | `Brand?` | Navigation property. |
 
 ## Factory and mutators
 
-- `Book.Create(title, isbn, description, genre, price, stock, publishedDate, authorId, numberOfPages)` — validates then returns a new instance.
+- `Car.Create(model, vin, description, bodyType, price, stock, modelYear, brandId, mileage)` — validates then returns a new instance.
 - `Update(...)` — validates then mutates the existing instance.
 
 ## Invariants (exact `DomainException` messages)
 
 | Condition | Message |
 |-----------|---------|
-| `Title` is null/empty/whitespace | `"Title is required."` |
+| `Model` is null/empty/whitespace | `"Model is required."` |
 | `Price` < 0 | `"Price cannot be negative."` |
 | `Stock` < 0 | `"Stock cannot be negative."` |
-| `PublishedDate` is in the future | `"Published date cannot be in the future."` |
-| `NumberOfPages` < 1 | `"NumberOfPages must be at least 1."` |
+| `ModelYear` more than one year in the future | `"Model year cannot be in the future."` |
+| `Mileage` < 0 | `"Mileage cannot be negative."` |
 
 ## EF Core mapping
 
 In `Src/CarStore.Domain/Data/CarStoreContext.cs`:
 
 ```csharp
-modelBuilder.Entity<Book>(entity =>
+modelBuilder.Entity<Car>(entity =>
 {
     entity.HasKey(b => b.Id);
-    entity.Property(b => b.Title).IsRequired().HasMaxLength(250);
-    entity.Property(b => b.Isbn).HasMaxLength(20);
+    entity.Property(b => b.Model).IsRequired().HasMaxLength(250);
+    entity.Property(b => b.Vin).HasMaxLength(20);
     entity.Property(b => b.Description).HasMaxLength(2000);
-    entity.Property(b => b.Genre).HasMaxLength(60);
+    entity.Property(b => b.BodyType).HasMaxLength(60);
     entity.Property(b => b.Price).HasPrecision(18, 2);
 
-    entity.HasOne(b => b.Author)
-        .WithMany(a => a.Books)
-        .HasForeignKey(b => b.AuthorId)
+    entity.HasOne(b => b.Brand)
+        .WithMany(a => a.Cars)
+        .HasForeignKey(b => b.BrandId)
         .OnDelete(DeleteBehavior.Restrict);
 });
 ```
 
 ## Related
 
-- [[Author]]
+- [[Brand]]
 - [[Domain-Overview]]
 - [[Architecture-Overview]]

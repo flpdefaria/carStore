@@ -7,78 +7,78 @@ public static class DataSeeder
 {
     public static void Seed(CarStoreContext db)
     {
-        SeedAuthors(db);
-        SeedBooks(db);
+        SeedBrands(db);
+        SeedCars(db);
         SeedCustomers(db);
         db.SaveChanges();
     }
 
-    private static void SeedAuthors(CarStoreContext db)
+    private static void SeedBrands(CarStoreContext db)
     {
-        if (db.Authors.Any())
+        if (db.Brands.Any())
             return;
 
-        var authors = new List<Author>
+        var brands = new List<Brand>
         {
-            new() { Id = 1,  Name = "George Orwell",          Nationality = "British",   BirthDate = new DateTime(1903, 6, 25),  Bio = "English novelist and essayist, known for 1984 and Animal Farm." },
-            new() { Id = 2,  Name = "Jane Austen",            Nationality = "British",   BirthDate = new DateTime(1775, 12, 16), Bio = "English novelist known for her social commentary." },
-            new() { Id = 3,  Name = "J.R.R. Tolkien",         Nationality = "British",   BirthDate = new DateTime(1892, 1, 3),   Bio = "Author of The Lord of the Rings." },
-            new() { Id = 4,  Name = "Agatha Christie",        Nationality = "British",   BirthDate = new DateTime(1890, 9, 15),  Bio = "Queen of crime fiction." },
-            new() { Id = 5,  Name = "Ernest Hemingway",       Nationality = "American",  BirthDate = new DateTime(1899, 7, 21),  Bio = "American novelist, Nobel Prize laureate." },
-            new() { Id = 6,  Name = "Gabriel García Márquez", Nationality = "Colombian", BirthDate = new DateTime(1927, 3, 6),   Bio = "Master of magical realism." },
-            new() { Id = 7,  Name = "Haruki Murakami",        Nationality = "Japanese",  BirthDate = new DateTime(1949, 1, 12),  Bio = "Contemporary Japanese novelist." },
-            new() { Id = 8,  Name = "Stephen King",           Nationality = "American",  BirthDate = new DateTime(1947, 9, 21),  Bio = "Prolific author of horror and suspense." },
-            new() { Id = 9,  Name = "Isaac Asimov",           Nationality = "American",  BirthDate = new DateTime(1920, 1, 2),   Bio = "Science fiction author and biochemist." },
-            new() { Id = 10, Name = "Virginia Woolf",         Nationality = "British",   BirthDate = new DateTime(1882, 1, 25),  Bio = "Modernist author and critic." }
+            new() { Id = 1,  Name = "Toyota",     Country = "Japan",   FoundedDate = new DateTime(1937, 8, 28), Description = "Japanese multinational known for reliability and hybrid technology." },
+            new() { Id = 2,  Name = "Ford",       Country = "USA",     FoundedDate = new DateTime(1903, 6, 16), Description = "American automaker famous for the Mustang and F-Series trucks." },
+            new() { Id = 3,  Name = "BMW",        Country = "Germany", FoundedDate = new DateTime(1916, 3, 7),  Description = "German manufacturer of luxury vehicles and motorcycles." },
+            new() { Id = 4,  Name = "Honda",      Country = "Japan",   FoundedDate = new DateTime(1948, 9, 24), Description = "Japanese engineering company known for efficient, dependable cars." },
+            new() { Id = 5,  Name = "Chevrolet",  Country = "USA",     FoundedDate = new DateTime(1911, 11, 3), Description = "American brand known for muscle cars and full-size trucks." },
+            new() { Id = 6,  Name = "Volkswagen", Country = "Germany", FoundedDate = new DateTime(1937, 5, 28), Description = "German automaker and one of the world's largest carmakers." },
+            new() { Id = 7,  Name = "Tesla",      Country = "USA",     FoundedDate = new DateTime(2003, 7, 1),  Description = "American company pioneering mass-market electric vehicles." },
+            new() { Id = 8,  Name = "Audi",       Country = "Germany", FoundedDate = new DateTime(1909, 7, 16), Description = "German luxury brand known for quattro all-wheel drive." },
+            new() { Id = 9,  Name = "Hyundai",    Country = "South Korea", FoundedDate = new DateTime(1967, 12, 29), Description = "South Korean automaker known for value and warranty coverage." },
+            new() { Id = 10, Name = "Mazda",      Country = "Japan",   FoundedDate = new DateTime(1920, 1, 30), Description = "Japanese automaker known for driver-focused engineering." }
         };
 
-        db.Authors.AddRange(authors);
+        db.Brands.AddRange(brands);
     }
 
-    private static void SeedBooks(CarStoreContext db)
+    private static void SeedCars(CarStoreContext db)
     {
-        if (db.Books.Any())
+        if (db.Cars.Any())
             return;
 
-        static Book MakeBook(int id, int authorId, string title, string isbn, string genre, decimal price, int stock, DateTime publishedDate, string description, int numberOfPages)
+        static Car MakeCar(int id, int brandId, string model, string vin, string bodyType, decimal price, int stock, int modelYear, string description, int mileage)
         {
-            var b = Book.Create(title, isbn, description, genre, price, stock, publishedDate, authorId, numberOfPages);
-            b.Id = id;
-            return b;
+            var c = Car.Create(model, vin, description, bodyType, price, stock, modelYear, brandId, mileage);
+            c.Id = id;
+            return c;
         }
 
-        var books = new List<Book>
+        var cars = new List<Car>
         {
-            MakeBook(1,  1,  "1984",                          "9780451524935", "Dystopian",       14.99m, 25, new DateTime(1949, 6, 8),   "A dystopian social science fiction novel.",           328),
-            MakeBook(2,  1,  "Animal Farm",                   "9780451526342", "Allegory",         9.99m, 40, new DateTime(1945, 8, 17),  "An allegorical novella.",                             112),
-            MakeBook(3,  1,  "Homage to Catalonia",           "9780156421171", "Memoir",          12.50m,  8, new DateTime(1938, 4, 25),  "Personal account of the Spanish Civil War.",          232),
-            MakeBook(4,  2,  "Pride and Prejudice",           "9780141439518", "Romance",         11.99m, 30, new DateTime(1813, 1, 28),  "A romantic novel of manners.",                        432),
-            MakeBook(5,  2,  "Sense and Sensibility",         "9780141439662", "Romance",         10.99m, 18, new DateTime(1811, 10, 30), "Two sisters and their romantic experiences.",         374),
-            MakeBook(6,  2,  "Emma",                          "9780141439587", "Romance",         10.99m,  0, new DateTime(1815, 12, 23), "A young woman with too much time to matchmake.",      474),
-            MakeBook(7,  3,  "The Hobbit",                    "9780547928227", "Fantasy",         15.99m, 50, new DateTime(1937, 9, 21),  "Bilbo Baggins' adventure.",                           310),
-            MakeBook(8,  3,  "The Fellowship of the Ring",    "9780547928210", "Fantasy",         18.99m, 22, new DateTime(1954, 7, 29),  "First volume of The Lord of the Rings.",              479),
-            MakeBook(9,  3,  "The Two Towers",                "9780547928203", "Fantasy",         18.99m, 17, new DateTime(1954, 11, 11), "Second volume of The Lord of the Rings.",             415),
-            MakeBook(10, 4,  "Murder on the Orient Express",  "9780062073495", "Mystery",         13.99m, 12, new DateTime(1934, 1, 1),   "A classic Hercule Poirot mystery.",                   256),
-            MakeBook(11, 4,  "And Then There Were None",      "9780062073488", "Mystery",         13.99m, 14, new DateTime(1939, 11, 6),  "Ten strangers on an island.",                         264),
-            MakeBook(12, 4,  "Death on the Nile",             "9780062073556", "Mystery",         12.99m,  9, new DateTime(1937, 11, 1),  "Poirot investigates a murder on a cruise.",           288),
-            MakeBook(13, 5,  "The Old Man and the Sea",       "9780684801223", "Fiction",         11.50m, 20, new DateTime(1952, 9, 1),   "Story of an aging Cuban fisherman.",                  127),
-            MakeBook(14, 5,  "A Farewell to Arms",            "9780684801469", "War",             13.50m, 11, new DateTime(1929, 9, 27),  "A love story set during World War I.",                332),
-            MakeBook(15, 6,  "One Hundred Years of Solitude", "9780060883287", "Magical Realism", 16.99m, 16, new DateTime(1967, 5, 30),  "Multi-generational story of the Buendía family.",     417),
-            MakeBook(16, 6,  "Love in the Time of Cholera",   "9780307389732", "Romance",         14.99m,  7, new DateTime(1985, 9, 5),   "An epic story of love and longing.",                  348),
-            MakeBook(17, 7,  "Norwegian Wood",                "9780375704024", "Fiction",         14.50m, 13, new DateTime(1987, 9, 4),   "A nostalgic story of loss and sexuality.",            293),
-            MakeBook(18, 7,  "Kafka on the Shore",            "9781400079278", "Magical Realism", 16.50m, 10, new DateTime(2002, 9, 12),  "Two intertwined narratives of self-discovery.",       505),
-            MakeBook(19, 7,  "1Q84",                          "9780307476463", "Fiction",         19.99m,  5, new DateTime(2009, 5, 29),  "A complex parallel-world novel.",                     925),
-            MakeBook(20, 8,  "The Shining",                   "9780307743657", "Horror",          14.99m, 24, new DateTime(1977, 1, 28),  "A family's winter at the haunted Overlook Hotel.",    447),
-            MakeBook(21, 8,  "It",                            "9781501142970", "Horror",          17.99m, 19, new DateTime(1986, 9, 15),  "Children face a shape-shifting evil in Derry, Maine.", 960),
-            MakeBook(22, 8,  "Misery",                        "9781501143106", "Thriller",        13.99m,  0, new DateTime(1987, 6, 8),   "A novelist held captive by his number one fan.",      338),
-            MakeBook(23, 9,  "Foundation",                    "9780553293357", "Sci-Fi",          12.99m, 21, new DateTime(1951, 5, 1),   "The decline and fall of a galactic empire.",          255),
-            MakeBook(24, 9,  "I, Robot",                      "9780553382563", "Sci-Fi",          11.99m, 26, new DateTime(1950, 12, 2),  "Nine stories about positronic robots.",               253),
-            MakeBook(25, 10, "Mrs Dalloway",                  "9780156628709", "Modernist",       12.50m,  6, new DateTime(1925, 5, 14),  "A day in the life of Clarissa Dalloway.",             194),
-            MakeBook(26, 10, "To the Lighthouse",             "9780156907392", "Modernist",       12.50m,  4, new DateTime(1927, 5, 5),   "The Ramsay family's visits to the Isle of Skye.",     209),
-            MakeBook(27, 10, "Orlando",                       "9780156701600", "Modernist",       13.50m,  0, new DateTime(1928, 10, 11), "A poet who changes sex and lives for centuries.",     208),
+            MakeCar(1,  1,  "Corolla",       "JT2BF22K1W0123456", "Sedan",       22499.00m, 25, 2024, "Compact sedan known for reliability and fuel economy.", 12),
+            MakeCar(2,  1,  "Camry",         "4T1BF1FK5CU123457", "Sedan",       27500.00m, 40, 2024, "Midsize sedan with hybrid options.",                     8),
+            MakeCar(3,  1,  "RAV4",          "JTMBFREV0ND123458", "SUV",         29500.00m,  8, 2025, "Compact crossover SUV.",                                 0),
+            MakeCar(4,  2,  "Mustang",       "1FA6P8CF5J5123459", "Coupe",       38500.00m, 30, 2024, "Iconic American muscle car.",                            5),
+            MakeCar(5,  2,  "F-150",         "1FTFW1E58MFA23460", "Truck",       45000.00m, 18, 2024, "Best-selling full-size pickup truck.",                  15),
+            MakeCar(6,  2,  "Explorer",      "1FM5K8D84LGA23461", "SUV",         39900.00m,  0, 2025, "Three-row family SUV.",                                  0),
+            MakeCar(7,  3,  "3 Series",      "WBA5R1C0XLA123462", "Sedan",       44500.00m, 50, 2024, "Compact executive sedan.",                              10),
+            MakeCar(8,  3,  "X5",            "5UXCR6C0XL9123463", "SUV",        65900.00m, 22, 2024, "Midsize luxury SUV.",                                    3),
+            MakeCar(9,  3,  "M4",            "WBS43AZ00LC123464", "Coupe",      78500.00m, 17, 2025, "High-performance coupe.",                                 1),
+            MakeCar(10, 4,  "Civic",         "2HGFC2F59NH123465", "Sedan",       24500.00m, 12, 2024, "Compact car popular with first-time buyers.",           20),
+            MakeCar(11, 4,  "Accord",        "1HGCV1F34NA123466", "Sedan",       28500.00m, 14, 2024, "Midsize sedan with spacious interior.",                  9),
+            MakeCar(12, 4,  "CR-V",          "7FARW2H59NE123467", "SUV",        30500.00m,  9, 2025, "Compact crossover SUV.",                                  0),
+            MakeCar(13, 5,  "Silverado",     "3GCUYDED5NG123468", "Truck",       42500.00m, 20, 2024, "Full-size pickup truck.",                                11),
+            MakeCar(14, 5,  "Camaro",        "1G1FB1RS8N0123469", "Coupe",       36500.00m, 11, 2024, "American sports car.",                                    4),
+            MakeCar(15, 6,  "Golf",          "WVWZZZ1KZNW123470", "Hatchback",  25500.00m, 16, 2024, "Compact hatchback with German engineering.",             7),
+            MakeCar(16, 6,  "Tiguan",        "WVGZZZ5NZNW123471", "SUV",        29900.00m,  7, 2024, "Compact SUV with all-wheel drive option.",               13),
+            MakeCar(17, 7,  "Model 3",       "5YJ3E1EA9NF123472", "Sedan",       41000.00m, 13, 2024, "Mass-market all-electric sedan.",                        0),
+            MakeCar(18, 7,  "Model Y",       "7SAYGDEE0NF123473", "SUV",        47000.00m, 10, 2025, "All-electric compact crossover.",                        0),
+            MakeCar(19, 7,  "Model S",       "5YJSA1E20NF123474", "Sedan",       89000.00m,  5, 2024, "Flagship all-electric performance sedan.",                2),
+            MakeCar(20, 8,  "A4",            "WAUENAF40NN123475", "Sedan",       42000.00m, 24, 2024, "Compact executive sedan.",                                6),
+            MakeCar(21, 8,  "Q5",            "WA1BNAFY0N2123476", "SUV",        49500.00m, 19, 2024, "Compact luxury crossover SUV.",                          14),
+            MakeCar(22, 8,  "e-tron GT",     "WAUZZZFY0N7123477", "Sedan",       104000.00m,  0, 2025, "All-electric grand tourer.",                             1),
+            MakeCar(23, 9,  "Elantra",       "KMHL14JA1NA123478", "Sedan",       21500.00m, 21, 2024, "Compact sedan with long warranty coverage.",             16),
+            MakeCar(24, 9,  "Tucson",        "5NMJBCAE0NH123479", "SUV",        27500.00m, 26, 2024, "Compact crossover SUV.",                                 10),
+            MakeCar(25, 10, "Mazda3",        "3MZBPACL0NM123480", "Hatchback",  23500.00m,  6, 2024, "Sporty compact car.",                                    18),
+            MakeCar(26, 10, "CX-5",          "JM3KFBCM0N0123481", "SUV",        28500.00m,  4, 2024, "Compact crossover with upscale interior.",               22),
+            MakeCar(27, 10, "MX-5 Miata",    "JM1NDAM76N0123482", "Convertible", 29500.00m,  0, 2025, "Lightweight two-seat roadster.",                          0),
         };
 
-        db.Books.AddRange(books);
+        db.Cars.AddRange(cars);
     }
 
     private static void SeedCustomers(CarStoreContext db)

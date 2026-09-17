@@ -24,7 +24,7 @@ The solution is intentionally split into Domain, Application, and Web layers so 
 ### Domain (`CarStore.Domain`)
 
 - Owns all business rules and invariants.
-- Contains `Author`, `Book`, `CarStoreContext`, `DataSeeder`, and `DomainException`.
+- Contains `Brand`, `Car`, `CarStoreContext`, `DataSeeder`, and `DomainException`.
 - Entities are rich: state changes happen through domain methods (`Create`, `Update`, `EnsureCanBeDeleted`).
 - Source: `Src/CarStore.Domain/`.
 

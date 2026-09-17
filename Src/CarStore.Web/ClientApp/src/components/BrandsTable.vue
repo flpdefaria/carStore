@@ -4,12 +4,12 @@ import { type DataTablePageEvent } from "primevue/datatable";
 import Message from "primevue/message";
 import DataTableCommon, { type DataTableColumn } from "./common/table/DataTableCommon.vue";
 import ConfirmDeleteDialog from "./common/dialog/ConfirmDeleteDialog.vue";
-import EditAuthorDialog, { type EditAuthorPayload } from "./common/dialog/EditAuthorDialog.vue";
-import DetailsAuthorDialog from "./common/dialog/DetailsAuthorDialog.vue";
+import EditBrandDialog, { type EditBrandPayload } from "./common/dialog/EditBrandDialog.vue";
+import DetailsBrandDialog from "./common/dialog/DetailsBrandDialog.vue";
 import { usePagedFetch } from "../composables/usePagedFetch";
 import { useEntityCrud } from "../composables/useEntityCrud";
 import { formatDate } from "../utils/format";
-import type { AuthorDto } from "../types";
+import type { BrandDto } from "../types";
 
 const props = defineProps<{
   apiUrl: string;
@@ -17,14 +17,14 @@ const props = defineProps<{
 
 const rows = ref(10);
 const first = ref(0);
-const { items: authors, totalRecords, loading, error, load } = usePagedFetch<AuthorDto>(props.apiUrl);
+const { items: brands, totalRecords, loading, error, load } = usePagedFetch<BrandDto>(props.apiUrl);
 
 const columns: DataTableColumn[] = [
   { field: "name", header: "Name", primary: true },
-  { field: "age", header: "Age" },
-  { field: "nationality", header: "Nationality" },
-  { field: "birthDate", header: "Birth date" },
-  { field: "booksCount", header: "Books" },
+  { field: "country", header: "Country" },
+  { field: "foundedDate", header: "Founded" },
+  { field: "yearsInBusiness", header: "Years in business" },
+  { field: "carsCount", header: "Cars" },
 ];
 
 function onPage(event: DataTablePageEvent) {
@@ -49,9 +49,9 @@ const {
   detailsDialogVisible,
   detailsTarget,
   onDetailsRequest,
-} = useEntityCrud<AuthorDto, EditAuthorPayload>({
+} = useEntityCrud<BrandDto, EditBrandPayload>({
   apiUrl: props.apiUrl,
-  entityLabel: "author",
+  entityLabel: "brand",
   reload: () => load(Math.floor(first.value / rows.value) + 1, rows.value),
 });
 
@@ -64,7 +64,7 @@ defineExpose({ reload: () => load(1, rows.value) });
 <template>
   <Message v-if="error" severity="error" :closable="false" class="mb-4">{{ error }}</Message>
   <DataTableCommon
-    :value="authors"
+    :value="brands"
     :columns="columns"
     :loading="loading"
     :total-records="totalRecords"
@@ -78,21 +78,21 @@ defineExpose({ reload: () => load(1, rows.value) });
     @edit="onEditRequest"
     @details="onDetailsRequest"
   >
-    <template #col-birthDate="{ data }">
-      <span class="text-xs text-muted-color">{{ formatDate(data.birthDate) }}</span>
+    <template #col-foundedDate="{ data }">
+      <span class="text-xs text-muted-color">{{ formatDate(data.foundedDate) }}</span>
     </template>
   </DataTableCommon>
 
   <ConfirmDeleteDialog
     v-model:visible="deleteDialogVisible"
-    title="Delete Author"
-    message="Are you sure you want to delete this author?"
+    title="Delete Brand"
+    message="Are you sure you want to delete this brand?"
     :details="
       deleteTarget
         ? [
             { label: 'Name', value: deleteTarget.name },
-            { label: 'Nationality', value: deleteTarget.nationality },
-            { label: 'Books', value: String(deleteTarget.booksCount) },
+            { label: 'Country', value: deleteTarget.country },
+            { label: 'Cars', value: String(deleteTarget.carsCount) },
           ]
         : []
     "
@@ -101,13 +101,14 @@ defineExpose({ reload: () => load(1, rows.value) });
     @confirm="onDeleteConfirm"
   />
 
-  <EditAuthorDialog
+  <EditBrandDialog
     v-model:visible="editDialogVisible"
-    :author="editTarget"
+    :brand="editTarget"
     :loading="editLoading"
     :error="editError"
     @submit="onEditSubmit"
   />
 
-  <DetailsAuthorDialog v-model:visible="detailsDialogVisible" :author="detailsTarget" />
+  <DetailsBrandDialog v-model:visible="detailsDialogVisible" :brand="detailsTarget" />
 </template>
+

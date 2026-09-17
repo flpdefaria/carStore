@@ -7,8 +7,8 @@ const route = useRoute();
 
 const navItems = [
   { key: "home", label: "Home", icon: "pi-home", to: "/" },
-  { key: "books", label: "Books", icon: "pi-book", to: "/books" },
-  { key: "authors", label: "Authors", icon: "pi-users", to: "/authors" },
+  { key: "cars", label: "Cars", icon: "pi-car", to: "/cars" },
+  { key: "brands", label: "Brands", icon: "pi-building", to: "/brands" },
   { key: "customers", label: "Customers", icon: "pi-address-book", to: "/customers" },
 ];
 
@@ -21,11 +21,11 @@ const activeKey = computed(() => route.name as string);
   >
     <div class="flex w-full items-center gap-1.75 py-[17.5px]">
       <div class="flex size-10 shrink-0 items-center justify-center rounded-lg border border-surface-300 bg-surface-0">
-        <i class="pi pi-book text-2xl text-surface-700" />
+        <i class="pi pi-car text-2xl text-surface-700" />
       </div>
       <div class="flex min-w-0 flex-1 flex-col">
         <p class="truncate text-[22px] font-black leading-none text-surface-700">CarStore</p>
-        <p class="text-xs text-muted-color">Premium catalog</p>
+        <p class="text-xs text-muted-color">Premium dealership</p>
       </div>
     </div>
 

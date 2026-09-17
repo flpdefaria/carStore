@@ -46,7 +46,7 @@ task does not re-derive it.
 | Area | State |
 |---|---|
 | Home, global Sidebar | Vue (`Home.vue`, `common/sidebar/Sidebar.vue` mounted from `_Layout.cshtml`) |
-| Books, Authors | Fully Vue: list + Create/Edit/Details/ConfirmDelete dialogs |
+| Cars, Brands | Fully Vue: list + Create/Edit/Details/ConfirmDelete dialogs |
 | Customers | Vue list only; Details/Edit/Delete/Create still navigate to Razor pages (`data-*-url` props) |
 | Customers Create/Edit/Details/Delete `.cshtml` | Razor forms styled by the `@layer components` classes in `src/style.css` |
 
@@ -87,7 +87,7 @@ ClientApp/src/
 - Arbitrary values (`rounded-[21px]`, `gap-1.75`, `px-[11.5px]`, `w-69.5`) are an established convention here when the design does not land on Tailwind's scale - do not force a bad approximation to avoid one.
 - Tailwind v4 is CSS-config based (`src/style.css`) - there is no `tailwind.config.js`. Content scanning covers `ClientApp/` plus `@source "../../Views";` for classes used in `.cshtml`. Do not add parallel workarounds.
 - Query the PrimeVue MCP server (`primevue`) for component APIs, `pt` section names and examples, and the Figma MCP server (`figma-mcp`) for design specs, before guessing prop names or pixel values. Both are configured in `.vscode/mcp.json`; if either is missing, that is Frontend-Tooling-Specialist's fix, not yours.
-- Figma-exported images/icons go to `Src/CarStore.Web/wwwroot/images/<page>/` and are referenced by absolute URL (`/images/home/books.jpg`), not imported through Vite.
+- Figma-exported images/icons go to `Src/CarStore.Web/wwwroot/images/<page>/` and are referenced by absolute URL (`/images/home/cars.jpg`), not imported through Vite.
 
 ## Bootstrap removal is permanent - guard against regressions
 

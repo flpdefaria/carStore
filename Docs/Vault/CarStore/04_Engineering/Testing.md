@@ -16,7 +16,7 @@ xUnit test strategy for the CarStore domain layer.
 
 ## Context
 
-`CarStore.Tests` exercises the domain entities (`Author`, `Book`, `Customer`) directly. There are no integration or controller tests yet.
+`CarStore.Tests` exercises the domain entities (`Brand`, `Car`, `Customer`) directly. There are no integration or controller tests yet.
 
 ## Stack
 
@@ -36,11 +36,11 @@ xUnit test strategy for the CarStore domain layer.
 
 ## What is covered
 
-- `Author.Create` happy path and validation (empty name, future birth date).
-- `Author.Age` computed property.
-- `Author.EnsureCanBeDeleted` when the author has books.
-- `Book.Create` and `Book.Update` with valid `NumberOfPages`.
-- `Book.Create` validation for `NumberOfPages` <= 0.
+- `Brand.Create` happy path and validation (empty name, future birth date).
+- `Brand.Age` computed property.
+- `Brand.EnsureCanBeDeleted` when the brand has cars.
+- `Car.Create` and `Car.Update` with valid `Mileage`.
+- `Car.Create` validation for `Mileage` <= 0.
 - `Customer.Create` happy path and `Update` applying changes.
 - `Customer.Create` validation: empty/whitespace full name, full name > 150 characters, empty/whitespace email, invalid email format.
 
@@ -53,6 +53,6 @@ dotnet test Src/CarStore.Tests/CarStore.Tests.csproj
 ## Related
 
 - [[Engineering-Overview]]
-- [[Author]]
-- [[Book]]
+- [[Brand]]
+- [[Car]]
 - [[Operations-Overview]]

@@ -20,7 +20,7 @@ Application services sit between controllers and the domain. They load aggregate
 ## Responsibilities
 
 1. Load aggregates from `CarStoreContext` (usually with `.Include(...)`).
-2. Call domain factory or update methods (`Author.Create`, `Book.Update`, etc.).
+2. Call domain factory or update methods (`Brand.Create`, `Car.Update`, etc.).
 3. Persist with `_db.SaveChangesAsync()`.
 4. Return the result or `null`/`false` when an entity is not found.
 
@@ -30,16 +30,16 @@ List methods eager-load and order results:
 
 ```csharp
 // Src/CarStore.Application/Services/AuthorService.cs
-return await _db.Authors
-    .Include(a => a.Books)
+return await _db.Brands
+    .Include(a => a.Cars)
     .OrderBy(a => a.Name)
     .ToListAsync();
 ```
 
 ```csharp
 // Src/CarStore.Application/Services/BookService.cs
-return await _db.Books
-    .Include(b => b.Author)
+return await _db.Cars
+    .Include(b => b.Brand)
     .OrderBy(b => b.Title)
     .ToListAsync();
 ```
@@ -57,14 +57,14 @@ return await _db.Customers
 
 ```csharp
 // Src/CarStore.Application/Services/BookService.cs
-public async Task<Book> CreateAsync(Book book, int numberOfPages)
+public async Task<Car> CreateAsync(Car car, int numberOfPages)
 {
-    var authorExists = await _db.Authors.AnyAsync(a => a.Id == book.AuthorId);
+    var authorExists = await _db.Brands.AnyAsync(a => a.Id == car.AuthorId);
     if (!authorExists)
-        throw new DomainException("Author does not exist.");
+        throw new DomainException("Brand does not exist.");
 
-    var entity = Book.Create(book.Title, book.Isbn, /* ... */ book.AuthorId, numberOfPages);
-    _db.Books.Add(entity);
+    var entity = Car.Create(car.Title, car.Vin, /* ... */ car.AuthorId, numberOfPages);
+    _db.Cars.Add(entity);
     await _db.SaveChangesAsync();
     return entity;
 }
@@ -74,11 +74,11 @@ public async Task<Book> CreateAsync(Book book, int numberOfPages)
 
 ```csharp
 // Src/CarStore.Application/Services/AuthorService.cs
-var existing = await _db.Authors.FirstOrDefaultAsync(a => a.Id == id);
+var existing = await _db.Brands.FirstOrDefaultAsync(a => a.Id == id);
 if (existing is null)
     return null;
 
-existing.Update(author.Name, author.Bio, author.Nationality, author.BirthDate);
+existing.Update(brand.Name, brand.Bio, brand.Country, brand.FoundedDate);
 await _db.SaveChangesAsync();
 return existing;
 ```
@@ -91,7 +91,7 @@ if (existing is null)
     return false;
 
 existing.EnsureCanBeDeleted();
-_db.Authors.Remove(existing);
+_db.Brands.Remove(existing);
 await _db.SaveChangesAsync();
 return true;
 ```

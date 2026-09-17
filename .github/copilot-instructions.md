@@ -4,7 +4,7 @@
 - .NET 10 multi-project solution under `Src/`.
   - `CarStore.Domain` - entities, `CarStoreContext` (EF Core In-Memory), seed data.
   - `CarStore.Application` - application services (orchestration only).
-  - `CarStore.Web` - ASP.NET Core 10 MVC (controllers, Razor views) whose UI is rendered by Vue 3 + PrimeVue + Tailwind CSS v4 islands built from `ClientApp/`. Bootstrap has been removed; jQuery remains only for unobtrusive validation on the surviving Razor Customers forms.
+  - `CarStore.Web` - ASP.NET Core 10 MVC (controllers, Razor views) whose UI is rendered by a Vue 3 + PrimeVue + Tailwind CSS v4 single-page app built from `ClientApp/`. Bootstrap and jQuery have been removed.
 - No authentication.
 
 ## Front-end
@@ -13,8 +13,8 @@
 
 ## Architecture rules
 - **Domain layer** (`CarStore.Domain`) owns all business rules.
-  - Entities (`Author`, `Book`) are **rich**: invariants are enforced through domain methods, not in services.
-  - Invariants include: `Title required`, `Price >= 0`, `Stock >= 0`, `PublishedDate` not in the future, `BirthDate` not in the future, `IsAvailable = Stock > 0`, "Author with books cannot be deleted".
+  - Entities (`Brand`, `Car`) are **rich**: invariants are enforced through domain methods, not in services.
+  - Invariants include: `Model required`, `Price >= 0`, `Stock >= 0`, `ModelYear` not in the future, `FoundedDate` not in the future, `IsAvailable = Stock > 0`, "Brand with cars cannot be deleted".
   - Throw `DomainException` (in `CarStore.Domain/Exceptions/DomainException.cs`) on invariant violations. Never throw `InvalidOperationException` from entities.
 - **Application layer** (`CarStore.Application`) only orchestrates:
   - Load aggregates via `CarStoreContext`.
@@ -26,7 +26,7 @@
 ## Code style
 - C# 12, nullable enabled, file-scoped namespaces, `var` when type is obvious.
 - `async`/`await` end-to-end for all DB calls.
-- Domain methods use verbs: `Rename`, `Restock`, `ChangePrice`, `AssignAuthor`, etc.
+- Domain methods use verbs: `Rename`, `Restock`, `ChangePrice`, `AssignBrand`, etc.
 
 ## Build & run
 - Build: `dotnet build Src/CarStore.slnx`

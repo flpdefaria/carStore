@@ -3,11 +3,11 @@ import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import DetailField from "../form/DetailField.vue";
 import { detailsDialogPt, dialogSecondaryButtonClass } from "./dialogStyles";
-import type { AuthorDto } from "../../../types";
+import type { BrandDto } from "../../../types";
 
 defineProps<{
   visible: boolean;
-  author: AuthorDto | null;
+  brand: BrandDto | null;
 }>();
 
 const emit = defineEmits<{ "update:visible": [value: boolean] }>();
@@ -33,46 +33,44 @@ const dialogPt = detailsDialogPt("w-[520px]");
       <span class="text-[21px] font-bold text-color">Details</span>
     </template>
 
-    <template v-if="author">
-      <!-- Figma reuses the Book-details "Author" caption here; relabeled to "Name" since this modal IS the author's own record. -->
+    <template v-if="brand">
       <DetailField label="Name">
-        <p class="text-sm font-medium text-color">{{ author.name }}</p>
+        <p class="text-sm font-medium text-color">{{ brand.name }}</p>
       </DetailField>
 
       <div class="h-px w-full bg-surface-300 my-3.5" />
 
       <div class="flex w-full items-start gap-1.75">
-        <DetailField label="Nationality">
-          <p class="text-sm font-medium text-color">{{ author.nationality }}</p>
+        <DetailField label="Country">
+          <p class="text-sm font-medium text-color">{{ brand.country }}</p>
         </DetailField>
-        <DetailField label="Age">
-          <p class="text-sm font-medium text-color">{{ author.age }}</p>
+        <DetailField label="Years in business">
+          <p class="text-sm font-medium text-color">{{ brand.yearsInBusiness }}</p>
         </DetailField>
       </div>
 
       <div class="flex w-full items-start gap-1.75">
-        <DetailField label="Birth date">
-          <p class="text-sm font-medium text-color">{{ formatIsoDate(author.birthDate) }}</p>
+        <DetailField label="Founded date">
+          <p class="text-sm font-medium text-color">{{ formatIsoDate(brand.foundedDate) }}</p>
         </DetailField>
-        <!-- Figma shows "Number of pages" here (leftover from the Book-details layout); Authors have no page count, so this shows the book count instead. -->
-        <DetailField label="Number of books">
-          <p class="text-sm font-medium text-color">{{ author.booksCount }}</p>
+        <DetailField label="Number of cars">
+          <p class="text-sm font-medium text-color">{{ brand.carsCount }}</p>
         </DetailField>
       </div>
 
-      <DetailField label="Books">
-        <ul v-if="author.books.length" class="ml-[21px] list-disc text-sm font-medium text-color">
-          <li v-for="book in author.books" :key="book.title">
-            {{ book.title }} <span class="text-muted-color">({{ book.publishedYear }})</span>
+      <DetailField label="Cars">
+        <ul v-if="brand.cars.length" class="ml-[21px] list-disc text-sm font-medium text-color">
+          <li v-for="car in brand.cars" :key="car.model">
+            {{ car.model }} <span class="text-muted-color">({{ car.modelYear }})</span>
           </li>
         </ul>
-        <p v-else class="text-sm font-medium text-muted-color">No books yet.</p>
+        <p v-else class="text-sm font-medium text-muted-color">No cars yet.</p>
       </DetailField>
 
       <div class="h-px w-full bg-surface-300 my-3.5" />
 
-      <DetailField label="Bio">
-        <p class="text-sm font-medium text-color">{{ author.bio }}</p>
+      <DetailField label="Description">
+        <p class="text-sm font-medium text-color">{{ brand.description }}</p>
       </DetailField>
     </template>
 

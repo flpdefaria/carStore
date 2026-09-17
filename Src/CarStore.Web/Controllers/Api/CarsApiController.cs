@@ -7,21 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace CarStore.Web.Controllers.Api;
 
 [ApiController]
-[Route("api/books")]
-public class BooksApiController : ControllerBase
+[Route("api/cars")]
+public class CarsApiController : ControllerBase
 {
-    private readonly IBookService _bookService;
+    private readonly ICarService _carService;
 
-    public BooksApiController(IBookService bookService)
+    public CarsApiController(ICarService carService)
     {
-        _bookService = bookService;
+        _carService = carService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<PagedResultDto<BookDto>>> Index(int page = 1, int pageSize = 10)
+    public async Task<ActionResult<PagedResultDto<CarDto>>> Index(int page = 1, int pageSize = 10)
     {
-        var result = await _bookService.GetPagedAsync(page, pageSize);
-        var dto = new PagedResultDto<BookDto>
+        var result = await _carService.GetPagedAsync(page, pageSize);
+        var dto = new PagedResultDto<CarDto>
         {
             Items = result.Items.Select(ToDto).ToList(),
             PageNumber = result.PageNumber,
@@ -36,24 +36,24 @@ public class BooksApiController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<BookDto>> Create(CreateBookRequest request)
+    public async Task<ActionResult<CarDto>> Create(CreateCarRequest request)
     {
         try
         {
-            var book = new Book
+            var car = new Car
             {
-                Title = request.Title,
-                Isbn = request.Isbn,
+                Model = request.Model,
+                Vin = request.Vin,
                 Description = request.Description,
-                Genre = request.Genre,
+                BodyType = request.BodyType,
                 Price = request.Price,
                 Stock = request.Stock,
-                PublishedDate = request.PublishedDate,
-                AuthorId = request.AuthorId
+                ModelYear = request.ModelYear,
+                BrandId = request.BrandId
             };
-            var created = await _bookService.CreateAsync(book, request.NumberOfPages);
-            var withAuthor = await _bookService.GetByIdAsync(created.Id);
-            return CreatedAtAction(nameof(Index), new { id = created.Id }, ToDto(withAuthor!));
+            var created = await _carService.CreateAsync(car, request.Mileage);
+            var withBrand = await _carService.GetByIdAsync(created.Id);
+            return CreatedAtAction(nameof(Index), new { id = created.Id }, ToDto(withBrand!));
         }
         catch (DomainException ex)
         {
@@ -62,26 +62,26 @@ public class BooksApiController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<BookDto>> Update(int id, CreateBookRequest request)
+    public async Task<ActionResult<CarDto>> Update(int id, CreateCarRequest request)
     {
         try
         {
-            var book = new Book
+            var car = new Car
             {
-                Title = request.Title,
-                Isbn = request.Isbn,
+                Model = request.Model,
+                Vin = request.Vin,
                 Description = request.Description,
-                Genre = request.Genre,
+                BodyType = request.BodyType,
                 Price = request.Price,
                 Stock = request.Stock,
-                PublishedDate = request.PublishedDate,
-                AuthorId = request.AuthorId
+                ModelYear = request.ModelYear,
+                BrandId = request.BrandId
             };
-            var updated = await _bookService.UpdateAsync(id, book, request.NumberOfPages);
+            var updated = await _carService.UpdateAsync(id, car, request.Mileage);
             if (updated is null) return NotFound();
 
-            var withAuthor = await _bookService.GetByIdAsync(id);
-            return Ok(ToDto(withAuthor!));
+            var withBrand = await _carService.GetByIdAsync(id);
+            return Ok(ToDto(withBrand!));
         }
         catch (DomainException ex)
         {
@@ -92,24 +92,24 @@ public class BooksApiController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var deleted = await _bookService.DeleteAsync(id);
+        var deleted = await _carService.DeleteAsync(id);
         if (!deleted) return NotFound();
         return NoContent();
     }
 
-    private static BookDto ToDto(Book b) => new()
+    private static CarDto ToDto(Car c) => new()
     {
-        Id = b.Id,
-        Title = b.Title,
-        Isbn = b.Isbn,
-        Description = b.Description,
-        Genre = b.Genre,
-        Price = b.Price,
-        Stock = b.Stock,
-        NumberOfPages = b.NumberOfPages,
-        IsAvailable = b.IsAvailable,
-        PublishedDate = b.PublishedDate,
-        AuthorId = b.AuthorId,
-        AuthorName = b.Author?.Name ?? string.Empty
+        Id = c.Id,
+        Model = c.Model,
+        Vin = c.Vin,
+        Description = c.Description,
+        BodyType = c.BodyType,
+        Price = c.Price,
+        Stock = c.Stock,
+        Mileage = c.Mileage,
+        IsAvailable = c.IsAvailable,
+        ModelYear = c.ModelYear,
+        BrandId = c.BrandId,
+        BrandName = c.Brand?.Name ?? string.Empty
     };
 }
