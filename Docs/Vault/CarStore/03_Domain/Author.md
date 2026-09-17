@@ -15,7 +15,7 @@ The `Author` domain entity: properties, computed members, factory/update methods
 
 ## Source
 
-`Src/BookStore.Domain/Entities/Author.cs`
+`Src/CarStore.Domain/Entities/Author.cs`
 
 ## Properties
 
@@ -57,7 +57,7 @@ public void EnsureCanBeDeleted()
 
 ## EF Core mapping
 
-In `Src/BookStore.Domain/Data/BookStoreContext.cs`:
+In `Src/CarStore.Domain/Data/CarStoreContext.cs`:
 
 ```csharp
 modelBuilder.Entity<Author>(entity =>

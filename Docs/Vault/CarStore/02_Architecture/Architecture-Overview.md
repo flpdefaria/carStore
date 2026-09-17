@@ -13,7 +13,7 @@ tags:
 
 # Architecture Overview
 
-Three-layer architecture for the BookStore ASP.NET Core 10 MVC solution.
+Three-layer architecture for the CarStore ASP.NET Core 10 MVC solution.
 
 ## Context
 
@@ -21,43 +21,43 @@ The solution is intentionally split into Domain, Application, and Web layers so 
 
 ## Layers
 
-### Domain (`BookStore.Domain`)
+### Domain (`CarStore.Domain`)
 
 - Owns all business rules and invariants.
-- Contains `Author`, `Book`, `BookStoreContext`, `DataSeeder`, and `DomainException`.
+- Contains `Author`, `Book`, `CarStoreContext`, `DataSeeder`, and `DomainException`.
 - Entities are rich: state changes happen through domain methods (`Create`, `Update`, `EnsureCanBeDeleted`).
-- Source: `Src/BookStore.Domain/`.
+- Source: `Src/CarStore.Domain/`.
 
-### Application (`BookStore.Application`)
+### Application (`CarStore.Application`)
 
-- Orchestrates only: load aggregates from `BookStoreContext`, call domain methods, persist with `SaveChangesAsync`.
+- Orchestrates only: load aggregates from `CarStoreContext`, call domain methods, persist with `SaveChangesAsync`.
 - Contains `AuthorService`, `BookService`, their interfaces, and `PagedResult<T>`.
 - Must not duplicate domain invariants.
-- Source: `Src/BookStore.Application/Services/`.
+- Source: `Src/CarStore.Application/Services/`.
 
-### Web (`BookStore.Web`)
+### Web (`CarStore.Web`)
 
 - ASP.NET Core 10 MVC project, hosting a Vue 3 single-page app (SPA).
 - `HomeController` is the only page-serving controller (SPA shell + error page); `Controllers/Api/*` expose JSON data to Vue Router pages. See [[Controllers]] and [[Frontend-SPA]].
 - No business logic in controllers.
-- Source: `Src/BookStore.Web/Controllers/`.
+- Source: `Src/CarStore.Web/Controllers/`.
 
 ## Composition root
 
-`Src/BookStore.Web/Program.cs` wires everything:
+`Src/CarStore.Web/Program.cs` wires everything:
 
 ```csharp
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<BookStoreContext>(options =>
-    options.UseInMemoryDatabase("BookStoreDb"));
+builder.Services.AddDbContext<CarStoreContext>(options =>
+    options.UseInMemoryDatabase("CarStoreDb"));
 
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IBookService, BookService>();
 // ...
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<BookStoreContext>();
+    var db = scope.ServiceProvider.GetRequiredService<CarStoreContext>();
     DataSeeder.Seed(db);
 }
 ```

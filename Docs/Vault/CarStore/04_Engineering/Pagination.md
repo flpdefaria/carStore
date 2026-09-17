@@ -11,7 +11,7 @@ tags:
 
 # Pagination
 
-Server-side pagination conventions for list/index pages in BookStore.Web.
+Server-side pagination conventions for list/index pages in CarStore.Web.
 
 ## Context
 
@@ -19,7 +19,7 @@ List actions are paginated to avoid loading full tables into memory. The default
 
 ## `PagedResult<T>`
 
-`Src/BookStore.Application/Common/PagedResult.cs`:
+`Src/CarStore.Application/Common/PagedResult.cs`:
 
 ```csharp
 public class PagedResult<T>
@@ -39,7 +39,7 @@ public class PagedResult<T>
 `GetPagedAsync(pageNumber, pageSize)` clamps inputs, counts, and pages the same base query:
 
 ```csharp
-// Src/BookStore.Application/Services/BookService.cs
+// Src/CarStore.Application/Services/BookService.cs
 pageNumber = Math.Max(1, pageNumber);
 pageSize = Math.Clamp(pageSize, 1, 100);
 var query = _db.Books.Include(b => b.Author).OrderBy(b => b.Title);
@@ -51,7 +51,7 @@ return new PagedResult<Book> { Items = items, PageNumber = pageNumber, PageSize 
 `CustomerService` follows the same clamp/count/page shape, ordered by `FullName` with no `.Include(...)` (no navigation properties):
 
 ```csharp
-// Src/BookStore.Application/Services/CustomerService.cs
+// Src/CarStore.Application/Services/CustomerService.cs
 pageNumber = Math.Max(1, pageNumber);
 pageSize = Math.Clamp(pageSize, 1, 100);
 var query = _db.Customers.OrderBy(c => c.FullName);
@@ -63,7 +63,7 @@ return new PagedResult<Customer> { Items = items, PageNumber = pageNumber, PageS
 ## Controller usage
 
 ```csharp
-// Src/BookStore.Web/Controllers/BooksController.cs
+// Src/CarStore.Web/Controllers/BooksController.cs
 public async Task<IActionResult> Index(int page = 1)
 {
     var result = await _bookService.GetPagedAsync(page, pageSize: 10);
@@ -88,10 +88,10 @@ public async Task<IActionResult> Index(int page = 1)
 
 ## Source
 
-- `Src/BookStore.Application/Common/PagedResult.cs`
-- `Src/BookStore.Application/Services/AuthorService.cs`
-- `Src/BookStore.Application/Services/BookService.cs`
-- `Src/BookStore.Application/Services/CustomerService.cs`
+- `Src/CarStore.Application/Common/PagedResult.cs`
+- `Src/CarStore.Application/Services/AuthorService.cs`
+- `Src/CarStore.Application/Services/BookService.cs`
+- `Src/CarStore.Application/Services/CustomerService.cs`
 - `.github/instructions/pagination.instructions.md`
 
 ## Related

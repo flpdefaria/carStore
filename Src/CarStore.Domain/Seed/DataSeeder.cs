@@ -1,11 +1,11 @@
-using BookStore.Domain.Data;
-using BookStore.Domain.Entities;
+using CarStore.Domain.Data;
+using CarStore.Domain.Entities;
 
-namespace BookStore.Domain.Seed;
+namespace CarStore.Domain.Seed;
 
 public static class DataSeeder
 {
-    public static void Seed(BookStoreContext db)
+    public static void Seed(CarStoreContext db)
     {
         SeedAuthors(db);
         SeedBooks(db);
@@ -13,7 +13,7 @@ public static class DataSeeder
         db.SaveChanges();
     }
 
-    private static void SeedAuthors(BookStoreContext db)
+    private static void SeedAuthors(CarStoreContext db)
     {
         if (db.Authors.Any())
             return;
@@ -35,7 +35,7 @@ public static class DataSeeder
         db.Authors.AddRange(authors);
     }
 
-    private static void SeedBooks(BookStoreContext db)
+    private static void SeedBooks(CarStoreContext db)
     {
         if (db.Books.Any())
             return;
@@ -81,7 +81,7 @@ public static class DataSeeder
         db.Books.AddRange(books);
     }
 
-    private static void SeedCustomers(BookStoreContext db)
+    private static void SeedCustomers(CarStoreContext db)
     {
         if (db.Customers.Any())
             return;

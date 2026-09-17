@@ -1,4 +1,4 @@
-namespace BookStore.Application.Common;
+namespace CarStore.Application.Common;
 
 public class PagedResult<T>
 {

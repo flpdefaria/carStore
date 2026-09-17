@@ -11,7 +11,7 @@ tags:
 
 # Application Services
 
-The orchestration pattern used by `AuthorService`, `BookService`, and `CustomerService` in `BookStore.Application`.
+The orchestration pattern used by `AuthorService`, `BookService`, and `CustomerService` in `CarStore.Application`.
 
 ## Context
 
@@ -19,7 +19,7 @@ Application services sit between controllers and the domain. They load aggregate
 
 ## Responsibilities
 
-1. Load aggregates from `BookStoreContext` (usually with `.Include(...)`).
+1. Load aggregates from `CarStoreContext` (usually with `.Include(...)`).
 2. Call domain factory or update methods (`Author.Create`, `Book.Update`, etc.).
 3. Persist with `_db.SaveChangesAsync()`.
 4. Return the result or `null`/`false` when an entity is not found.
@@ -29,7 +29,7 @@ Application services sit between controllers and the domain. They load aggregate
 List methods eager-load and order results:
 
 ```csharp
-// Src/BookStore.Application/Services/AuthorService.cs
+// Src/CarStore.Application/Services/AuthorService.cs
 return await _db.Authors
     .Include(a => a.Books)
     .OrderBy(a => a.Name)
@@ -37,7 +37,7 @@ return await _db.Authors
 ```
 
 ```csharp
-// Src/BookStore.Application/Services/BookService.cs
+// Src/CarStore.Application/Services/BookService.cs
 return await _db.Books
     .Include(b => b.Author)
     .OrderBy(b => b.Title)
@@ -47,7 +47,7 @@ return await _db.Books
 `Customer` has no navigation properties, so `CustomerService` skips `.Include(...)`:
 
 ```csharp
-// Src/BookStore.Application/Services/CustomerService.cs
+// Src/CarStore.Application/Services/CustomerService.cs
 return await _db.Customers
     .OrderBy(c => c.FullName)
     .ToListAsync();
@@ -56,7 +56,7 @@ return await _db.Customers
 ## Create pattern
 
 ```csharp
-// Src/BookStore.Application/Services/BookService.cs
+// Src/CarStore.Application/Services/BookService.cs
 public async Task<Book> CreateAsync(Book book, int numberOfPages)
 {
     var authorExists = await _db.Authors.AnyAsync(a => a.Id == book.AuthorId);
@@ -73,7 +73,7 @@ public async Task<Book> CreateAsync(Book book, int numberOfPages)
 ## Update pattern
 
 ```csharp
-// Src/BookStore.Application/Services/AuthorService.cs
+// Src/CarStore.Application/Services/AuthorService.cs
 var existing = await _db.Authors.FirstOrDefaultAsync(a => a.Id == id);
 if (existing is null)
     return null;
@@ -86,7 +86,7 @@ return existing;
 ## Delete pattern
 
 ```csharp
-// Src/BookStore.Application/Services/AuthorService.cs
+// Src/CarStore.Application/Services/AuthorService.cs
 if (existing is null)
     return false;
 
@@ -99,7 +99,7 @@ return true;
 `CustomerService.DeleteAsync` removes directly - `Customer` has no `EnsureCanBeDeleted()` guard:
 
 ```csharp
-// Src/BookStore.Application/Services/CustomerService.cs
+// Src/CarStore.Application/Services/CustomerService.cs
 if (existing is null)
     return false;
 

@@ -1,14 +1,14 @@
-using BookStore.Application.Services;
-using BookStore.Domain.Data;
-using BookStore.Domain.Seed;
+using CarStore.Application.Services;
+using CarStore.Domain.Data;
+using CarStore.Domain.Seed;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<BookStoreContext>(options =>
-    options.UseInMemoryDatabase("BookStoreDb"));
+builder.Services.AddDbContext<CarStoreContext>(options =>
+    options.UseInMemoryDatabase("CarStoreDb"));
 
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IBookService, BookService>();
@@ -18,7 +18,7 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<BookStoreContext>();
+    var db = scope.ServiceProvider.GetRequiredService<CarStoreContext>();
     DataSeeder.Seed(db);
 }
 

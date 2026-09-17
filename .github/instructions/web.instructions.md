@@ -1,10 +1,10 @@
 ---
-applyTo: "Src/BookStore.Web/**/*.cshtml,Src/BookStore.Web/Controllers/**,Src/BookStore.Web/Models/**,Src/BookStore.Web/Program.cs,Src/BookStore.Web/*.csproj"
+applyTo: "Src/CarStore.Web/**/*.cshtml,Src/CarStore.Web/Controllers/**,Src/CarStore.Web/Models/**,Src/CarStore.Web/Program.cs,Src/CarStore.Web/*.csproj"
 ---
 
 # Web instructions (ASP.NET Core MVC hosting Vue)
 
-How `BookStore.Web` serves a Vue 3 + PrimeVue front-end from classic MVC. Companion to
+How `CarStore.Web` serves a Vue 3 + PrimeVue front-end from classic MVC. Companion to
 `frontend.instructions.md` (everything inside `ClientApp/`), `pagination.instructions.md` and
 `vault.instructions.md`.
 
@@ -135,12 +135,12 @@ Conventions:
 
 ```bash
 # front-end (after any ClientApp change)
-cd Src/BookStore.Web/ClientApp && npm install && npm run build
+cd Src/CarStore.Web/ClientApp && npm install && npm run build
 
 # back-end
-dotnet build Src/BookStore.slnx
-dotnet run --project Src/BookStore.Web      # http://localhost:5045
-dotnet test Src/BookStore.Tests/BookStore.Tests.csproj
+dotnet build Src/CarStore.slnx
+dotnet run --project Src/CarStore.Web      # http://localhost:5045
+dotnet test Src/CarStore.Tests/CarStore.Tests.csproj
 
 # deploy (Azure App Service, zip deploy) - requires wwwroot/dist to be up to date and committed
 ./deploy.sh
@@ -149,7 +149,7 @@ dotnet test Src/BookStore.Tests/BookStore.Tests.csproj
 VS Code tasks: `build` (default) and `watch` (`dotnet watch run`). `dotnet watch` reloads C#/Razor only -
 front-end changes still need `npm run build`.
 
-Persistence is EF Core **In-Memory** (`BookStoreDb`), re-seeded by `DataSeeder.Seed(db)` on every start:
+Persistence is EF Core **In-Memory** (`CarStoreDb`), re-seeded by `DataSeeder.Seed(db)` on every start:
 data resets on restart, and every mutation done through the API disappears with the process.
 
 ## Checklist for a change touching this layer
@@ -158,7 +158,7 @@ data resets on restart, and every mutation done through the API disappears with 
 - [ ] Controller stays thin; business rules stay in the domain.
 - [ ] New/changed API shape mirrored in `ClientApp/src/types.ts`.
 - [ ] New client-side page added as a `router/index.ts` route + `Sidebar.vue` nav item, not a new Razor view/mount point.
-- [ ] `dotnet build Src/BookStore.slnx` clean; `npm run build` re-run if ClientApp changed.
+- [ ] `dotnet build Src/CarStore.slnx` clean; `npm run build` re-run if ClientApp changed.
 - [ ] Page loaded in the browser (including a hard refresh on a deep route) and the network tab shows the expected `/api/*` call.
 
 ## Never

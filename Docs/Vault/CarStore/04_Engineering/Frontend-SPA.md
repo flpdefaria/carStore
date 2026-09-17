@@ -12,7 +12,7 @@ tags:
 
 # Frontend SPA (Vue Router migration)
 
-How `BookStore.Web` moved from an MVC "multi-page app with Vue islands" model to a single-page app (SPA)
+How `CarStore.Web` moved from an MVC "multi-page app with Vue islands" model to a single-page app (SPA)
 rendered entirely by Vue Router, on 2026-09-17.
 
 ## Context
@@ -53,7 +53,7 @@ Requested explicitly as an architecture change; the previous "never turn this in
 ## Verification performed
 
 - `npx vue-tsc --noEmit` and `npm run build` clean.
-- `dotnet build Src/BookStore.slnx` clean; `dotnet test` — 20/20 passing (domain tests unaffected).
+- `dotnet build Src/CarStore.slnx` clean; `dotnet test` — 20/20 passing (domain tests unaffected).
 - Manual smoke test: `/`, `/books`, `/authors`, `/customers` all return 200 and serve the `div#app` shell
   (verifying the MVC fallback route); `/api/books` and `/api/customers` unaffected; a full
   create → list → delete round trip against `POST/DELETE /api/customers` verified.

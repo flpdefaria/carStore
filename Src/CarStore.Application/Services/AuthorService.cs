@@ -1,15 +1,15 @@
-using BookStore.Application.Common;
-using BookStore.Domain.Data;
-using BookStore.Domain.Entities;
+using CarStore.Application.Common;
+using CarStore.Domain.Data;
+using CarStore.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStore.Application.Services;
+namespace CarStore.Application.Services;
 
 public class AuthorService : IAuthorService
 {
-    private readonly BookStoreContext _db;
+    private readonly CarStoreContext _db;
 
-    public AuthorService(BookStoreContext db)
+    public AuthorService(CarStoreContext db)
     {
         _db = db;
     }

@@ -1,8 +1,8 @@
-using BookStore.Domain.Entities;
-using BookStore.Domain.Exceptions;
+using CarStore.Domain.Entities;
+using CarStore.Domain.Exceptions;
 using FluentAssertions;
 
-namespace BookStore.Tests;
+namespace CarStore.Tests;
 
 public class AuthorTests
 {

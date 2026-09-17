@@ -11,7 +11,7 @@ APP="app-book-store"
 # ============================
 # Build & Package
 # ============================
-WEB_PROJECT="./Src/BookStore.Web/BookStore.Web.csproj"
+WEB_PROJECT="./Src/CarStore.Web/CarStore.Web.csproj"
 PUB_DIR="./publish/web"
 ZIP_FILE="./publish/web.zip"
 

@@ -1,12 +1,12 @@
 ---
 name: vault-full-sync
-description: "Audit the BookStore Obsidian vault against the current codebase and reconcile drift. Use when: the user asks to sync the vault, verify vault accuracy, find missing or outdated docs, audit documentation, run a full vault check, reconcile vault with code, or after large refactors / merges. Produces a discrepancy report and applies vault updates to bring `Docs/Vault/BookStore/` back in sync. Orchestrates vault-search and vault-write."
+description: "Audit the CarStore Obsidian vault against the current codebase and reconcile drift. Use when: the user asks to sync the vault, verify vault accuracy, find missing or outdated docs, audit documentation, run a full vault check, reconcile vault with code, or after large refactors / merges. Produces a discrepancy report and applies vault updates to bring `Docs/Vault/CarStore/` back in sync. Orchestrates vault-search and vault-write."
 argument-hint: "Optional scope (e.g. area, component, folder) and any extra context, links, or code references"
 ---
 
 # Vault Full Sync
 
-End-to-end audit of `Docs/Vault/BookStore/` against the current state of the BookStore codebase. Identifies missing, outdated, or contradictory notes and reconciles them via `vault-write`. Always ends with a written report.
+End-to-end audit of `Docs/Vault/CarStore/` against the current state of the CarStore codebase. Identifies missing, outdated, or contradictory notes and reconciles them via `vault-write`. Always ends with a written report.
 
 ## Source of rules
 

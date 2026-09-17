@@ -10,7 +10,7 @@ tags:
 
 # Operations Overview
 
-Build, run, test, and persistence information for the BookStore solution.
+Build, run, test, and persistence information for the CarStore solution.
 
 ## Context
 
@@ -19,33 +19,33 @@ The solution is a plain .NET 10 web application with no CI/CD pipeline. Local de
 ## Build
 
 ```bash
-dotnet build Src/BookStore.slnx
+dotnet build Src/CarStore.slnx
 ```
 
 ## Run locally
 
 ```bash
-dotnet run --project Src/BookStore.Web
+dotnet run --project Src/CarStore.Web
 ```
 
-Then open <http://localhost:5045> (from `Src/BookStore.Web/Properties/launchSettings.json`).
+Then open <http://localhost:5045> (from `Src/CarStore.Web/Properties/launchSettings.json`).
 
 ## Test
 
 ```bash
-dotnet test Src/BookStore.Tests/BookStore.Tests.csproj
+dotnet test Src/CarStore.Tests/CarStore.Tests.csproj
 ```
 
 ## Persistence
 
 - EF Core In-Memory provider.
-- Database name: `BookStoreDb` (configured in `Src/BookStore.Web/Program.cs`).
+- Database name: `CarStoreDb` (configured in `Src/CarStore.Web/Program.cs`).
 - Data is re-seeded on every process restart via `DataSeeder.Seed(db)`.
 - No migrations and no other database provider is configured.
 
 ## Configuration
 
-`Src/BookStore.Web/appsettings.json` contains only default ASP.NET Core logging and `AllowedHosts: "*"`. There are no connection strings, secrets, or feature flags today.
+`Src/CarStore.Web/appsettings.json` contains only default ASP.NET Core logging and `AllowedHosts: "*"`. There are no connection strings, secrets, or feature flags today.
 
 ## Deployment
 
@@ -53,11 +53,11 @@ Production deployment is manual via `deploy.sh`. See [[Deployment-Runbook]] for 
 
 ## Source
 
-- `Src/BookStore.Web/Program.cs`
-- `Src/BookStore.Web/Properties/launchSettings.json`
-- `Src/BookStore.Web/appsettings.json`
-- `Src/BookStore.Domain/Data/BookStoreContext.cs`
-- `Src/BookStore.Domain/Seed/DataSeeder.cs`
+- `Src/CarStore.Web/Program.cs`
+- `Src/CarStore.Web/Properties/launchSettings.json`
+- `Src/CarStore.Web/appsettings.json`
+- `Src/CarStore.Domain/Data/CarStoreContext.cs`
+- `Src/CarStore.Domain/Seed/DataSeeder.cs`
 - `README.md`
 
 ## Related

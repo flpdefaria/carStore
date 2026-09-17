@@ -1,11 +1,11 @@
 # Example Queries
 
-> The tag values and folder names used below (e.g., `type/policy`, `component/application`, `05_Operations`) are **illustrative only**. At runtime, the actual valid tags come from `Docs/Vault/BookStore/00_Index/Tags.md` and the actual navigation index comes from `Docs/Vault/BookStore/00_Index/Navigation.md`. Substitute the real values from those reads when running the commands below.
+> The tag values and folder names used below (e.g., `type/policy`, `component/application`, `05_Operations`) are **illustrative only**. At runtime, the actual valid tags come from `Docs/Vault/CarStore/00_Index/Tags.md` and the actual navigation index comes from `Docs/Vault/CarStore/00_Index/Navigation.md`. Substitute the real values from those reads when running the commands below.
 
 All examples assume the vault root as the base path:
 
 ```bash
-Docs/Vault/BookStore
+Docs/Vault/CarStore
 ```
 
 ---
@@ -29,7 +29,7 @@ rg -l \
   --glob "*.md" \
   --ignore-case \
   --fixed-strings "topic/sync" \
-  Docs/Vault/BookStore \
+  Docs/Vault/CarStore \
 | xargs rg -l \
   --ignore-case \
   --fixed-strings "entity/contract" \
@@ -46,7 +46,7 @@ rg -l \
   --glob "*.md" \
   --ignore-case \
   --fixed-strings "topic/sync" \
-  Docs/Vault/BookStore \
+  Docs/Vault/CarStore \
 | xargs rg -l \
   --ignore-case \
   --fixed-strings "entity/contract" \
@@ -60,7 +60,7 @@ rg -l \
   --glob "*.md" \
   --ignore-case \
   --fixed-strings "topic/sync" \
-  Docs/Vault/BookStore \
+  Docs/Vault/CarStore \
 | xargs -I {} sh -c 'echo "\n===== {} ====="; cat "{}"'
 ```
 
@@ -72,7 +72,7 @@ rg -l \
   --glob "*.md" \
   --ignore-case \
   --fixed-strings "distributor sync" \
-  Docs/Vault/BookStore \
+  Docs/Vault/CarStore \
 | xargs rg -l \
   --ignore-case \
   --fixed-strings "contract" \
@@ -85,7 +85,7 @@ rg -l \
   --glob "*.md" \
   --ignore-case \
   --fixed-strings "sync" \
-  Docs/Vault/BookStore \
+  Docs/Vault/CarStore \
 | xargs rg -l \
   --ignore-case \
   --fixed-strings "company" \
@@ -95,13 +95,13 @@ rg -l \
 **Wikilink follow** — if any matched note contains links:
 ```bash
 # Extract links from a matched note
-rg -o --no-heading '\[\[([^\]]+)\]\]' --replace '$1' Docs/Vault/BookStore/03_Domain/Distributor-Sync.md
+rg -o --no-heading '\[\[([^\]]+)\]\]' --replace '$1' Docs/Vault/CarStore/03_Domain/Distributor-Sync.md
 
 # Resolve link path
-fd --extension md --full-path "Contract" Docs/Vault/BookStore
+fd --extension md --full-path "Contract" Docs/Vault/CarStore
 
 # Check relevance against original query terms
-rg -l --ignore-case --fixed-strings "sync" Docs/Vault/BookStore/03_Domain/Contract.md
+rg -l --ignore-case --fixed-strings "sync" Docs/Vault/CarStore/03_Domain/Contract.md
 ```
 
 If the linked note is relevant, add it to the result set.
@@ -127,7 +127,7 @@ rg -l \
   --glob "*.md" \
   --ignore-case \
   --fixed-strings "entity/opportunity" \
-  Docs/Vault/BookStore \
+  Docs/Vault/CarStore \
 | xargs rg -l \
   --ignore-case \
   --fixed-strings "renewal" \
@@ -157,7 +157,7 @@ rg -l \
   --glob "*.md" \
   --ignore-case \
   --fixed-strings "topic/error-handling" \
-  Docs/Vault/BookStore \
+  Docs/Vault/CarStore \
 | xargs rg -l \
   --ignore-case \
   --fixed-strings "topic/validation" \
@@ -168,7 +168,7 @@ rg -l \
 
 ## Example 4: Authentication configuration
 
-**Query:** `How is authentication configured in BookStore?`
+**Query:** `How is authentication configured in CarStore?`
 
 **Decomposition:**
 
@@ -184,7 +184,7 @@ rg -l \
   --glob "*.md" \
   --ignore-case \
   --fixed-strings "topic/auth" \
-  Docs/Vault/BookStore \
+  Docs/Vault/CarStore \
 | xargs rg -l \
   --ignore-case \
   --fixed-strings "configuration" \
@@ -198,7 +198,7 @@ rg -l \
   --glob "*.md" \
   --ignore-case \
   --fixed-strings "topic/auth" \
-  Docs/Vault/BookStore \
+  Docs/Vault/CarStore \
 | xargs -I {} sh -c 'echo "\n===== {} ====="; cat "{}"'
 ```
 
@@ -210,7 +210,7 @@ rg -l \
   --glob "*.md" \
   --ignore-case \
   --fixed-strings "OIDC" \
-  Docs/Vault/BookStore \
+  Docs/Vault/CarStore \
 | xargs rg -l \
   --ignore-case \
   --fixed-strings "authentication" \
@@ -223,7 +223,7 @@ rg -l \
   --glob "*.md" \
   --ignore-case \
   --fixed-strings "area/security" \
-  Docs/Vault/BookStore \
+  Docs/Vault/CarStore \
 | xargs rg -l \
   --ignore-case \
   --fixed-strings "Entra" \
@@ -250,7 +250,7 @@ rg -l \
   --glob "*.md" \
   --ignore-case \
   --fixed-strings "component/application" \
-  Docs/Vault/BookStore \
+  Docs/Vault/CarStore \
 | xargs rg -l \
   --ignore-case \
   --fixed-strings "service" \
@@ -276,6 +276,6 @@ rg -l \
   --glob "*.md" \
   --ignore-case \
   --fixed-strings "topic/soft-deletion" \
-  Docs/Vault/BookStore \
+  Docs/Vault/CarStore \
 | xargs -I {} sh -c 'echo "\n===== {} ====="; cat "{}"'
 ```

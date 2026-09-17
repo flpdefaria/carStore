@@ -1,6 +1,6 @@
 <Solution>
-  <Project Path="BookStore.Application/BookStore.Application.csproj" />
-  <Project Path="BookStore.Domain/BookStore.Domain.csproj" />
-  <Project Path="BookStore.Tests/BookStore.Tests.csproj" />
-  <Project Path="BookStore.Web/BookStore.Web.csproj" />
+  <Project Path="CarStore.Application/CarStore.Application.csproj" />
+  <Project Path="CarStore.Domain/CarStore.Domain.csproj" />
+  <Project Path="CarStore.Tests/CarStore.Tests.csproj" />
+  <Project Path="CarStore.Web/CarStore.Web.csproj" />
 </Solution>

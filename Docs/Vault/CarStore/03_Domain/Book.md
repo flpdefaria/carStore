@@ -15,7 +15,7 @@ The `Book` domain entity: properties, computed members, factory/update methods, 
 
 ## Source
 
-`Src/BookStore.Domain/Entities/Book.cs`
+`Src/CarStore.Domain/Entities/Book.cs`
 
 ## Properties
 
@@ -51,7 +51,7 @@ The `Book` domain entity: properties, computed members, factory/update methods, 
 
 ## EF Core mapping
 
-In `Src/BookStore.Domain/Data/BookStoreContext.cs`:
+In `Src/CarStore.Domain/Data/CarStoreContext.cs`:
 
 ```csharp
 modelBuilder.Entity<Book>(entity =>

@@ -24,7 +24,7 @@ const activeKey = computed(() => route.name as string);
         <i class="pi pi-book text-2xl text-surface-700" />
       </div>
       <div class="flex min-w-0 flex-1 flex-col">
-        <p class="truncate text-[22px] font-black leading-none text-surface-700">BookStore</p>
+        <p class="truncate text-[22px] font-black leading-none text-surface-700">CarStore</p>
         <p class="text-xs text-muted-color">Premium catalog</p>
       </div>
     </div>

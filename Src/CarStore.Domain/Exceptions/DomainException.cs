@@ -1,4 +1,4 @@
-namespace BookStore.Domain.Exceptions;
+namespace CarStore.Domain.Exceptions;
 
 public class DomainException : Exception
 {

@@ -1,7 +1,7 @@
-using BookStore.Application.Common;
-using BookStore.Domain.Entities;
+using CarStore.Application.Common;
+using CarStore.Domain.Entities;
 
-namespace BookStore.Application.Services;
+namespace CarStore.Application.Services;
 
 public interface ICustomerService
 {

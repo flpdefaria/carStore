@@ -1,10 +1,10 @@
 ---
-applyTo: "Src/BookStore.Web/ClientApp/**,Src/BookStore.Web/wwwroot/dist/**"
+applyTo: "Src/CarStore.Web/ClientApp/**,Src/CarStore.Web/wwwroot/dist/**"
 ---
 
 # Front-end instructions (Vue 3 + PrimeVue + Tailwind v4)
 
-Reference guide for humans and coding agents working inside `Src/BookStore.Web/ClientApp/`.
+Reference guide for humans and coding agents working inside `Src/CarStore.Web/ClientApp/`.
 For how the built bundle is served by ASP.NET Core MVC (Razor mount points, API endpoints, run/publish),
 see `web.instructions.md`. For the vault rules, see `vault.instructions.md`.
 
@@ -37,7 +37,7 @@ Never hand-edit vault notes; always go through `/vault-write`.
 ## Folder layout (do not deviate)
 
 ```
-Src/BookStore.Web/ClientApp/
+Src/CarStore.Web/ClientApp/
   vite.config.ts             # base "/dist/", outDir ../wwwroot/dist, fixed main.js / main.css names
   tsconfig.json              # strict, noEmit, includes src/**/*.ts + src/**/*.vue
   package.json               # dev | build | preview scripts
@@ -76,7 +76,7 @@ Placement rules:
 Prerequisites: Node.js 20+ (repo verified on Node 24) and npm 10+; .NET 10 SDK for the host app.
 
 ```bash
-cd Src/BookStore.Web/ClientApp
+cd Src/CarStore.Web/ClientApp
 npm install          # first clone only
 npm run build        # emits ../wwwroot/dist/main.js + main.css (+ primeicons fonts)
 ```
@@ -120,7 +120,7 @@ component. Consequences to respect:
 
 ## Data access
 
-All data comes from the JSON API in `Src/BookStore.Web/Controllers/Api/*ApiController.cs` and is typed by
+All data comes from the JSON API in `Src/CarStore.Web/Controllers/Api/*ApiController.cs` and is typed by
 interfaces in `types.ts` mirroring `Models/Api/*Dto.cs`.
 
 | Composable | Use for | Contract |
@@ -162,7 +162,7 @@ Rules:
 1. Run `/figma-discovery` FIRST for any task that references a Figma URL/node or must match a design. It parses the URL, calls the Figma MCP tools, and maps raw values onto the token conventions above.
 2. Then run `/primevue-component-build` (or follow the equivalent manual steps) to implement.
 3. Query the `primevue` MCP server for component APIs/examples instead of guessing prop or `pt` section names.
-4. Exported image/icon assets go to `Src/BookStore.Web/wwwroot/images/<page>/...` and are referenced by absolute URL (`/images/home/books.jpg`) - not imported through Vite, so no hashing surprises.
+4. Exported image/icon assets go to `Src/CarStore.Web/wwwroot/images/<page>/...` and are referenced by absolute URL (`/images/home/books.jpg`) - not imported through Vite, so no hashing surprises.
 5. Delete temporary screenshots/reference assets once the implementation is verified.
 
 ## Definition of done
@@ -172,7 +172,7 @@ Rules:
 - [ ] No raw hex where a token exists; no Bootstrap; no `bi-*` icons; no second JS/CSS framework.
 - [ ] `npx vue-tsc --noEmit` clean.
 - [ ] `npm run build` clean, and the rebuilt `wwwroot/dist` committed with the change.
-- [ ] `dotnet build Src/BookStore.slnx` run if a `.cshtml` mount point or an API DTO changed.
+- [ ] `dotnet build Src/CarStore.slnx` run if a `.cshtml` mount point or an API DTO changed.
 - [ ] Page opened in the running app and checked against the Figma frame.
 
 ## Never

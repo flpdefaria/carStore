@@ -1,10 +1,10 @@
 ---
-applyTo: "Docs/Vault/BookStore/**"
+applyTo: "Docs/Vault/CarStore/**"
 ---
 
-# Vault (BookStore) Rules
+# Vault (CarStore) Rules
 
-Obsidian vault for living technical documentation of the BookStore .NET 10 MVC solution, maintained by code agents after code changes.
+Obsidian vault for living technical documentation of the CarStore .NET 10 MVC solution, maintained by code agents after code changes.
 
 ## Hard Rules
 
@@ -46,7 +46,7 @@ tags:
 ## Folder Structure
 
 ```
-Docs/Vault/BookStore/
+Docs/Vault/CarStore/
 ├── 00_Index/        // Home, Navigation, Glossary, Tags
 ├── 01_Project/      // Project-level info: repo structure, dependencies, conventions
 ├── 02_Architecture/ // Layer responsibilities, patterns, key decisions
@@ -66,7 +66,7 @@ Docs/Vault/BookStore/
 * Solution structure and project dependency graph (which `.csproj` references which).
 * NuGet package inventory with versions — factual, not analytical.
 * Project-wide conventions evident in the codebase (e.g. naming patterns, namespace conventions).
-* Key files a new contributor needs to find quickly (`Program.cs`, `BookStoreContext.cs`, etc.).
+* Key files a new contributor needs to find quickly (`Program.cs`, `CarStoreContext.cs`, etc.).
 
 **What does NOT belong here:**
 * Domain language or business rules → `03_Domain/`.

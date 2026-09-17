@@ -4,7 +4,7 @@
 
 /* Tailwind v4's automatic content detection only scans files inside the Vite
    project root (this ClientApp folder). Razor views live outside of it
-   (Src/BookStore.Web/Views), so utility classes used ONLY in .cshtml files
+   (Src/CarStore.Web/Views), so utility classes used ONLY in .cshtml files
    (e.g. `h-screen` on <body> in _Layout.cshtml) would silently never be
    generated without this explicit @source. */
 @source "../../Views";

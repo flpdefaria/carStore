@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BookStore.Web.Models.Api;
+namespace CarStore.Web.Models.Api;
 
 public class CreateAuthorRequest
 {

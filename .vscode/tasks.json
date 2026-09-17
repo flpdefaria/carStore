@@ -7,7 +7,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/Src/BookStore.slnx",
+        "${workspaceFolder}/Src/CarStore.slnx",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary;ForceNoAlign"
       ],
@@ -27,7 +27,7 @@
       "args": [
         "watch",
         "--project",
-        "${workspaceFolder}/Src/BookStore.Web",
+        "${workspaceFolder}/Src/CarStore.Web",
         "run",
         "--launch-profile",
         "http"

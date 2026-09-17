@@ -12,11 +12,11 @@ tags:
 
 # Domain Overview
 
-Domain layer for BookStore: entities, relationships, invariants, errors, and seed data.
+Domain layer for CarStore: entities, relationships, invariants, errors, and seed data.
 
 ## Context
 
-All business rules are owned by `BookStore.Domain`. Services and controllers may only call domain methods; they do not mutate entity state directly.
+All business rules are owned by `CarStore.Domain`. Services and controllers may only call domain methods; they do not mutate entity state directly.
 
 ## Entities
 
@@ -27,28 +27,28 @@ All business rules are owned by `BookStore.Domain`. Services and controllers may
 
 - One author has many books (`Author.Books`).
 - Each book belongs to one author (`Book.AuthorId` → `Author`).
-- EF Core mapping uses `OnDelete(DeleteBehavior.Restrict)` in `BookStoreContext.OnModelCreating`.
+- EF Core mapping uses `OnDelete(DeleteBehavior.Restrict)` in `CarStoreContext.OnModelCreating`.
 - Domain-level guard: `Author.EnsureCanBeDeleted()` throws `DomainException` when the author still has books.
 
 ## Error model
 
-- All invariant violations throw `DomainException` (`Src/BookStore.Domain/Exceptions/DomainException.cs`).
+- All invariant violations throw `DomainException` (`Src/CarStore.Domain/Exceptions/DomainException.cs`).
 - `DomainException` is a plain `Exception` subclass with a message constructor.
 - Domain entities never throw `InvalidOperationException`.
 
 ## Seed data
 
-- `DataSeeder.Seed(db)` (`Src/BookStore.Domain/Seed/DataSeeder.cs`) is a no-op if any author or book already exists.
+- `DataSeeder.Seed(db)` (`Src/CarStore.Domain/Seed/DataSeeder.cs`) is a no-op if any author or book already exists.
 - Seeds 10 authors and 27 books across genres, some with `Stock = 0` to exercise the `IsAvailable` invariant.
 - Persistence is EF Core In-Memory; data resets on every process restart.
 
 ## Source files
 
-- `Src/BookStore.Domain/Entities/Author.cs`
-- `Src/BookStore.Domain/Entities/Book.cs`
-- `Src/BookStore.Domain/Data/BookStoreContext.cs`
-- `Src/BookStore.Domain/Seed/DataSeeder.cs`
-- `Src/BookStore.Domain/Exceptions/DomainException.cs`
+- `Src/CarStore.Domain/Entities/Author.cs`
+- `Src/CarStore.Domain/Entities/Book.cs`
+- `Src/CarStore.Domain/Data/CarStoreContext.cs`
+- `Src/CarStore.Domain/Seed/DataSeeder.cs`
+- `Src/CarStore.Domain/Exceptions/DomainException.cs`
 
 ## Related
 

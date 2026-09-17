@@ -9,7 +9,7 @@ tags:
 
 # Tag Catalog
 
-Authoritative list of tags used across the BookStore vault. Read this file live before tagging any note — never hard-code a cached copy elsewhere.
+Authoritative list of tags used across the CarStore vault. Read this file live before tagging any note — never hard-code a cached copy elsewhere.
 
 ## Tag catalog
 
@@ -32,10 +32,10 @@ Authoritative list of tags used across the BookStore vault. Read this file live 
 
 ### component/*
 
-- `component/domain` — `BookStore.Domain`
-- `component/application` — `BookStore.Application`
-- `component/web` — `BookStore.Web`
-- `component/tests` — `BookStore.Tests`
+- `component/domain` — `CarStore.Domain`
+- `component/application` — `CarStore.Application`
+- `component/web` — `CarStore.Web`
+- `component/tests` — `CarStore.Tests`
 
 ### entity/*
 

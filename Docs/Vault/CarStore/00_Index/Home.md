@@ -7,13 +7,13 @@ tags:
   - type/overview
 ---
 
-# BookStore Vault
+# CarStore Vault
 
-Central knowledge base for the **BookStore** .NET 10 MVC solution.
+Central knowledge base for the **CarStore** .NET 10 MVC solution.
 
 ## Context
 
-This vault is the living documentation for the BookStore solution, reconciled from the codebase (`Src/`) and `full-doc.md`.
+This vault is the living documentation for the CarStore solution, reconciled from the codebase (`Src/`) and `full-doc.md`.
 
 ## Sections
 

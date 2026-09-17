@@ -10,7 +10,7 @@ tags:
 
 # .NET, ASP.NET Core, and EF Core Docs
 
-External reference links for the .NET 10 stack used by BookStore.
+External reference links for the .NET 10 stack used by CarStore.
 
 ## Why these matter
 

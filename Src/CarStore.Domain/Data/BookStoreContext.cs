@@ -1,11 +1,11 @@
-using BookStore.Domain.Entities;
+using CarStore.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStore.Domain.Data;
+namespace CarStore.Domain.Data;
 
-public class BookStoreContext : DbContext
+public class CarStoreContext : DbContext
 {
-    public BookStoreContext(DbContextOptions<BookStoreContext> options) : base(options) { }
+    public CarStoreContext(DbContextOptions<CarStoreContext> options) : base(options) { }
 
     public DbSet<Author> Authors => Set<Author>();
     public DbSet<Book> Books => Set<Book>();

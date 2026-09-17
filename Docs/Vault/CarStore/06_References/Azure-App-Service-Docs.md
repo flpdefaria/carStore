@@ -10,11 +10,11 @@ tags:
 
 # Azure App Service Docs
 
-External reference links for the Azure App Service hosting and deployment used by BookStore.
+External reference links for the Azure App Service hosting and deployment used by CarStore.
 
 ## Why these matter
 
-BookStore is deployed manually to an Azure App Service Web App using `az webapp deploy`. These links cover the hosting plan, deployment options, and .NET Core configuration.
+CarStore is deployed manually to an Azure App Service Web App using `az webapp deploy`. These links cover the hosting plan, deployment options, and .NET Core configuration.
 
 ## Links
 

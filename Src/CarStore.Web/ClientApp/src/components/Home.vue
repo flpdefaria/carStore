@@ -8,7 +8,7 @@ import PoweredByBadge from "./PoweredByBadge.vue";
 <template>
   <div class="flex flex-col gap-3 md:h-full md:min-h-0">
     <header class="shrink-0 py-4 md:py-6">
-      <h1 class="text-6xl font-black leading-none text-surface-700 md:text-8xl">BookStore</h1>
+      <h1 class="text-6xl font-black leading-none text-surface-700 md:text-8xl">CarStore</h1>
       <p class="mt-3 text-lg text-surface-500 md:text-2xl">
         A sample .NET MVC project used in the GitHub Copilot webinar series.
       </p>

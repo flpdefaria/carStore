@@ -1,10 +1,10 @@
-using BookStore.Application.Services;
-using BookStore.Domain.Entities;
-using BookStore.Domain.Exceptions;
-using BookStore.Web.Models.Api;
+using CarStore.Application.Services;
+using CarStore.Domain.Entities;
+using CarStore.Domain.Exceptions;
+using CarStore.Web.Models.Api;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookStore.Web.Controllers.Api;
+namespace CarStore.Web.Controllers.Api;
 
 [ApiController]
 [Route("api/authors")]

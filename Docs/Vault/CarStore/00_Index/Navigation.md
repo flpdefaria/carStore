@@ -9,7 +9,7 @@ tags:
 
 # Navigation
 
-Full list of notes in the BookStore vault, grouped by folder.
+Full list of notes in the CarStore vault, grouped by folder.
 
 ## 00_Index
 

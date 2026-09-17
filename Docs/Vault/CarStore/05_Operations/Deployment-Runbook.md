@@ -10,12 +10,12 @@ tags:
 
 # Deployment Runbook
 
-Manual production deployment of BookStore.Web to Azure App Service via `deploy.sh`.
+Manual production deployment of CarStore.Web to Azure App Service via `deploy.sh`.
 
 ## Source
 
 - `deploy.sh`
-- `Src/BookStore.Web/BookStore.Web.csproj`
+- `Src/CarStore.Web/CarStore.Web.csproj`
 
 ## Prerequisites
 
@@ -43,7 +43,7 @@ Manual production deployment of BookStore.Web to Azure App Service via `deploy.s
 
 2. The script performs the following actions:
 
-   - Publishes `Src/BookStore.Web/BookStore.Web.csproj` in `Release` configuration to `./publish/web`:
+   - Publishes `Src/CarStore.Web/CarStore.Web.csproj` in `Release` configuration to `./publish/web`:
 
      ```bash
      dotnet publish "$WEB_PROJECT" -c Release -o "$PUB_DIR"

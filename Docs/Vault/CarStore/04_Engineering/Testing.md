@@ -12,11 +12,11 @@ tags:
 
 # Testing
 
-xUnit test strategy for the BookStore domain layer.
+xUnit test strategy for the CarStore domain layer.
 
 ## Context
 
-`BookStore.Tests` exercises the domain entities (`Author`, `Book`, `Customer`) directly. There are no integration or controller tests yet.
+`CarStore.Tests` exercises the domain entities (`Author`, `Book`, `Customer`) directly. There are no integration or controller tests yet.
 
 ## Stack
 
@@ -30,9 +30,9 @@ xUnit test strategy for the BookStore domain layer.
 
 ## Test files
 
-- `Src/BookStore.Tests/AuthorTests.cs`
-- `Src/BookStore.Tests/BookTests.cs`
-- `Src/BookStore.Tests/CustomerTests.cs`
+- `Src/CarStore.Tests/AuthorTests.cs`
+- `Src/CarStore.Tests/BookTests.cs`
+- `Src/CarStore.Tests/CustomerTests.cs`
 
 ## What is covered
 
@@ -47,7 +47,7 @@ xUnit test strategy for the BookStore domain layer.
 ## Run tests
 
 ```bash
-dotnet test Src/BookStore.Tests/BookStore.Tests.csproj
+dotnet test Src/CarStore.Tests/CarStore.Tests.csproj
 ```
 
 ## Related

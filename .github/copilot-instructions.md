@@ -1,23 +1,23 @@
-# BookStore - Copilot repository instructions
+# CarStore - Copilot repository instructions
 
 ## Solution layout
 - .NET 10 multi-project solution under `Src/`.
-  - `BookStore.Domain` - entities, `BookStoreContext` (EF Core In-Memory), seed data.
-  - `BookStore.Application` - application services (orchestration only).
-  - `BookStore.Web` - ASP.NET Core 10 MVC (controllers, Razor views) whose UI is rendered by Vue 3 + PrimeVue + Tailwind CSS v4 islands built from `ClientApp/`. Bootstrap has been removed; jQuery remains only for unobtrusive validation on the surviving Razor Customers forms.
+  - `CarStore.Domain` - entities, `CarStoreContext` (EF Core In-Memory), seed data.
+  - `CarStore.Application` - application services (orchestration only).
+  - `CarStore.Web` - ASP.NET Core 10 MVC (controllers, Razor views) whose UI is rendered by Vue 3 + PrimeVue + Tailwind CSS v4 islands built from `ClientApp/`. Bootstrap has been removed; jQuery remains only for unobtrusive validation on the surviving Razor Customers forms.
 - No authentication.
 
 ## Front-end
 - See `.github/instructions/frontend.instructions.md` (ClientApp: Vue/PrimeVue/Tailwind conventions) and `.github/instructions/web.instructions.md` (how MVC serves the Vue bundle and the `/api/*` contract).
-- `npm run build` in `Src/BookStore.Web/ClientApp` is required after any front-end change; it is not part of `dotnet build`.
+- `npm run build` in `Src/CarStore.Web/ClientApp` is required after any front-end change; it is not part of `dotnet build`.
 
 ## Architecture rules
-- **Domain layer** (`BookStore.Domain`) owns all business rules.
+- **Domain layer** (`CarStore.Domain`) owns all business rules.
   - Entities (`Author`, `Book`) are **rich**: invariants are enforced through domain methods, not in services.
   - Invariants include: `Title required`, `Price >= 0`, `Stock >= 0`, `PublishedDate` not in the future, `BirthDate` not in the future, `IsAvailable = Stock > 0`, "Author with books cannot be deleted".
-  - Throw `DomainException` (in `BookStore.Domain/Exceptions/DomainException.cs`) on invariant violations. Never throw `InvalidOperationException` from entities.
-- **Application layer** (`BookStore.Application`) only orchestrates:
-  - Load aggregates via `BookStoreContext`.
+  - Throw `DomainException` (in `CarStore.Domain/Exceptions/DomainException.cs`) on invariant violations. Never throw `InvalidOperationException` from entities.
+- **Application layer** (`CarStore.Application`) only orchestrates:
+  - Load aggregates via `CarStoreContext`.
   - Call domain methods on entities.
   - Persist via `SaveChangesAsync`.
   - Do not duplicate business rules.
@@ -29,8 +29,8 @@
 - Domain methods use verbs: `Rename`, `Restock`, `ChangePrice`, `AssignAuthor`, etc.
 
 ## Build & run
-- Build: `dotnet build Src/BookStore.slnx`
-- Run: `dotnet run --project Src/BookStore.Web`
+- Build: `dotnet build Src/CarStore.slnx`
+- Run: `dotnet run --project Src/CarStore.Web`
 - Persistence: EF Core In-Memory only. Do not add migrations or change the provider.
 
 ## General guidance

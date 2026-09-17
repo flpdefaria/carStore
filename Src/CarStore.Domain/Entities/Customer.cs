@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
-using BookStore.Domain.Exceptions;
+using CarStore.Domain.Exceptions;
 
-namespace BookStore.Domain.Entities;
+namespace CarStore.Domain.Entities;
 
 public class Customer
 {

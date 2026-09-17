@@ -2,10 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "BookStore.Web (http)",
+      "name": "CarStore.Web (http)",
       "type": "dotnet",
       "request": "launch",
-      "projectPath": "${workspaceFolder}/Src/BookStore.Web/BookStore.Web.csproj",
+      "projectPath": "${workspaceFolder}/Src/CarStore.Web/CarStore.Web.csproj",
       "launchProfileName": "http",
       "stopAtEntry": false,
       "serverReadyAction": {
@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "sourceFileMap": {
-        "/Views": "${workspaceFolder}/Src/BookStore.Web/Views"
+        "/Views": "${workspaceFolder}/Src/CarStore.Web/Views"
       }
     }
   ]

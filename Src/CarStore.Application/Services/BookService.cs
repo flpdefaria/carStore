@@ -1,16 +1,16 @@
-using BookStore.Application.Common;
-using BookStore.Domain.Data;
-using BookStore.Domain.Entities;
-using BookStore.Domain.Exceptions;
+using CarStore.Application.Common;
+using CarStore.Domain.Data;
+using CarStore.Domain.Entities;
+using CarStore.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStore.Application.Services;
+namespace CarStore.Application.Services;
 
 public class BookService : IBookService
 {
-    private readonly BookStoreContext _db;
+    private readonly CarStoreContext _db;
 
-    public BookService(BookStoreContext db)
+    public BookService(CarStoreContext db)
     {
         _db = db;
     }

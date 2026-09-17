@@ -15,7 +15,7 @@ The sidebar's top-left logo box uses a PrimeIcons glyph instead of an image asse
 
 ## Context
 
-The logo box in `Src/BookStore.Web/ClientApp/src/components/common/sidebar/Sidebar.vue` previously rendered
+The logo box in `Src/CarStore.Web/ClientApp/src/components/common/sidebar/Sidebar.vue` previously rendered
 `<img :src="'/images/home/books.gif'">`. It was replaced with a PrimeIcons `pi-book` glyph so the logo is a
 scalable icon consistent with the rest of the icon usage in the app (nav items, `Home.vue` buttons).
 
@@ -28,7 +28,7 @@ scalable icon consistent with the rest of the icon usage in the app (nav items, 
   </div>
   ```
 - Sizing/color: `text-2xl` (~24px, matching the removed `size-6` image) and `text-surface-700`, matching the
-  color of the adjacent "BookStore" brand text in the same block.
+  color of the adjacent "CarStore" brand text in the same block.
 - Figma node `28:16622` (file `2zyEr3S75NxHIJ5vgTFCWR`) was the requested reference, but the `figma-mcp`
   server was not exposed as a callable tool in the session that made this change, so the exact node spec
   could not be pulled live. The container (`size-10`, `rounded-lg`, `border-surface-300`, `bg-surface-0`) was

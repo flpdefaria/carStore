@@ -1,8 +1,8 @@
 ---
-applyTo: "**/*.cshtml,Src/BookStore.Application/Common/PagedResult.cs,Src/BookStore.Application/Services/*.cs"
+applyTo: "**/*.cshtml,Src/CarStore.Application/Common/PagedResult.cs,Src/CarStore.Application/Services/*.cs"
 ---
 
-# Pagination conventions for BookStore.Web
+# Pagination conventions for CarStore.Web
 
 When implementing or modifying a list/index page:
 

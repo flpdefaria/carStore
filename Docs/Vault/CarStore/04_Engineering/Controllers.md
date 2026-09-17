@@ -12,7 +12,7 @@ tags:
 
 # Controllers
 
-MVC controllers in `BookStore.Web`, post-SPA migration (see [[Frontend-SPA]]). There is exactly one
+MVC controllers in `CarStore.Web`, post-SPA migration (see [[Frontend-SPA]]). There is exactly one
 page-serving controller left; everything else is JSON API controllers under `Controllers/Api/`.
 
 ## Context
@@ -24,7 +24,7 @@ is now owned entirely by `vue-router` (client-side) plus the existing `/api/*` c
 ## HomeController (the only page controller)
 
 ```csharp
-// Src/BookStore.Web/Controllers/HomeController.cs
+// Src/CarStore.Web/Controllers/HomeController.cs
 public class HomeController : Controller
 {
     // Serves the single SPA shell page; Vue Router owns every other client-side route.
@@ -57,10 +57,10 @@ API controllers were never anti-forgery protected (there is no authentication in
 
 ## Source
 
-- `Src/BookStore.Web/Controllers/HomeController.cs`
-- `Src/BookStore.Web/Controllers/Api/BooksApiController.cs`
-- `Src/BookStore.Web/Controllers/Api/AuthorsApiController.cs`
-- `Src/BookStore.Web/Controllers/Api/CustomersApiController.cs`
+- `Src/CarStore.Web/Controllers/HomeController.cs`
+- `Src/CarStore.Web/Controllers/Api/BooksApiController.cs`
+- `Src/CarStore.Web/Controllers/Api/AuthorsApiController.cs`
+- `Src/CarStore.Web/Controllers/Api/CustomersApiController.cs`
 
 ## Related
 

@@ -14,7 +14,7 @@ tags:
 
 # Dependencies
 
-NuGet package and project-reference inventory for each BookStore project.
+NuGet package and project-reference inventory for each CarStore project.
 
 ## Context
 
@@ -24,20 +24,20 @@ Keeping this inventory current avoids silent drift when packages are added, remo
 
 | Project | References |
 |---------|------------|
-| `BookStore.Web` | `BookStore.Application`, `BookStore.Domain` |
-| `BookStore.Application` | `BookStore.Domain` |
-| `BookStore.Tests` | `BookStore.Domain` |
-| `BookStore.Domain` | (none) |
+| `CarStore.Web` | `CarStore.Application`, `CarStore.Domain` |
+| `CarStore.Application` | `CarStore.Domain` |
+| `CarStore.Tests` | `CarStore.Domain` |
+| `CarStore.Domain` | (none) |
 
 ## NuGet packages
 
-### BookStore.Domain
+### CarStore.Domain
 
 | Package | Version |
 |---------|---------|
 | `Microsoft.EntityFrameworkCore.InMemory` | `10.0.0` |
 
-### BookStore.Tests
+### CarStore.Tests
 
 | Package | Version |
 |---------|---------|
@@ -47,16 +47,16 @@ Keeping this inventory current avoids silent drift when packages are added, remo
 | `xunit` | `2.9.3` |
 | `xunit.runner.visualstudio` | `3.1.4` |
 
-### BookStore.Web and BookStore.Application
+### CarStore.Web and CarStore.Application
 
 No direct NuGet packages beyond the .NET 10 SDK and implicit project references.
 
 ## Source files
 
-- `Src/BookStore.Domain/BookStore.Domain.csproj`
-- `Src/BookStore.Application/BookStore.Application.csproj`
-- `Src/BookStore.Web/BookStore.Web.csproj`
-- `Src/BookStore.Tests/BookStore.Tests.csproj`
+- `Src/CarStore.Domain/CarStore.Domain.csproj`
+- `Src/CarStore.Application/CarStore.Application.csproj`
+- `Src/CarStore.Web/CarStore.Web.csproj`
+- `Src/CarStore.Tests/CarStore.Tests.csproj`
 
 ## Related
 

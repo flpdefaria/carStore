@@ -10,7 +10,7 @@ tags:
 
 # Engineering Overview
 
-Code-style and engineering conventions used across the BookStore solution.
+Code-style and engineering conventions used across the CarStore solution.
 
 ## Context
 
