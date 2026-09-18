@@ -71,6 +71,27 @@ Placement rules:
 - Reusable Tailwind class strings go to `styles/`; `pt` objects shared by dialogs go to `common/dialog/dialogStyles.ts`.
 - Pure helpers (formatting, parsing) go to `utils/`.
 
+### Adding a new entity (naming template)
+
+`Car`, `Brand`, `Customer` all follow the same file set. Scaffold a new entity (`<Entity>`) with exactly these
+files - do not invent alternate names or fold steps together:
+
+| File | Location | Responsibility |
+|---|---|---|
+| `<Entity>Page.vue` | `components/` | Composes `PageHeader` + `<Entity>Table` + the "New" dialog trigger. Owns the `/api/<entities>` URL constant. |
+| `<Entity>Table.vue` | `components/` | Wraps `DataTableCommon`, defines `columns`, wires row actions to `useEntityCrud`. |
+| `Create<Entity>Dialog.vue` | `common/dialog/` | Uses `useCreateEntity`; form fields via `FormField.vue`. |
+| `Edit<Entity>Dialog.vue` | `common/dialog/` | Uses `useEntityCrud`'s edit state; form fields via `FormField.vue`. |
+| `Details<Entity>Dialog.vue` | `common/dialog/` | Read-only, fields via `DetailField.vue`. |
+| `ConfirmDeleteDialog.vue` | `common/dialog/` | **Shared** - reuse the existing one, never per-entity. |
+
+Plus, outside `components/`:
+
+- `types.ts` - add the entity's DTO interface(s), mirroring `Models/Api/<Entity>Dto.cs`.
+- `router/index.ts` - add the route, pointed at `<Entity>Page.vue`.
+- `common/sidebar/Sidebar.vue` - add the nav item.
+- No new composable - `usePagedFetch`, `useEntityCrud`, `useCreateEntity` are already generic over `<TEntity>`; only new API URL constants change.
+
 ## Setup
 
 Prerequisites: Node.js 20+ (repo verified on Node 24) and npm 10+; .NET 10 SDK for the host app.
