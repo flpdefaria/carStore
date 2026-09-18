@@ -8,6 +8,7 @@ import Button from "primevue/button";
 import SelectButton from "primevue/selectbutton";
 import Message from "primevue/message";
 import DataTableCommon, { type DataTableColumn } from "./common/table/DataTableCommon.vue";
+import BarChart from "./common/chart/BarChart.vue";
 import PoweredByBadge from "./PoweredByBadge.vue";
 import { usePagedFetch } from "../composables/usePagedFetch";
 import { formatCurrency, formatDate } from "../utils/format";
@@ -96,7 +97,8 @@ const activityBuckets = computed(() => {
   }
   return Array.from(buckets, ([label, count]) => ({ label, count }));
 });
-const maxBucketCount = computed(() => Math.max(1, ...activityBuckets.value.map((b) => b.count)));
+const activityLabels = computed(() => activityBuckets.value.map((b) => b.label));
+const activityValues = computed(() => activityBuckets.value.map((b) => b.count));
 </script>
 
 <template>
@@ -163,15 +165,9 @@ const maxBucketCount = computed(() => Math.max(1, ...activityBuckets.value.map((
             <p class="text-sm font-semibold text-color">New customers</p>
             <SelectButton v-model="period" :options="periodOptions" :allow-empty="false" class="text-xs" />
           </div>
-          <div class="mt-4 flex h-40 items-end gap-3">
-            <div v-for="bucket in activityBuckets" :key="bucket.label" class="flex flex-1 flex-col items-center gap-1.75">
-              <div
-                class="w-full rounded-t-md bg-surface-700"
-                :style="{ height: `${Math.max(4, (bucket.count / maxBucketCount) * 100)}%` }"
-              ></div>
-              <span class="text-xs text-muted-color">{{ bucket.label }}</span>
-            </div>
-            <p v-if="!activityBuckets.length" class="w-full text-center text-sm text-muted-color">No customer activity yet.</p>
+          <div class="mt-4">
+            <BarChart v-if="activityBuckets.length" :labels="activityLabels" :values="activityValues" />
+            <p v-else class="flex h-40 items-center justify-center text-sm text-muted-color">No customer activity yet.</p>
           </div>
         </template>
       </Card>

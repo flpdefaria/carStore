@@ -1,6 +1,6 @@
 ---
 name: Frontend-Specialist
-description: "Use when: creating or modifying Vue 3 SFC components inside Src/CarStore.Web/ClientApp/src, implementing or matching a Figma design through the Figma MCP server, refactoring existing UI to align with the Figma design system, styling with PrimeVue design tokens + Tailwind CSS v4, wiring a component into the components/composables/styles/utils structure, or auditing the app for leftover Bootstrap. Component-level front-end work only - build/tooling/MCP setup belongs to Frontend-Tooling-Specialist."
+description: "Use when: creating or modifying Vue 3 SFC components inside Src/CarStore.Web/ClientApp/src, implementing or matching a Figma design through the Figma MCP server, refactoring existing UI to align with the Figma design system, styling with PrimeVue design tokens + Tailwind CSS v4, wiring a component into the components/composables/styles/utils structure, adding or changing an ECharts chart on any page, or auditing the app for leftover Bootstrap. Component-level front-end work only - build/tooling/MCP setup belongs to Frontend-Tooling-Specialist."
 tools:
   - read
   - edit
@@ -27,6 +27,7 @@ Read these before acting - they are the source of truth and this agent file only
 
 - `/figma-discovery` - run FIRST whenever the task references a Figma URL/node, or asks to implement or match a design, BEFORE writing any component code. Extracts the real spec via the Figma MCP tools and maps it to this codebase's PrimeVue/Tailwind token conventions instead of raw hex/pixel values.
 - `/primevue-component-build` - run to create or restyle a component: placement, reuse of existing composables/styles, PrimeVue tokens + `pt` passthrough + Tailwind + PrimeIcons, Bootstrap audit, and verification. Use it directly for straightforward work, or follow the "Workflow" section below when you need finer manual control.
+- `/echarts-chart-build` - run for ANY chart work on ANY page: a new chart type, a chart on a page other than Home, or a change to an existing chart. `echarts` is the app's one and only charting library (installed via the one-shot `echarts-new-customers-chart` skill for the Home "New customers" chart) - every chart component lives in `components/common/chart/` and goes through this skill so they all share the same import strategy and token-driven look. Never add a second charting library.
 
 ## Mandatory Vault Workflow
 

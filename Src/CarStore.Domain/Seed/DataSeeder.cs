@@ -76,6 +76,18 @@ public static class DataSeeder
             MakeCar(25, 10, "Mazda3",        "3MZBPACL0NM123480", "Hatchback",  23500.00m,  6, 2024, "Sporty compact car.",                                    18),
             MakeCar(26, 10, "CX-5",          "JM3KFBCM0N0123481", "SUV",        28500.00m,  4, 2024, "Compact crossover with upscale interior.",               22),
             MakeCar(27, 10, "MX-5 Miata",    "JM1NDAM76N0123482", "Convertible", 29500.00m,  0, 2025, "Lightweight two-seat roadster.",                          0),
+
+            // Extra units per brand so the "Fleet by brand" mix on the dashboard shows a real, non-tied spread.
+            MakeCar(28, 1,  "Corolla Cross", "JTNB6RBX1P3123483", "SUV",         24500.00m, 14, 2025, "Compact crossover built on the Corolla platform.",       0),
+            MakeCar(29, 1,  "Highlander",    "5TDGZRBH1PS123484", "SUV",         41500.00m,  9, 2024, "Three-row midsize SUV.",                                  6),
+            MakeCar(30, 1,  "Prius",         "JTDKAMFU1P3123485", "Hatchback",   28500.00m, 11, 2024, "Iconic hybrid hatchback.",                                4),
+            MakeCar(31, 1,  "Tacoma",        "3TMCZ5AN1PM123486", "Truck",       33500.00m,  7, 2024, "Midsize pickup truck.",                                  10),
+            MakeCar(32, 2,  "Escape",        "1FMCU9G61PUA23487", "SUV",         28500.00m, 15, 2024, "Compact crossover SUV.",                                  9),
+            MakeCar(33, 2,  "Bronco",        "1FMEE5DP1PLA23488", "SUV",         39500.00m,  6, 2024, "Off-road-focused midsize SUV.",                           2),
+            MakeCar(34, 2,  "Ranger",        "1FTER4FH1PLA23489", "Truck",       35500.00m, 12, 2024, "Midsize pickup truck.",                                   8),
+            MakeCar(35, 3,  "5 Series",      "WBA53AF0XLC123490", "Sedan",       58500.00m, 16, 2024, "Midsize executive sedan.",                                5),
+            MakeCar(36, 3,  "X3",            "5UX43DP0XL9123491", "SUV",         48500.00m, 13, 2024, "Compact luxury SUV.",                                     7),
+            MakeCar(37, 4,  "Pilot",         "5FNYF8H50PB123492", "SUV",         38500.00m,  8, 2024, "Three-row midsize SUV.",                                  3),
         };
 
         db.Cars.AddRange(cars);
@@ -96,11 +108,21 @@ public static class DataSeeder
 
         var customers = new List<Customer>
         {
-            MakeCustomer(1, "Alice Johnson",  "alice.johnson@example.com",  "555-0101", new DateTime(2025, 1, 15, 9, 30, 0, DateTimeKind.Utc)),
-            MakeCustomer(2, "Bob Smith",      "bob.smith@example.com",      "555-0102", new DateTime(2025, 2, 20, 14, 15, 0, DateTimeKind.Utc)),
-            MakeCustomer(3, "Carol Williams", "carol.williams@example.com", null,       new DateTime(2025, 3, 10, 11, 0, 0, DateTimeKind.Utc)),
-            MakeCustomer(4, "David Brown",    "david.brown@example.com",    "555-0104", new DateTime(2025, 4, 5, 16, 45, 0, DateTimeKind.Utc)),
-            MakeCustomer(5, "Eva Garcia",     "eva.garcia@example.com",     "555-0105", new DateTime(2025, 5, 12, 8, 0, 0, DateTimeKind.Utc))
+            MakeCustomer(1,  "Alice Johnson",   "alice.johnson@example.com",   "555-0101", new DateTime(2021, 3, 15, 9, 30, 0, DateTimeKind.Utc)),
+            MakeCustomer(2,  "Bob Smith",       "bob.smith@example.com",       "555-0102", new DateTime(2021, 9, 2, 14, 15, 0, DateTimeKind.Utc)),
+            MakeCustomer(3,  "Carol Williams",  "carol.williams@example.com",  null,       new DateTime(2022, 2, 18, 11, 0, 0, DateTimeKind.Utc)),
+            MakeCustomer(4,  "David Brown",     "david.brown@example.com",     "555-0104", new DateTime(2022, 7, 30, 16, 45, 0, DateTimeKind.Utc)),
+            MakeCustomer(5,  "Eva Garcia",      "eva.garcia@example.com",      "555-0105", new DateTime(2022, 11, 9, 8, 0, 0, DateTimeKind.Utc)),
+            MakeCustomer(6,  "Frank Miller",    "frank.miller@example.com",    "555-0106", new DateTime(2023, 1, 22, 10, 20, 0, DateTimeKind.Utc)),
+            MakeCustomer(7,  "Grace Lee",       "grace.lee@example.com",       "555-0107", new DateTime(2023, 6, 14, 13, 50, 0, DateTimeKind.Utc)),
+            MakeCustomer(8,  "Henry Wilson",    "henry.wilson@example.com",    null,       new DateTime(2023, 10, 3, 15, 10, 0, DateTimeKind.Utc)),
+            MakeCustomer(9,  "Isabella Martin", "isabella.martin@example.com", "555-0109", new DateTime(2024, 2, 25, 9, 5, 0, DateTimeKind.Utc)),
+            MakeCustomer(10, "Jack Thompson",   "jack.thompson@example.com",   "555-0110", new DateTime(2024, 8, 11, 12, 40, 0, DateTimeKind.Utc)),
+            MakeCustomer(11, "Karen White",     "karen.white@example.com",     "555-0111", new DateTime(2025, 1, 15, 9, 30, 0, DateTimeKind.Utc)),
+            MakeCustomer(12, "Liam Harris",     "liam.harris@example.com",     "555-0112", new DateTime(2025, 4, 5, 16, 45, 0, DateTimeKind.Utc)),
+            MakeCustomer(13, "Mia Clark",       "mia.clark@example.com",       null,       new DateTime(2025, 9, 28, 8, 0, 0, DateTimeKind.Utc)),
+            MakeCustomer(14, "Noah Lewis",      "noah.lewis@example.com",      "555-0114", new DateTime(2026, 3, 19, 11, 15, 0, DateTimeKind.Utc)),
+            MakeCustomer(15, "Olivia Walker",   "olivia.walker@example.com",   "555-0115", new DateTime(2026, 7, 8, 14, 25, 0, DateTimeKind.Utc)),
         };
 
         db.Customers.AddRange(customers);
