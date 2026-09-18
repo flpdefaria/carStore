@@ -111,48 +111,56 @@ const activityValues = computed(() => activityBuckets.value.map((b) => b.count))
     </header>
 
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-      <Card class="!rounded-xl !shadow-sm">
+      <Card class="!rounded-xl !bg-surface-50 !shadow-sm">
         <template #content>
           <div class="flex items-center justify-between">
-            <span class="text-xs text-muted-color">Fleet value</span>
-            <i class="pi pi-wallet rounded-md bg-surface-100 p-1.75 text-sm text-surface-700" />
+            <span class="text-sm font-medium text-muted-color">Fleet value</span>
+            <div class="flex size-9 shrink-0 items-center justify-center rounded-md bg-surface-0">
+              <i class="pi pi-wallet text-xl text-surface-700" />
+            </div>
           </div>
-          <p class="mt-2 text-2xl font-bold text-surface-700">{{ formatCurrency(fleetValue) }}</p>
+          <p class="mt-1.75 text-[32px] font-bold text-surface-700">{{ formatCurrency(fleetValue) }}</p>
         </template>
       </Card>
 
-      <Card class="!rounded-xl !shadow-sm">
+      <Card class="!rounded-xl !bg-surface-50 !shadow-sm">
         <template #content>
           <div class="flex items-center justify-between">
-            <span class="text-xs text-muted-color">Cars in stock</span>
-            <i class="pi pi-car rounded-md bg-surface-100 p-1.75 text-sm text-surface-700" />
+            <span class="text-sm font-medium text-muted-color">Car in stock</span>
+            <div class="flex size-9 shrink-0 items-center justify-center rounded-md bg-surface-0">
+              <i class="pi pi-car text-xl text-surface-700" />
+            </div>
           </div>
-          <p class="mt-2 text-2xl font-bold text-surface-700">{{ carsInStock }}</p>
+          <p class="mt-1.75 text-[32px] font-bold text-surface-700">{{ carsInStock }}</p>
         </template>
       </Card>
 
-      <Card class="!rounded-xl !shadow-sm">
+      <Card class="!rounded-xl !bg-surface-50 !shadow-sm">
         <template #content>
           <div class="flex items-center justify-between">
-            <span class="text-xs text-muted-color">Registered customers</span>
-            <i class="pi pi-address-book rounded-md bg-surface-100 p-1.75 text-sm text-surface-700" />
+            <span class="text-sm font-medium text-muted-color">Registered customers</span>
+            <div class="flex size-9 shrink-0 items-center justify-center rounded-md bg-surface-0">
+              <i class="pi pi-address-book text-xl text-surface-700" />
+            </div>
           </div>
-          <p class="mt-2 text-2xl font-bold text-surface-700">{{ recentTotal }}</p>
-          <Tag value="Live" severity="info" class="mt-2 !text-xs" />
+          <p class="mt-1.75 text-[32px] font-bold text-surface-700">{{ recentTotal }}</p>
+          <Tag value="Live" severity="info" class="mt-1.75 !text-xs" />
         </template>
       </Card>
 
-      <Card class="!rounded-xl !shadow-sm">
+      <Card class="!rounded-xl !bg-surface-50 !shadow-sm">
         <template #content>
           <div class="flex items-center justify-between">
-            <span class="text-xs text-muted-color">Availability rate</span>
-            <i class="pi pi-check-circle rounded-md bg-surface-100 p-1.75 text-sm text-surface-700" />
+            <span class="text-sm font-medium text-muted-color">Availability rate</span>
+            <div class="flex size-9 shrink-0 items-center justify-center rounded-md bg-surface-0">
+              <i class="pi pi-check-circle text-xl text-surface-700" />
+            </div>
           </div>
-          <p class="mt-2 text-2xl font-bold text-surface-700">{{ availabilityRate }}%</p>
+          <p class="mt-1.75 text-[32px] font-bold text-surface-700">{{ availabilityRate }}%</p>
           <Tag
             :value="availabilityRate >= 50 ? 'High' : 'Low'"
             :severity="availabilityRate >= 50 ? 'success' : 'warn'"
-            class="mt-2 !text-xs"
+            class="mt-1.75 !text-xs"
           />
         </template>
       </Card>

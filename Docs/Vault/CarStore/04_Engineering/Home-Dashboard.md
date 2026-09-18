@@ -12,23 +12,29 @@ tags:
 # Home Dashboard
 
 `Home.vue` (route `/`) was rewritten from a two-card "Cars/Brands" landing page into a small analytics
-dashboard, styled after a reference screenshot the user provided (a generic crypto-portfolio dashboard UI,
-not a Figma node) and rebuilt entirely with real data from the existing `/api/cars`, `/api/brands`,
-`/api/customers` endpoints — no fabricated metrics, deltas, or history.
+dashboard, first styled after a reference screenshot (a generic crypto-portfolio dashboard UI), then
+progressively corrected against real Figma nodes (file `2zyEr3S75NxHIJ5vgTFCWR`) as they became reachable.
+Rebuilt entirely with real data from the existing `/api/cars`, `/api/brands`, `/api/customers` endpoints —
+no fabricated metrics, deltas, or history.
 
 ## Layout
 
-- Header: "Overview / Live" eyebrow, "Fleet command" title, description, a decorative search `InputText`
-  and a notification bell `Button` (both visual only — no backend endpoint exists for search or
-  notifications, so neither is wired to any behavior).
-- Stat card row (`Card` x4): fleet value (`sum(price * stock)`), cars in stock (`sum(stock)`), registered
-  customers count, and availability rate (`available / total * 100`) — all `computed()` from the fetched
-  `CarDto[]`/`CustomerDto[]`.
-- "New customers" panel: a CSS-only bar chart (plain `div` heights, no charting library — none is in
-  `package.json` and adding one is out of this component's scope) grouping real `CustomerDto.createdAt`
-  values by week/month/year via a `SelectButton` period toggle (`period` ref drives `bucketLabel()`).
+- Header: "Fleet command" title + description only (the "Overview/Live" eyebrow, decorative search
+  `InputText`, and notification bell `Button` from the first pass were removed per user request — they had
+  no backing functionality).
+- Stat card row (`Card` x4: fleet value, cars in stock, registered customers, availability rate), corrected
+  on 2026-09-18 against Figma node `217:6263` ("card cars" component set): `!bg-surface-50` card background
+  (not the default white), `text-sm font-medium` muted label, a `size-9 bg-surface-0 rounded-md` icon box
+  wrapping a `text-xl` icon (not a bare padded icon), and a `text-[32px] font-bold` value (Figma's exact
+  32px, off Tailwind's default scale). All four values are `computed()` from the fetched `CarDto[]`/
+  `CustomerDto[]` — no deltas/history, since Figma's card also does not show any real trend data beyond the
+  static tags.
+- "New customers" panel: an ECharts `BarChart` (see `components/common/chart/BarChart.vue`, added
+  separately per the `echarts-chart-build` skill) grouping real `CustomerDto.createdAt` values by
+  week/month/year via a `SelectButton` period toggle (`period` ref drives `bucketLabel()`). This replaced an
+  earlier CSS-only bar chart from before ECharts was installed.
 - "Fleet by brand" panel: top 5 `BrandDto` by `carsCount`, shown as a dot + name + share-of-fleet percentage
-  list, linking to `/brands`.
+  + progress bar, linking to `/brands`.
 - "Recent customers": a real lazy-paged `DataTableCommon` bound to `/api/customers` (separate
   `usePagedFetch` instance from the one used for the chart's aggregate load), rows defaulting to 5.
 - Footer: kept the existing `PoweredByBadge`, added a "Manage fleet" CTA to `/cars`.
