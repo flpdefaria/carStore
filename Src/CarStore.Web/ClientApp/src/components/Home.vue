@@ -12,7 +12,7 @@ import BarChart from "./common/chart/BarChart.vue";
 import PoweredByBadge from "./PoweredByBadge.vue";
 import { usePagedFetch } from "../composables/usePagedFetch";
 import { formatCurrency, formatDate } from "../utils/format";
-import { primaryButtonClass, secondaryButtonClass } from "../styles/buttonStyles";
+import { primaryButtonClass } from "../styles/buttonStyles";
 import type { BrandDto, CarDto, CustomerDto } from "../types";
 
 const carsApiUrl = "/api/cars";
@@ -202,7 +202,7 @@ const activityValues = computed(() => activityBuckets.value.map((b) => b.count))
             </li>
             <li v-if="!topBrands.length" class="text-sm text-muted-color">No brands registered yet.</li>
           </ul>
-          <Button :as="RouterLink" to="/brands" :class="secondaryButtonClass + ' mt-4 w-full justify-center'">
+          <Button :as="RouterLink" to="/brands" :class="primaryButtonClass + ' mt-4 w-full justify-center'">
             View brands
             <i class="pi pi-arrow-right text-xs" />
           </Button>
@@ -214,7 +214,7 @@ const activityValues = computed(() => activityBuckets.value.map((b) => b.count))
       <template #content>
         <div class="flex items-center justify-between">
           <p class="text-sm font-semibold text-color">Recent customers</p>
-          <Button :as="RouterLink" to="/customers" :class="secondaryButtonClass">
+          <Button :as="RouterLink" to="/customers" :class="primaryButtonClass">
             View all
             <i class="pi pi-arrow-right text-xs" />
           </Button>
