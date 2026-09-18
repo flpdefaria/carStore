@@ -5,7 +5,6 @@ import { type DataTablePageEvent } from "primevue/datatable";
 import Card from "primevue/card";
 import Tag from "primevue/tag";
 import Button from "primevue/button";
-import InputText from "primevue/inputtext";
 import SelectButton from "primevue/selectbutton";
 import Message from "primevue/message";
 import DataTableCommon, { type DataTableColumn } from "./common/table/DataTableCommon.vue";
@@ -104,21 +103,8 @@ const maxBucketCount = computed(() => Math.max(1, ...activityBuckets.value.map((
   <div class="flex flex-col gap-4">
     <header class="flex flex-wrap items-start justify-between gap-4">
       <div class="flex flex-col gap-1">
-        <div class="flex items-center gap-1.75 text-xs text-muted-color">
-          <span>Overview</span>
-          <span class="flex items-center gap-1">
-            <span class="size-1.5 rounded-full bg-emerald-500"></span>
-            Live
-          </span>
-        </div>
         <h1 class="text-3xl font-black text-surface-700">Fleet command</h1>
         <p class="text-sm text-muted-color">Monitor stock exposure, fleet value, and recent customer activity.</p>
-      </div>
-      <div class="flex items-center gap-1.75">
-        <InputText placeholder="Search cars, brands, customers" class="w-64!" />
-        <Button text rounded severity="secondary" aria-label="Notifications">
-          <i class="pi pi-bell" />
-        </Button>
       </div>
     </header>
 
