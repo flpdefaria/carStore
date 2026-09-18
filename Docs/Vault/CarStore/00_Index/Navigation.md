@@ -43,6 +43,7 @@ Full list of notes in the CarStore vault, grouped by folder.
 - [[Testing]]
 - [[Sidebar-Logo-Icon]]
 - [[Sidebar-Collapse-Expand]]
+- [[Home-Dashboard]]
 
 ## 05_Operations
 

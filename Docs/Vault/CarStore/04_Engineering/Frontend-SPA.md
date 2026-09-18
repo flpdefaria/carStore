@@ -30,7 +30,7 @@ no longer reflected in the instructions.
 - `src/main.ts` now mounts a **single** app on `#app`, wired with `.use(router)`.
 - `Sidebar.vue` no longer takes `active`/`*Url` props; it uses `useRoute()`/`<router-link>` directly.
 - `Home.vue`'s "Open Cars"/"Open Brands" buttons use `<router-link>` (via PrimeVue Button's `as` prop)
-  instead of `data-*`-provided hrefs.
+  instead of `data-*`-provided hrefs. `Home.vue` was later rewritten into a dashboard — see [[Home-Dashboard]].
 - `BooksPage.vue`/`AuthorsPage.vue`/`CustomersPage.vue` hold their own static `/api/*` URL constants instead
   of receiving them as `data-*` props (there is only one mount point left, so there is nothing to pass).
 - `CustomersPage.vue`/`CustomersTable.vue` were migrated from "list in Vue, CRUD via Razor forms" to full
