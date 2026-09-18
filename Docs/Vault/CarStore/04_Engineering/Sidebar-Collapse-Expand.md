@@ -1,7 +1,7 @@
 ---
 type: guide
 created: 2026-09-17
-updated: 2026-09-17
+updated: 2026-09-18
 tags:
   - note
   - type/guide
@@ -11,26 +11,50 @@ tags:
 
 # Sidebar Collapse/Expand on Hover
 
-The global sidebar collapses to an icon-only rail by default and expands to the full layout on hover.
+The global sidebar collapses to an icon-only rail matching Figma by default and expands to a bordered full
+layout on hover.
 
 ## Context
 
 `Src/CarStore.Web/ClientApp/src/components/common/sidebar/Sidebar.vue` previously rendered a single fixed
-`w-69.5` layout at all times. It now defaults to a collapsed `w-20` icon rail and expands back to the
-existing `w-69.5` layout (logo text, nav labels, profile name/email) while the pointer is over the `<aside>`.
+`w-69.5` layout at all times. It now defaults to a collapsed rail and expands back to the full layout (logo
+text, nav labels, profile name/email) while the pointer is over the `<aside>`.
 
-Figma node `207:2216` (file `2zyEr3S75NxHIJ5vgTFCWR`) was the requested reference for the collapsed-state
-spec, but the `figma-mcp` server was not exposed as a callable tool in the session that made this change
-(same limitation recorded in [[Sidebar-Logo-Icon]]), so the collapsed width/spacing could not be pulled
-live. No new colors/tokens were introduced: the collapsed rail reuses the existing `surface-*` tokens,
-paddings and icon sizing already established for the expanded layout. Re-verify the collapsed width and
-spacing against Figma node `207:2216` next time the Figma MCP tools are available.
+The collapsed state was first implemented with invented values (`figma-mcp` was not reachable at the time).
+On 2026-09-18, `figma-mcp` became available: `get_design_context` was pulled for node `216:3304` (the
+"sidebar collapse" variant) and then for node `219:8065` (the "sidebar expanded" variant, both in file
+`2zyEr3S75NxHIJ5vgTFCWR`), and the whole component was corrected to match both exactly. The expanded pull
+revealed the container background/border and the nav-item styling are actually **identical** between the two
+states (only label/text visibility and width differ) — the initial collapsed-only pass had wrongly assumed
+the previously-invented expanded look (bordered white card, `bg-blue-100` active pill) was intentional; it
+was replaced with the real shared values below. The Code Connect auto-mapping suggested for both nodes failed
+("Published component not found") since these are local Vue components, not a published Figma library —
+expected, and not a blocker.
 
 ## Details
 
 - State: a local `expanded` ref (`false` by default), toggled by `@mouseenter`/`@mouseleave` on the `<aside>`.
-- Width: `w-20` (collapsed) / `w-69.5` (expanded), animated via `transition-[width] duration-200 ease-in-out`
-  and `overflow-hidden` on the root to avoid content reflow during the transition.
+- Width: `w-[78px]` (collapsed) / `w-[278px]` (expanded), animated via `transition-[width] duration-200
+  ease-in-out` and `overflow-hidden` on the root to avoid content reflow.
+- Container background: `bg-surface-100`, no border, in **both** states (previously the collapsed/expanded
+  backgrounds were assumed to differ; the expanded pull disproved that).
+- Logo box: `size-10 rounded-xl overflow-hidden` with the image filling it via `object-cover` (Figma has no
+  border/background wrapper around the logo, in either state).
+- Nav items: `gap-3` between items (Figma: 12px, previously `gap-1.75`/7px), no border in either state.
+  Background/text is the same in both states: active = `bg-surface-800` with `text-surface-0`; inactive =
+  `bg-surface-100` with `text-color` (plus a `hover:bg-surface-50` affordance not shown in Figma's static
+  frames, kept for interaction feedback). Only the label `<span>`'s visibility (`v-show="expanded"`) differs
+  between states. Padding is `py-[10.5px] pr-[10.5px] pl-[14.5px]` — a **static** (never toggled) asymmetric
+  left padding, computed so the 14px icon sits centered inside the 78px collapsed rail
+  (`(78 - 2*17.5 aside-padding - 14 icon) / 2 = 14.5`); a `justify-center`/`justify-start` toggle was tried
+  first but made the icon visibly slide during the width transition — using one fixed padding value for both
+  states keeps the icon centered when collapsed with zero movement on hover, at the cost of the label sitting
+  4px further right than the previous symmetric padding when expanded (visually negligible).
+- Profile card: `bg-surface-50` + `border-surface-300` wrapper only when expanded (Figma-verified — the
+  collapsed variant has no card, just the bare avatar), `justify-center`/`justify-start` toggle for the
+  avatar's horizontal position.
+- Avatar: `size-[35px]` when collapsed, `size-10` when expanded (Figma has `42px`; kept on the existing
+  Tailwind scale value since the 2px difference is visually negligible).
 - Content hidden when collapsed via `v-show="expanded"`: the "CarStore" / "Premium dealership" text block,
   each nav item's label `<span>`, and the profile card's name/email block. Icons (logo icon, nav icons,
   avatar) remain visible in both states so the rail stays usable collapsed.

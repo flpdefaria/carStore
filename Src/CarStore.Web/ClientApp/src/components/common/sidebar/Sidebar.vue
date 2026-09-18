@@ -20,14 +20,14 @@ const expanded = ref(false);
 
 <template>
   <aside
-    class="flex h-full shrink-0 flex-col gap-1.75 overflow-hidden rounded-xl border border-surface-300 bg-surface-0 px-[17.5px] py-[17.5px] transition-[width] duration-200 ease-in-out"
-    :class="expanded ? 'w-69.5' : 'w-20'"
+    class="flex h-full shrink-0 flex-col gap-1.75 overflow-hidden rounded-xl bg-surface-100 px-[17.5px] py-[17.5px] transition-[width] duration-200 ease-in-out"
+    :class="expanded ? 'w-[278px]' : 'w-[78px]'"
     @mouseenter="expanded = true"
     @mouseleave="expanded = false"
   >
     <div class="flex h-10 w-full items-center gap-1.75 overflow-hidden py-[17.5px]">
-      <div class="flex size-10 shrink-0 items-center justify-center rounded-lg border border-surface-300 bg-surface-0">
-        <i class="pi pi-car text-2xl text-surface-700" />
+      <div class="size-10 shrink-0 overflow-hidden rounded-xl">
+        <img :src="'/images/sidebar/minicar.gif'" alt="CarStore" class="size-full object-cover" />
       </div>
       <div v-show="expanded" class="flex min-w-0 flex-1 flex-col">
         <p class="truncate whitespace-nowrap text-[22px] font-black leading-none text-surface-700">CarStore</p>
@@ -37,13 +37,13 @@ const expanded = ref(false);
 
     <div class="h-px w-full bg-surface-300"></div>
 
-    <nav class="flex w-full flex-col gap-1.75 py-[17.5px]">
+    <nav class="flex w-full flex-col gap-3 py-[17.5px]">
       <router-link
         v-for="item in navItems"
         :key="item.key"
         :to="item.to"
-        class="flex h-11 w-full items-center gap-1.75 overflow-hidden rounded-lg border border-surface-300 p-[11.5px] text-sm font-medium no-underline text-color"
-        :class="item.key === activeKey ? 'bg-blue-100' : 'bg-surface-0 hover:bg-surface-50'"
+        class="flex h-10 w-full items-center gap-1.75 overflow-hidden rounded-lg py-[10.5px] pl-[14.5px] pr-[10.5px] text-sm font-medium no-underline"
+        :class="item.key === activeKey ? 'bg-surface-800 text-surface-0' : 'bg-surface-100 text-color hover:bg-surface-50'"
       >
         <i class="pi shrink-0 text-sm" :class="item.icon" />
         <span v-show="expanded" class="truncate whitespace-nowrap">{{ item.label }}</span>
@@ -56,7 +56,12 @@ const expanded = ref(false);
       class="flex h-19 w-full items-center gap-1.75 overflow-hidden rounded-xl p-[17.5px]"
       :class="expanded ? 'justify-start border border-surface-300 bg-surface-50' : 'justify-center'"
     >
-      <Avatar icon="pi pi-user" shape="circle" class="size-10 shrink-0 bg-surface-300! text-surface-700!" />
+      <Avatar
+        icon="pi pi-user"
+        shape="circle"
+        class="shrink-0 bg-surface-300! text-surface-700!"
+        :class="expanded ? 'size-10' : 'size-[35px]'"
+      />
       <div v-show="expanded" class="flex min-w-0 flex-1 flex-col">
         <p class="truncate whitespace-nowrap text-sm font-semibold text-color">Felipe Faria</p>
         <p class="truncate whitespace-nowrap text-xs text-muted-color">felipe@email.com</p>
