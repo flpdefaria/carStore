@@ -26,18 +26,18 @@ is ambiguous.
    - `composables/useEntityCrud.ts` (delete/edit/details row-action state + fetch) and `composables/useCreateEntity.ts` (create-dialog state + POST).
    - `styles/buttonStyles.ts` (`primaryButtonClass`/`secondaryButtonClass`/`dangerButtonClass`).
    - `components/common/dialog/dialogStyles.ts` (`dialogShellPt(width, contentClass?)`/`detailsDialogPt(width)`).
-   - `components/common/table/DataTableCommon.vue` for any list (columns, `#col-<field>` slots, row-action menu; actions either navigate via `detailsUrl`/`editUrl`/`deleteUrl` or emit via `confirmDetails`/`confirmEdit`/`confirmDelete`).
+   - `components/common/table/DataTableCommon.vue` for any list (columns, `#col-<field>` slots, row-action menu; actions emit via `confirmDetails`/`confirmEdit`/`confirmDelete` - the `detailsUrl`/`editUrl`/`deleteUrl` navigate props are legacy, do not use them for new work).
    - `components/common/form/FormField.vue` (editable label + input) / `DetailField.vue` (read-only label + value); `components/common/pageheader/PageHeader.vue` for the title + `#actions` slot.
    - `utils/format.ts` (`formatCurrency`, `formatDate`) for any pt-BR/BRL formatting.
-3. **Respect the mount contract.** Props coming from a Razor mount point arrive as strings from `el.dataset` (`data-api-url` -> `apiUrl`); declare them `string` and parse numbers/booleans inside the component. Never hardcode an API or route URL. A new page also needs a `mount(<Feature>Page, "#<feature>-app")` line in `src/main.ts` and the matching `<div>` in the `.cshtml`.
+3. **Respect the routing contract.** API URLs are static constants declared inside the page component that owns the fetch (`/api/cars`, `/api/brands`, ...) - never threaded through Razor `data-*` props, since there is only one mount point (`#app`) left. A new page needs a route in `src/router/index.ts` pointing at a `<Feature>Page.vue`, plus a nav item in `Sidebar.vue` - not a new `.cshtml` mount `<div>`.
 4. **Apply PrimeVue design tokens for color** - never a raw hex: `surface-0/50/100/300/500/700/800`, `text-color`, `text-muted-color`, `border-surface-300`, `bg-primary`, `text-primary-contrast`. See the token table in `/figma-discovery` when translating a Figma spec.
 5. **Style through `pt` (passthrough) sections** for components that expose them (`Dialog`, `DataTable`, `Paginator`, `Menu`, `Button` state overrides) rather than a bare `class` - this matches every existing dialog/table here.
 6. **Apply Tailwind utilities for layout/spacing**, using arbitrary values (`w-[765px]`, `rounded-[21px]`, `gap-1.75`) when the design does not land on Tailwind's default scale - established convention, not a workaround.
 7. **`!important` syntax:** always postfix (`bg-surface-700!`), never prefix. Only when overriding a PrimeVue component's OWN theme-colored state class (`.p-paginator-page-selected`, default Button primary); plain layout/spacing `pt` classes never need it.
 8. **Icons and assets:** PrimeIcons only (`<i class="pi pi-*">` or a component's `icon` prop). Figma-exported images go to `wwwroot/images/<page>/` and are referenced by absolute URL.
 9. **Data and errors:** lists are `lazy` + `paginator` against `/api/*` (server-side paging only). API failures return `{ "message": "..." }`; surface it with a PrimeVue `Message severity="error"`, never `alert()`. Keep `types.ts` in sync with the C# DTOs.
-10. **Bootstrap audit (always before finishing):** grep the touched files and `Src/CarStore.Web/**` (excluding `node_modules`, `wwwroot/dist`, `bin`, `obj`) for `bootstrap|bi-|cdn.jsdelivr.net/npm/bootstrap`. Razor views legitimately use `btn`, `btn-primary`, `form-control`, `alert-danger` - these are custom `@layer components` Tailwind classes defined in `src/style.css` with the same names as the old Bootstrap ones, NOT real Bootstrap; leave them alone. Remove only genuine Bootstrap `<link>`/`<script>` tags, a `wwwroot/lib/bootstrap/` folder, or `bi bi-*` icon usages.
-11. **Verify.** From `Src/CarStore.Web/ClientApp`: `npx vue-tsc --noEmit`, then `npm run build`; fix all errors. If a `.cshtml` mount point or an API DTO changed, also run `dotnet build Src/CarStore.slnx`. Commit the regenerated `wwwroot/dist` with the change, then load the page (`dotnet run --project Src/CarStore.Web`, `http://localhost:5045`) and compare against the design.
+10. **Bootstrap audit (always before finishing):** grep the touched files and `Src/CarStore.Web/**` (excluding `node_modules`, `wwwroot/dist`, `bin`, `obj`) for `bootstrap|bi-|cdn.jsdelivr.net/npm/bootstrap`. There are no more Razor CRUD forms in the app, so `btn`/`btn-primary`/`form-control`/`alert-danger` should not appear anywhere outside the now-dead `@layer components` shim in `src/style.css`; remove genuine Bootstrap `<link>`/`<script>` tags, a `wwwroot/lib/bootstrap/` folder, or `bi bi-*` icon usages if found.
+11. **Verify.** From `Src/CarStore.Web/ClientApp`: `npx vue-tsc --noEmit`, then `npm run build`; fix all errors. If an API DTO changed, also run `dotnet build Src/CarStore.slnx`. Commit the regenerated `wwwroot/dist` with the change, then load the page (`dotnet run --project Src/CarStore.Web`, `http://localhost:5045`) and compare against the design.
 12. **Record it.** The calling agent must run `/vault-write` afterwards with the component(s) changed, the Figma node implemented, and any new token mapping or shared helper extracted.
 
 ## Rules
@@ -45,8 +45,8 @@ is ambiguous.
 - Never hardcode a color that already has a `surface-*`/`*-color` token equivalent.
 - Never duplicate a Tailwind class string, `pt` config object, or fetch/loading/error state machine that already exists in `styles/`, `common/dialog/dialogStyles.ts`, or `composables/` - import and reuse, or extend it.
 - Never introduce Bootstrap, jQuery-Bootstrap plugins, or `bi bi-*` icons - PrimeVue + Tailwind + PrimeIcons only.
-- Never introduce a second JS framework, a client-side router, or a global store - Vue 3 islands mounted by `main.ts`; MVC owns navigation.
+- Never introduce a second JS framework, a second routing library, or a global store - `vue-router` already owns navigation; adding Pinia is a Frontend-Tooling-Specialist proposal, not this skill's call.
 - Never paginate client-side.
-- Never change `vite.config.ts`, `package.json` or `.vscode/mcp.json` from this skill - that is Frontend-Tooling-Specialist's scope.
-- Never delete a Razor CRUD view as a side effect of migrating its list page - ask first.
+- Never change `vite.config.ts`, `package.json`, `router/index.ts`'s setup, or `.vscode/mcp.json` from this skill - that is Frontend-Tooling-Specialist's scope.
+- Never add a new mount point or page-serving Razor view - a new page is a `router/index.ts` route + component + `Sidebar.vue` nav item.
 - Never skip the `vue-tsc --noEmit` + `npm run build` verification step.

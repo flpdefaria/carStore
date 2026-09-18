@@ -31,11 +31,11 @@ from JSON endpoints under `/api/*`.
 
 ```
 Browser GET /cars (first load or refresh)
-  └─ No BooksController exists -> MVC fallback -> HomeController.Index -> Views/Home/Index.cshtml (div#app only)
+  └─ No CarsController exists -> MVC fallback -> HomeController.Index -> Views/Home/Index.cshtml (div#app only)
        └─ _Layout.cshtml            -> ~/dist/main.css + ~/dist/main.js
             └─ main.ts mount()      -> App.vue (Sidebar + RouterView) mounted on #app
-                 └─ vue-router resolves "/cars" -> BooksPage.vue
-                      └─ fetch /api/cars?page=1&pageSize=10  -> BooksApiController -> IBookService.GetPagedAsync
+                 └─ vue-router resolves "/cars" -> CarsPage.vue
+                      └─ fetch /api/cars?page=1&pageSize=10  -> CarsApiController -> ICarService.GetPagedAsync
 
 Browser click on a Sidebar nav item (already loaded)
   └─ vue-router intercepts, swaps <RouterView> content client-side - no server round-trip, no full reload
@@ -75,8 +75,8 @@ Rules:
 | Route (client-side, via vue-router) | Component | Rendering |
 |---|---|---|
 | `/` | `Home.vue` | Vue |
-| `/cars` | `BooksPage.vue` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
-| `/brands` | `AuthorsPage.vue` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
+| `/cars` | `CarsPage.vue` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
+| `/brands` | `BrandsPage.vue` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
 | `/customers` | `CustomersPage.vue` | Vue: list + Create/Edit/Details/Delete dialogs (full CRUD in Vue) |
 
 | Server route | View | Purpose |
@@ -91,9 +91,10 @@ and `_ValidationScriptsPartial.cshtml` were removed for the same reason.
 ## MVC controllers
 
 `HomeController` is the only page-serving controller left: `Index()` (SPA shell) and `Error()`
-(`UseExceptionHandler` target). `BooksController`, `AuthorsController` and `CustomersController` were removed
-- their former responsibility (paged Index views) is now owned entirely by vue-router + the `/api/*`
-controllers. Do not add business logic to `HomeController` (see `.github/copilot-instructions.md`).
+(`UseExceptionHandler` target). The old page-serving `CarsController`, `BrandsController` and
+`CustomersController` were removed - their former responsibility (paged Index views) is now owned entirely by
+vue-router + the `/api/*` controllers. Do not add business logic to `HomeController` (see
+`.github/copilot-instructions.md`).
 
 ## JSON API controllers (`Controllers/Api/`)
 
@@ -102,23 +103,23 @@ The bridge between MVC services and Vue components:
 ```csharp
 [ApiController]
 [Route("api/cars")]
-public class BooksApiController : ControllerBase
+public class CarsApiController : ControllerBase
 {
-    [HttpGet]                        // GET /api/cars?page=1&pageSize=10 -> PagedResultDto<BookDto>
-    [HttpPost]                       // create      -> 201 + BookDto
-    [HttpPut("{id}")]                // update      -> 200 + BookDto | 404
+    [HttpGet]                        // GET /api/cars?page=1&pageSize=10 -> PagedResultDto<CarDto>
+    [HttpPost]                       // create      -> 201 + CarDto
+    [HttpPut("{id}")]                // update      -> 200 + CarDto | 404
     [HttpDelete("{id}")]             // delete      -> 204 | 404
 }
 ```
 
 Conventions:
 
-- **Reuse the existing application services** (`IBookService`, `IAuthorService`, `ICustomerService`). Never duplicate business rules, validation or paging logic in an API controller - see `pagination.instructions.md`.
-- **Always map to a DTO** in `Models/Api/`. Entities have circular navigation properties (`Car.Brand` / `Brand.Cars`) that break JSON serialization, and DTOs also flatten what the table needs (`AuthorName`, `BooksCount`, `Age`).
+- **Reuse the existing application services** (`ICarService`, `IBrandService`, `ICustomerService`). Never duplicate business rules, validation or paging logic in an API controller - see `pagination.instructions.md`.
+- **Always map to a DTO** in `Models/Api/`. Entities have circular navigation properties (`Car.Brand` / `Brand.Cars`) that break JSON serialization, and DTOs also flatten what the table needs (`BrandName`, `CarsCount`, `Age`).
 - Paged responses use `PagedResultDto<T>` (`Items`, `PageNumber`, `PageSize`, `TotalItems`, `TotalPages`, `HasPrevious`, `HasNext`) - it mirrors `PagedResult<T>` and the `PagedResult<T>` interface in `ClientApp/src/types.ts`.
 - Catch `DomainException` and return `BadRequest(new { message = ex.Message })`. The front-end composables read `body.message` and show it in the dialog, so the domain message is the user-facing error.
 - Return `NotFound()` for a missing id, `NoContent()` for a successful delete.
-- Dropdown/lookup data gets its own endpoint (`GET /api/brands/options` -> `AuthorOptionDto[]`), never a full paged fetch.
+- Dropdown/lookup data gets its own endpoint (`GET /api/brands/options` -> `BrandOptionDto[]`), never a full paged fetch.
 - API controllers use `[ApiController]` + `ControllerBase` (no views). There is no authentication in this solution; add auth before exposing mutating endpoints publicly.
 - Keep the JSON casing default (camelCase) - `types.ts` depends on it.
 

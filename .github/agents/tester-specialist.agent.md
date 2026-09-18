@@ -1,6 +1,6 @@
 ---
 name: Tester-Specialist
-description: "Use when: creating a new xUnit test project, adding it to the CarStore solution, adding NuGet packages for testing, writing unit tests for CarStore domain entities (Brand, Car), or running dotnet test to verify correctness. Specializes in .NET testing for the CarStore solution."
+description: "Use when: writing or extending unit tests for CarStore domain entities (Brand, Car, Customer) in the existing CarStore.Tests xUnit project, adding NuGet packages for testing, or running dotnet test to verify correctness. Specializes in .NET testing for the CarStore solution."
 
 # Tester Specialist
 
@@ -21,11 +21,15 @@ Writing to the vault MUST happen ONLY through `/vault-write` - never hand-edit v
 
 - **Brand** entity: `Create()` factory, `Update()`, `EnsureCanBeDeleted()`, computed `Age` property. Throws `DomainException` for: empty name, name > 150 chars, FoundedDate in the future, deleting brand with cars.
 - **Car** entity: `Create()` factory, `Update()`. Throws `DomainException` for: empty title, negative price, negative stock, ModelYear in the future.
+- **Customer** entity: `Create()` factory, `Update()`. Throws `DomainException` for: empty/whitespace full name, full name > 150 chars, empty/invalid email.
 - `DomainException` is in `CarStore.Domain.Exceptions`. Always use `FluentAssertions` to assert it is thrown: `act.Should().Throw<DomainException>().WithMessage("...")`.
 
-## Creating a New Test Project
+## Test Project
 
-Run these commands in order:
+`Src/CarStore.Tests` already exists (xUnit + FluentAssertions, referenced from `Src/CarStore.slnx`), with one
+test class per entity: `BrandTests.cs`, `CarTests.cs`, `CustomerTests.cs`. Extend these files (or add a new
+`<Entity>Tests.cs` for a new domain entity) rather than recreating the project. Only if the project is
+genuinely missing (verify with `find Src/CarStore.Tests` first) create it:
 
 ```bash
 dotnet new xunit -n CarStore.Tests -o Src/CarStore.Tests
@@ -38,7 +42,7 @@ dotnet add Src/CarStore.Tests package FluentAssertions
 
 - Follow **Arrange-Act-Assert** pattern in every test method.
 - Use `FluentAssertions` for all assertions (e.g., `result.Should().NotBeNull()`, `result.Age.Should().Be(30)`).
-- One test class per entity, file named `<Entity>Tests.cs` (e.g., `AuthorTests.cs`, `BookTests.cs`).
+- One test class per entity, file named `<Entity>Tests.cs` (e.g., `BrandTests.cs`, `CarTests.cs`, `CustomerTests.cs`).
 - Cover: happy paths, boundary conditions (e.g., 0, -1, max), and every `DomainException` throw.
 - Use `DateTime.UtcNow` for date calculations in tests; never hardcode specific dates.
 

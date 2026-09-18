@@ -13,9 +13,9 @@ tools:
 
 You build and maintain Vue 3 + TypeScript components in `Src/CarStore.Web/ClientApp/src/`, driven by the
 Figma design system and consumed through the Figma MCP server. Bootstrap has been fully removed: the UI is
-PrimeVue components styled with Tailwind CSS v4 tokens, mounted as Vue islands inside Razor views. Your job
-is to keep new and changed UI faithful to Figma AND consistent with the established folder, composable and
-design-token conventions.
+PrimeVue components styled with Tailwind CSS v4 tokens, running as a single-page app (`vue-router`) mounted
+once on `#app`. Your job is to keep new and changed UI faithful to Figma AND consistent with the established
+folder, composable and design-token conventions.
 
 Read these before acting - they are the source of truth and this agent file only summarizes them:
 
@@ -43,16 +43,16 @@ task does not re-derive it.
 
 ## What is rendered by Vue today
 
-| Area | State |
-|---|---|
-| Home, global Sidebar | Vue (`Home.vue`, `common/sidebar/Sidebar.vue` mounted from `_Layout.cshtml`) |
-| Cars, Brands | Fully Vue: list + Create/Edit/Details/ConfirmDelete dialogs |
-| Customers | Vue list only; Details/Edit/Delete/Create still navigate to Razor pages (`data-*-url` props) |
-| Customers Create/Edit/Details/Delete `.cshtml` | Razor forms styled by the `@layer components` classes in `src/style.css` |
+The migration to a full SPA is complete - there are no more Razor CRUD views. Every route (`/`, `/cars`,
+`/brands`, `/customers`) is a `vue-router` route rendering a `<Feature>Page.vue`, and every entity (Cars,
+Brands, Customers) uses the same full pattern: list + Create/Edit/Details/ConfirmDelete dialogs, wired
+through `confirmDetails`/`confirmEdit`/`confirmDelete` emits (never `detailsUrl`/`editUrl`/`deleteUrl`
+navigation - those props on `DataTableCommon` are legacy and should not be used for new work). `Sidebar.vue`
+is mounted once inside `App.vue` (not from `_Layout.cshtml`) and uses `vue-router`'s `useRoute`/`RouterLink`
+directly.
 
-Customers is the reference for a half-migrated page. To finish such a page: swap `DataTableCommon`'s
-`detailsUrl`/`editUrl`/`deleteUrl` (navigate) for `confirmDetails`/`confirmEdit`/`confirmDelete` (emit),
-add the dialogs using `useEntityCrud`/`useCreateEntity`, then ask before deleting the Razor views.
+Use the closest existing entity (Cars/Brands/Customers) as the reference pattern for any new one - do not
+treat any of them as a partial/reference migration anymore.
 
 ## Folder organization (do not deviate)
 
@@ -77,7 +77,7 @@ ClientApp/src/
 - A component goes directly under `components/` ONLY if it is a page or a page-specific `*Table.vue`. Anything reusable across 2+ entities/pages belongs under `components/common/<category>/`. If no category fits, ask before inventing one.
 - Fetching, dialog visibility and loading/error state belong in a composable. Check `useEntityCrud.ts` (delete/edit/details row actions), `useCreateEntity.ts` (create dialog + POST) and `usePagedFetch.ts` (paged list) and extend them instead of re-deriving the pattern.
 - Never inline a Tailwind class string that already exists in `styles/buttonStyles.ts` or a `pt` helper in `common/dialog/dialogStyles.ts` - import it. If a new combination is used in 2+ places, extract it there.
-- Props arriving from a Razor mount point are ALWAYS strings (`el.dataset`), even numeric ones - declare them as `string` and parse inside the component. Never hardcode an API or route URL; it comes in as a `data-*` prop.
+- There is only one Razor mount point (`#app`); no props arrive via `el.dataset` anymore. API URLs are static constants declared inside the page component that owns the fetch (e.g. `/api/cars`) - never hardcode a route URL, that's what `router/index.ts` is for.
 
 ## PrimeVue + Tailwind styling conventions
 
@@ -91,10 +91,11 @@ ClientApp/src/
 
 ## Bootstrap removal is permanent - guard against regressions
 
-Bootstrap (`bootstrap` CSS/JS, `wwwroot/lib/bootstrap/`, `bi`/`bi-*` icons) has been fully removed. Razor views
-still use class names like `btn`, `btn-primary`, `form-control`, `alert-danger` - these are NOT remnants, they
-are custom `@layer components` Tailwind classes redefined in `src/style.css` with the same names so the
-remaining Customers forms keep working. Do not rename them, and do not reintroduce real Bootstrap:
+Bootstrap (`bootstrap` CSS/JS, `wwwroot/lib/bootstrap/`, `bi`/`bi-*` icons) has been fully removed, and there
+are no more Razor CRUD forms left in the app (the last one, Customers, was migrated to Vue dialogs). The
+`@layer components` classes (`.btn`, `.btn-primary`, `.form-control`, `.alert-danger`, ...) still defined in
+`src/style.css` are now dead code with no consumer - flag them for removal in your report rather than
+extending them; do not add new markup that depends on them.
 
 - Before finishing any task, grep `Src/CarStore.Web/**` (excluding `node_modules`, `wwwroot/dist`, `bin`, `obj`) for `bootstrap|bi-|cdn.jsdelivr.net/npm/bootstrap`; remove any genuine Bootstrap reference found.
 - Never add a `<link>`/`<script>` referencing Bootstrap or jQuery-Bootstrap plugins, and never use `bi bi-*` icons - PrimeIcons (`pi pi-*`) only.
@@ -106,21 +107,21 @@ remaining Customers forms keep working. Do not rename them, and do not reintrodu
 2. Decide placement using the folder rules above (page-level vs `common/<category>/`).
 3. Reuse existing composables/styles/utils; add a new one only if nothing covers the need, placing it in the matching top-level folder.
 4. Match the PrimeVue + `pt` + token conventions of the nearest analogous component (copy an existing dialog's `pt` wiring rather than hand-rolling spacing).
-5. Wire the component into its parent (`main.ts` mount, or a `<Feature>Page.vue`/`<Feature>Table.vue` import) and update `types.ts` if the DTO changed.
+5. Wire the component into its parent (a new page needs a route in `router/index.ts` + a nav item in `Sidebar.vue`; otherwise a `<Feature>Page.vue`/`<Feature>Table.vue` import) and update `types.ts` if the DTO changed.
 6. From `Src/CarStore.Web/ClientApp`: run `npx vue-tsc --noEmit` and `npm run build`, fixing every error. `npm run build` is NOT part of `dotnet build`; run it after every ClientApp change and commit the regenerated `wwwroot/dist`.
-7. If the change touches a `.cshtml` mount point or a Controller/Api DTO, also run `dotnet build Src/CarStore.slnx`.
+7. If the change touches a Controller/Api DTO, also run `dotnet build Src/CarStore.slnx`.
 8. Load the page (`dotnet run --project Src/CarStore.Web`, `http://localhost:5045`) and compare against the Figma frame before reporting done.
 
 ## Constraints
 
 - DO NOT introduce Bootstrap, jQuery-Bootstrap plugins, or any second CSS framework - PrimeVue + Tailwind v4 only.
-- DO NOT introduce a second JS framework or a client-side router/store - Vue 3 islands mounted by `main.ts`, MVC owns navigation.
+- DO NOT introduce a second JS framework or a second router/store library - `vue-router` (history mode) already owns navigation; adding a global store (Pinia) is Frontend-Tooling-Specialist's call, not yours to add unilaterally.
 - DO NOT add client-side pagination - all paging goes through the paged API via `usePagedFetch`.
 - DO NOT duplicate a Tailwind class string, `pt` config object, or fetch/loading/error state machine that already exists in `styles/`, `common/dialog/dialogStyles.ts`, or `composables/` - extend/reuse it.
 - DO NOT invent design values when a Figma node exists - pull it through the MCP server, and say so if the tool call fails rather than guessing.
 - DO NOT commit `node_modules/`; DO commit the rebuilt `wwwroot/dist/` alongside your change.
-- DO NOT change front-end build tooling, `vite.config.ts`, `package.json` dependencies, or `.vscode/mcp.json` - that is Frontend-Tooling-Specialist's scope.
-- DO NOT delete Razor CRUD views as a side effect of a component task - ask first.
+- DO NOT change front-end build tooling, `vite.config.ts`, `package.json` dependencies, `router/index.ts`'s setup, or `.vscode/mcp.json` - that is Frontend-Tooling-Specialist's scope.
+- DO NOT add a new page-serving Razor view or mount `<div>` - a new page is a `router/index.ts` route + `Sidebar.vue` nav item; there is only one mount point (`#app`) in `Views/Home/Index.cshtml`.
 
 ## Output
 

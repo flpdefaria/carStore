@@ -151,10 +151,10 @@ Rules:
 | Piece | What it gives you |
 |---|---|
 | `common/table/DataTableCommon.vue` | Lazy paged `DataTable` + Figma-matched paginator/menu `pt`, `columns: DataTableColumn[]` (`field`, `header`, `primary`), per-column `#col-<field>` slots, and a row-actions `Menu`. Actions either navigate (`detailsUrl`/`editUrl`/`deleteUrl`) or emit (`confirmDetails`/`confirmEdit`/`confirmDelete` -> `details`/`edit`/`delete`). |
-| `common/dialog/*` | `CreateBookDialog`, `EditBookDialog`, `DetailsBookDialog`, the Brand equivalents, and `ConfirmDeleteDialog`. Copy the closest one's `pt` wiring instead of hand-rolling spacing. |
+| `common/dialog/*` | `Create/Edit/Details<Car|Brand|Customer>Dialog`, and `ConfirmDeleteDialog`. Copy the closest one's `pt` wiring instead of hand-rolling spacing. |
 | `common/form/FormField.vue` / `DetailField.vue` | Editable label + input slot / read-only label + value. |
 | `common/pageheader/PageHeader.vue` | `title`, optional `description`, `#actions` slot (used for the "New X" button). |
-| `common/sidebar/Sidebar.vue` | Global nav, mounted from `_Layout.cshtml`, highlights the active controller via `data-active`. |
+| `common/sidebar/Sidebar.vue` | Global nav, mounted once inside `App.vue`, highlights the active route via `vue-router`'s `useRoute()`/`RouterLink`. |
 | `utils/format.ts` | `formatCurrency` (pt-BR / BRL) and `formatDate` (pt-BR). Use these, never inline `Intl` calls. |
 
 ## Working from Figma

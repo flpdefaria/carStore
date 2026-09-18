@@ -39,10 +39,10 @@ Writing to the vault MUST happen ONLY through `/vault-write` - never hand-edit v
 3. If the property requires validation, add the rule inside the existing private `Validate()` method and throw `DomainException` with a clear message.
 4. If the property is settable, update `Create()` and `Update()` method signatures and bodies.
 5. Propagate to **controllers**: read the relevant controller before editing; update action method parameters and model binding.
-6. Propagate to the **presentation layer**. The UI is Vue 3 + PrimeVue mounted inside Razor views (see `.github/instructions/web.instructions.md`), so check both paths:
+6. Propagate to the **presentation layer**. The UI is a Vue 3 + PrimeVue single-page app hosted by MVC (see `.github/instructions/web.instructions.md`) - there are no more entity-specific Razor views:
    - **API DTOs** in `Src/CarStore.Web/Models/Api/` and their mapping in `Controllers/Api/*ApiController.cs` - this is what the Vue pages actually consume. Add the field to the DTO and to `ClientApp/src/types.ts` so the front-end stays type-safe.
-   - **Razor views** that are still server-rendered (`Views/Customers/Create|Edit|Details|Delete.cshtml`) - update the form/display markup there.
-   - Index views are Vue mount points with no markup to change. Rendering the new field in a table/dialog is Frontend-Specialist's job - state clearly in your report which components need it.
+   - `Views/Home/Index.cshtml` is the only remaining view and holds no entity-specific markup (just the SPA mount `<div id="app">`) - there is nothing to change there.
+   - Rendering the new field in a table/dialog is Frontend-Specialist's job - state clearly in your report which Vue components need it.
 7. Update **seed data** in `DataSeeder.cs` when a new required field is added.
 8. Run `dotnet build Src/CarStore.slnx` and fix all compilation errors before finishing.
 
