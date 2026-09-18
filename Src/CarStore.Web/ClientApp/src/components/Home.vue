@@ -177,11 +177,20 @@ const activityValues = computed(() => activityBuckets.value.map((b) => b.count))
           <div class="flex items-center justify-between">
             <p class="text-sm font-semibold text-color">Fleet by brand</p>
           </div>
-          <ul class="mt-4 flex flex-col gap-2.5">
-            <li v-for="(brand, index) in topBrands" :key="brand.id" class="flex items-center gap-1.75 text-sm">
-              <span class="size-2 shrink-0 rounded-full" :class="brandDotClasses[index]"></span>
-              <span class="min-w-0 flex-1 truncate text-color">{{ brand.name }}</span>
-              <span class="shrink-0 text-xs text-muted-color">{{ brandSharePercent(brand.carsCount) }}%</span>
+          <ul class="mt-4 flex flex-col gap-3">
+            <li v-for="(brand, index) in topBrands" :key="brand.id" class="flex flex-col gap-1.5 text-sm">
+              <div class="flex items-center gap-1.75">
+                <span class="size-2 shrink-0 rounded-full" :class="brandDotClasses[index]"></span>
+                <span class="min-w-0 flex-1 truncate text-color">{{ brand.name }}</span>
+                <span class="shrink-0 text-xs font-medium text-muted-color">{{ brandSharePercent(brand.carsCount) }}%</span>
+              </div>
+              <div class="h-1.5 w-full overflow-hidden rounded-full bg-surface-100">
+                <div
+                  class="h-full rounded-full transition-[width]"
+                  :class="brandDotClasses[index]"
+                  :style="{ width: `${brandSharePercent(brand.carsCount)}%` }"
+                ></div>
+              </div>
             </li>
             <li v-if="!topBrands.length" class="text-sm text-muted-color">No brands registered yet.</li>
           </ul>
