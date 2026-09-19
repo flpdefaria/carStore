@@ -35,8 +35,6 @@ const expanded = ref(false);
       </div>
     </div>
 
-    <div class="h-px w-full bg-surface-300"></div>
-
     <nav class="flex w-full flex-col gap-3 py-[17.5px]">
       <router-link
         v-for="item in navItems"
