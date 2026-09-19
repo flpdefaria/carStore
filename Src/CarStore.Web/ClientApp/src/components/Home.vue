@@ -140,7 +140,7 @@ const activityValues = computed(() => activityBuckets.value.map((b) => b.count))
           <div class="flex items-center justify-between">
             <span class="text-sm font-medium text-muted-color">Registered customers</span>
             <div class="flex size-9 shrink-0 items-center justify-center rounded-md bg-surface-0">
-              <i class="pi pi-address-book text-xl text-surface-700" />
+              <i class="pi pi-id-card text-xl text-surface-700" />
             </div>
           </div>
           <p class="mt-1.75 text-[32px] font-bold text-surface-700">{{ recentTotal }}</p>

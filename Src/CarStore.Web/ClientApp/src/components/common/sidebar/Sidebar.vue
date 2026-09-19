@@ -9,7 +9,7 @@ const navItems = [
   { key: "home", label: "Home", icon: "pi-home", to: "/" },
   { key: "cars", label: "Cars", icon: "pi-car", to: "/cars" },
   { key: "brands", label: "Brands", icon: "pi-building", to: "/brands" },
-  { key: "customers", label: "Customers", icon: "pi-address-book", to: "/customers" },
+  { key: "customers", label: "Customers", icon: "pi-id-card", to: "/customers" },
 ];
 
 const activeKey = computed(() => route.name as string);
