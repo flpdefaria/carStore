@@ -17,11 +17,19 @@ const el = ref<HTMLDivElement>();
 const chart = shallowRef<echarts.ECharts>();
 let resizeObserver: ResizeObserver | undefined;
 
+function themeColor(token: string, fallback: string): string {
+  return getComputedStyle(document.documentElement).getPropertyValue(token).trim() || fallback;
+}
+
 function primaryColor(): string {
-  return getComputedStyle(document.documentElement).getPropertyValue("--p-primary-color").trim() || "#10b981";
+  return themeColor("--p-primary-color", "#10b981");
 }
 
 function buildOption() {
+  const axisLineColor = themeColor("--p-surface-300", "#e5e7eb");
+  const splitLineColor = themeColor("--p-surface-100", "#f3f4f6");
+  const axisLabelColor = themeColor("--p-text-muted-color", "#6b7280");
+
   return {
     grid: { left: 8, right: 8, top: 16, bottom: 24, containLabel: true },
     tooltip: {
@@ -31,14 +39,14 @@ function buildOption() {
     xAxis: {
       type: "category" as const,
       data: props.labels,
-      axisLine: { lineStyle: { color: "#e5e7eb" } },
+      axisLine: { lineStyle: { color: axisLineColor } },
       axisTick: { show: false },
-      axisLabel: { color: "#6b7280", fontSize: 11 },
+      axisLabel: { color: axisLabelColor, fontSize: 11 },
     },
     yAxis: {
       type: "value" as const,
-      splitLine: { lineStyle: { color: "#f3f4f6" } },
-      axisLabel: { color: "#6b7280", fontSize: 11 },
+      splitLine: { lineStyle: { color: splitLineColor } },
+      axisLabel: { color: axisLabelColor, fontSize: 11 },
     },
     series: [
       {
