@@ -21,13 +21,15 @@ an MVC-hosted Vue 3 single-page app (SPA).
 ## The hosting model in one paragraph
 
 ASP.NET Core MVC serves exactly one shell page (`HomeController.Index` -> `Views/Home/Index.cshtml`), which
-renders a single `<div id="app">`. `_Layout.cshtml` loads the single Vite bundle (`~/dist/main.css`,
-`~/dist/main.js` as `type="module"`); `ClientApp/src/main.ts` mounts one Vue app onto `#app`, wired with
-`vue-router` (history mode). Vue Router - not MVC - owns in-app navigation between `/`, `/cars`, `/brands`,
-`/customers`. `Program.cs` maps a fallback route (`MapFallbackToController("Index", "Home")`) so a deep link
-or a full page refresh on any client route still resolves to the same shell, and Vue Router then renders the
-right page from the current URL. Data is **not** pushed through the Razor model - Vue components fetch it
-from JSON endpoints under `/api/*`.
+renders a single `<div id="app">`. `_Layout.cshtml` loads the SPA through `<environment>` tag helpers: in
+**Development** it loads the Vite dev server directly (`http://localhost:5173/@vite/client` +
+`http://localhost:5173/src/main.ts`), giving real HMR; everywhere else it loads the built bundle
+(`~/dist/main.css`, `~/dist/main.js` as `type="module"`). Either way `ClientApp/src/main.ts` mounts one Vue
+app onto `#app`, wired with `vue-router` (history mode). Vue Router - not MVC - owns in-app navigation between
+`/`, `/cars`, `/brands`, `/customers`. `Program.cs` maps a fallback route
+(`MapFallbackToController("Index", "Home")`) so a deep link or a full page refresh on any client route still
+resolves to the same shell, and Vue Router then renders the right page from the current URL. Data is **not**
+pushed through the Razor model - Vue components fetch it from JSON endpoints under `/api/*`.
 
 ```
 Browser GET /cars (first load or refresh)
@@ -43,11 +45,11 @@ Browser click on a Sidebar nav item (already loaded)
 
 ## Layout contract (`Views/Shared/_Layout.cshtml`)
 
-- `<head>`: `~/dist/main.css`, then `~/css/site.css`, then the scoped-CSS bundle - all with `asp-append-version="true"` for cache busting.
+- `<head>`: `~/dist/main.css` (non-Development only - Vite injects CSS itself in dev), then `~/css/site.css`, then the scoped-CSS bundle - all with `asp-append-version="true"` for cache busting.
 - `<body class="h-screen overflow-hidden bg-surface-0">` - the shell layout itself uses Tailwind classes, which is why `ClientApp/src/style.css` declares `@source "../../Views";`.
 - `@RenderBody()` is the **only** body content. `Views/Home/Index.cshtml` is the sole page that renders anything meaningful there - a single `<div id="app" class="flex h-full w-full gap-3 p-4">`, which `App.vue` (Sidebar + `<RouterView />`) mounts into. Any other Razor view (e.g. `Home/Error.cshtml`) renders without the SPA shell.
-- Scripts, in order: `~/dist/main.js` (`type="module"`), `~/js/site.js`, then `@await RenderSectionAsync("Scripts", required: false)`. jQuery was removed together with the last Razor CRUD forms (Customers) - do not reintroduce it.
-- The bundle is loaded **globally, once**, in the layout. Do **not** add per-view `<script src="~/dist/main.js">` inside a `@section Scripts` block - that would mount the app twice.
+- Scripts, in order: the SPA entry (Development: Vite dev client + `src/main.ts` from `http://localhost:5173`; otherwise `~/dist/main.js` as `type="module"`), then `~/js/site.js`, then `@await RenderSectionAsync("Scripts", required: false)`. jQuery was removed together with the last Razor CRUD forms (Customers) - do not reintroduce it.
+- The SPA entry is loaded **globally, once**, in the layout, gated by `<environment>` tag helpers rather than duplicated per view. Do **not** add a second `<script src="~/dist/main.js">` or Vite entry inside a `@section Scripts` block - that would mount the app twice.
 
 ## Writing the SPA shell / adding a route
 
@@ -135,7 +137,10 @@ Conventions:
 ## Build, run, deploy
 
 ```bash
-# front-end (after any ClientApp change)
+# front-end dev loop, with real HMR (run alongside the back-end below)
+cd Src/CarStore.Web/ClientApp && npm run dev      # Vite dev server, fixed port 5173
+
+# front-end production bundle (required before any commit/deploy touching ClientApp)
 cd Src/CarStore.Web/ClientApp && npm install && npm run build
 
 # back-end
@@ -147,8 +152,15 @@ dotnet test Src/CarStore.Tests/CarStore.Tests.csproj
 ./deploy.sh
 ```
 
+In Development, `_Layout.cshtml` loads the SPA from the Vite dev server (`npm run dev`, port 5173) instead of
+`~/dist/main.js`, so it needs both processes running side by side for real HMR (and for Impeccable `live`
+mode - see `.impeccable/live/config.json`, targeting `_Layout.cshtml`). If the Vite dev server isn't running,
+the page loads no SPA script and `#app` stays empty - start `npm run dev` first. `npm run build` still owns
+the committed `wwwroot/dist` bundle used by every non-Development environment; re-run it after any ClientApp
+change regardless of whether you used `npm run dev` locally.
+
 VS Code tasks: `build` (default) and `watch` (`dotnet watch run`). `dotnet watch` reloads C#/Razor only -
-front-end changes still need `npm run build`.
+front-end changes still need `npm run build` for the committed bundle (the dev loop above gets HMR without it).
 
 Persistence is EF Core **In-Memory** (`CarStoreDb`), re-seeded by `DataSeeder.Seed(db)` on every start:
 data resets on restart, and every mutation done through the API disappears with the process.
@@ -164,8 +176,9 @@ data resets on restart, and every mutation done through the API disappears with 
 
 ## Never
 
-- Never load `~/dist/main.js` from a view - it is a layout-level global.
+- Never load `~/dist/main.js` (or the Vite dev entry) from a view - it is a layout-level global gated by `<environment>`.
 - Never add a second bundler entry point or a per-page bundle; `main.ts` is the single entry.
+- Never point the Vite dev server at a different port than `5173` (`vite.config.ts` pins `server.port` + `strictPort`) - `_Layout.cshtml`'s dev script tags hardcode that origin.
 - Never reintroduce Bootstrap CSS/JS or `bi-*` icons (PrimeIcons `pi pi-*` only).
 - Never serialize EF entities directly to JSON - always a DTO.
 - Never move paging or validation logic into an API controller.

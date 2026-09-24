@@ -5,14 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Car Store</title>
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/dist/main.css" asp-append-version="true" />
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/dist/main.css" asp-append-version="true" />
+    </environment>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CarStore.Web.Web.styles.css" asp-append-version="true" />
 </head>
 <body class="h-screen overflow-hidden bg-surface-0">
     @RenderBody()
-    <script type="module" src="~/dist/main.js" asp-append-version="true"></script>
+    <environment include="Development">
+        <!-- Dev only: loads the SPA straight from the Vite dev server (npm run dev) so it
+             gets HMR and can be targeted by Impeccable live mode. Requires the dev server
+             running on http://localhost:5173; falls back to nothing if it isn't. -->
+        <script type="module" src="http://localhost:5173/@@vite/client"></script>
+        <script type="module" src="http://localhost:5173/src/main.ts"></script>
+    </environment>
+    <environment exclude="Development">
+        <script type="module" src="~/dist/main.js" asp-append-version="true"></script>
+    </environment>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+<!-- impeccable-live-start -->
+<script src="http://localhost:8400/live.js?token=f9b79788-eea3-4723-be93-a14f1c5834e9"></script>
+<!-- impeccable-live-end -->
 </body>
 </html>

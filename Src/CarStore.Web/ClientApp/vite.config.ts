@@ -6,8 +6,21 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig({
-  base: "/dist/",
+// "/dist/" matches the built asset paths ~/dist/main.js|main.css referenced by
+// _Layout.cshtml; the dev server instead serves everything from "/" so
+// http://localhost:5173/@vite/client and /src/main.ts resolve directly.
+export default defineConfig(({ command }) => ({
+  base: command === "build" ? "/dist/" : "/",
+  server: {
+    port: 5173,
+    strictPort: true,
+    cors: true,
+    // The page is served by the ASP.NET app on a different origin (5045),
+    // not by Vite itself. Without this, root-relative asset URLs injected by
+    // Vite (e.g. primeicons' @font-face url(/node_modules/...)) resolve
+    // against the document's origin instead of the dev server, 404ing.
+    origin: "http://localhost:5173",
+  },
   plugins: [vue(), tailwindcss()],
   build: {
     outDir: path.resolve(__dirname, "../wwwroot/dist"),
@@ -22,4 +35,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));

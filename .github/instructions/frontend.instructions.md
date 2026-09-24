@@ -107,9 +107,9 @@ Creating/repairing that file is Frontend-Tooling-Specialist's job.
 
 ## Build / run loop
 
-- `npm run build` is **not** wired into `dotnet build` or the `.csproj`. Re-run it after **every** ClientApp change, otherwise the app keeps serving the previous `wwwroot/dist` bundle.
-- `npm run dev` (Vite dev server) is only useful for isolated component work. The MVC app never loads from the Vite dev server - it always loads `~/dist/main.js`. There is no HMR through Razor.
-- `wwwroot/dist/` **is committed to git on purpose**: `dotnet publish` / `deploy.sh` never run npm, so the deployed app would have no front-end without it. Commit the rebuilt bundle together with the source change. (`ClientApp/node_modules/` and `ClientApp/dist/` stay ignored.)
+- `npm run build` is **not** wired into `dotnet build` or the `.csproj`. Re-run it after **every** ClientApp change and commit the rebuilt `wwwroot/dist` - it is what every non-Development environment (and `deploy.sh`) serves.
+- `npm run dev` (Vite dev server, fixed port `5173`) now powers real front-end HMR: `Views/Shared/_Layout.cshtml` loads the SPA from `http://localhost:5173` instead of `~/dist/main.js` whenever `ASPNETCORE_ENVIRONMENT=Development`. Run it alongside `dotnet run --project Src/CarStore.Web` (or the `watch` task) - both processes must be up for local component work and for Impeccable `live` mode (`.impeccable/live/config.json` targets `_Layout.cshtml`). If `npm run dev` isn't running, `#app` stays empty in Development - it does **not** fall back to the built bundle.
+- `wwwroot/dist/` **is committed to git on purpose**: `dotnet publish` / `deploy.sh` never run npm, so the deployed app would have no front-end without it. Commit the rebuilt bundle together with the source change even though local dev now goes through Vite HMR. (`ClientApp/node_modules/` and `ClientApp/dist/` stay ignored.)
 - Type-check with `npx vue-tsc --noEmit` before finishing. Both this and `npm run build` must pass.
 
 ## How a component reaches the page

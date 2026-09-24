@@ -1,0 +1,6 @@
+{
+  "files": ["Src/CarStore.Web/Views/Shared/_Layout.cshtml"],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}
