@@ -39,7 +39,7 @@ onMounted(loadBrandOptions);
   <div class="flex flex-col gap-3">
     <PageHeader
       title="Cars"
-      description='"Manage the car inventory: browse model, brand, body type, price, stock and availability, and create, edit or remove entries."'
+      description="Manage the car inventory: browse model, brand, body type, price, stock and availability, and create, edit or remove entries."
     >
       <template #actions>
         <Button

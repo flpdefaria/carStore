@@ -46,7 +46,6 @@ function formFromCar(car: CarDto | null) {
     modelYear: car?.modelYear ?? (null as number | null),
     price: car?.price ?? (null as number | null),
     stock: car?.stock ?? (null as number | null),
-    // Figma design shows this field as read-only in the Edit modal (dimmed/opacity-50).
     mileage: car?.mileage ?? (null as number | null),
     description: car?.description ?? "",
   };
@@ -142,7 +141,7 @@ const dialogPt = dialogShellPt("w-[765px]");
         <InputNumber v-model="form.stock" :min="0" class="w-full" />
       </FormField>
       <FormField label="Mileage">
-        <InputNumber v-model="form.mileage" :min="0" class="w-full" />
+        <InputNumber v-model="form.mileage" :min="0" disabled class="w-full opacity-50" />
       </FormField>
     </div>
 

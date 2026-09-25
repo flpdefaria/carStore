@@ -1,6 +1,7 @@
 import "./style.css";
 import { createApp } from "vue";
 import PrimeVue from "primevue/config";
+import ToastService from "primevue/toastservice";
 import Aura from "@primeuix/themes/aura";
 import App from "./App.vue";
 import router from "./router";
@@ -10,6 +11,7 @@ if (el) {
   createApp(App)
     .use(router)
     .use(PrimeVue, { theme: { preset: Aura, options: { darkModeSelector: false } } })
+    .use(ToastService)
     .mount(el);
 }
 

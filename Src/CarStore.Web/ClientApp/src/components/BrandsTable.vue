@@ -96,6 +96,12 @@ defineExpose({ reload: () => load(1, rows.value) });
           ]
         : []
     "
+    :confirm-disabled="!!deleteTarget && deleteTarget.carsCount > 0"
+    :warning="
+      deleteTarget && deleteTarget.carsCount > 0
+        ? `This brand has ${deleteTarget.carsCount} car(s) registered. Remove or reassign them before deleting the brand.`
+        : null
+    "
     :loading="deleteLoading"
     :error="deleteError"
     @confirm="onDeleteConfirm"

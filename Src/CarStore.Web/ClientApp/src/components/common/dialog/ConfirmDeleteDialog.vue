@@ -16,6 +16,9 @@ const props = defineProps<{
   details: ConfirmDeleteDetail[];
   loading?: boolean;
   error?: string | null;
+  /** Blocks the Delete action for a known rule (e.g. a brand with cars), shown as a warning instead of the danger message. */
+  confirmDisabled?: boolean;
+  warning?: string | null;
 }>();
 
 const emit = defineEmits<{ "update:visible": [value: boolean]; confirm: []; cancel: [] }>();
@@ -55,6 +58,7 @@ const dialogPt = dialogShellPt("w-[765px]");
       </div>
     </div>
 
+    <Message v-if="props.warning" severity="warn" :closable="false">{{ props.warning }}</Message>
     <Message v-if="props.error" severity="error" :closable="false">{{ props.error }}</Message>
 
     <template #footer>
@@ -70,6 +74,7 @@ const dialogPt = dialogShellPt("w-[765px]");
         label="Delete"
         severity="danger"
         :loading="loading"
+        :disabled="confirmDisabled"
         :class="dialogDangerButtonClass"
         @click="emit('confirm')"
       />

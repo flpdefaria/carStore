@@ -1,4 +1,9 @@
 import { ref } from "vue";
+import { useToast } from "primevue/usetoast";
+
+function capitalize(label: string): string {
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
 
 interface UseEntityCrudOptions {
   /** Base REST endpoint for the entity, e.g. "/api/cars". */
@@ -23,6 +28,7 @@ export function useEntityCrud<TEntity extends { id: number }, TEditPayload>(
   options: UseEntityCrudOptions,
 ) {
   const { apiUrl, entityLabel, reload } = options;
+  const toast = useToast();
 
   const deleteDialogVisible = ref(false);
   const deleteTarget = ref<TEntity | null>(null);
@@ -43,6 +49,11 @@ export function useEntityCrud<TEntity extends { id: number }, TEditPayload>(
       const response = await fetch(`${apiUrl}/${deleteTarget.value.id}`, { method: "DELETE" });
       if (!response.ok) throw new Error(await parseErrorMessage(response));
       deleteDialogVisible.value = false;
+      toast.add({
+        severity: "success",
+        summary: `${capitalize(entityLabel)} deleted`,
+        life: 3000,
+      });
       await reload();
     } catch (err) {
       deleteError.value = err instanceof Error ? err.message : `Failed to delete the ${entityLabel}.`;
@@ -74,6 +85,11 @@ export function useEntityCrud<TEntity extends { id: number }, TEditPayload>(
       });
       if (!response.ok) throw new Error(await parseErrorMessage(response));
       editDialogVisible.value = false;
+      toast.add({
+        severity: "success",
+        summary: `${capitalize(entityLabel)} updated`,
+        life: 3000,
+      });
       await reload();
     } catch (err) {
       editError.value = err instanceof Error ? err.message : `Failed to update the ${entityLabel}.`;

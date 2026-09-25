@@ -1,4 +1,9 @@
 import { ref } from "vue";
+import { useToast } from "primevue/usetoast";
+
+function capitalize(label: string): string {
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
 
 interface UseCreateEntityOptions {
   /** REST endpoint to POST the new entity to, e.g. "/api/cars". */
@@ -15,6 +20,7 @@ interface UseCreateEntityOptions {
  * state and the POST fetch call that were previously duplicated per page.
  */
 export function useCreateEntity<TPayload>(options: UseCreateEntityOptions) {
+  const toast = useToast();
   const visible = ref(false);
   const loading = ref(false);
   const error = ref<string | null>(null);
@@ -38,6 +44,11 @@ export function useCreateEntity<TPayload>(options: UseCreateEntityOptions) {
         throw new Error(body?.message ?? `Request failed with status ${response.status}`);
       }
       visible.value = false;
+      toast.add({
+        severity: "success",
+        summary: `${capitalize(options.entityLabel)} created`,
+        life: 3000,
+      });
       await options.onCreated();
     } catch (err) {
       error.value = err instanceof Error ? err.message : `Failed to create the ${options.entityLabel}.`;
