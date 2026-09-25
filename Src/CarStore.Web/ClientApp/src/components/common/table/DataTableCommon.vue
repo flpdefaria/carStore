@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import DataTable, { type DataTablePageEvent } from "primevue/datatable";
+import { computed, ref, watch } from "vue";
+import DataTable, { type DataTablePageEvent, type DataTableSortEvent } from "primevue/datatable";
 import Column from "primevue/column";
 import Menu from "primevue/menu";
 import Button from "primevue/button";
+import IconField from "primevue/iconfield";
+import InputIcon from "primevue/inputicon";
+import InputText from "primevue/inputtext";
 
 export interface DataTableColumn {
   field: string;
@@ -63,6 +66,8 @@ const props = withDefaults(
     confirmEdit?: boolean;
     /** When true, the Details action emits a `details` event instead of navigating to detailsUrl. */
     confirmDetails?: boolean;
+    /** When true, shows row checkboxes and a "Delete selected" action that emits `bulk-delete`. */
+    bulkDelete?: boolean;
   }>(),
   {
     rowsPerPageOptions: () => [10, 20, 50],
@@ -72,7 +77,68 @@ const props = withDefaults(
   },
 );
 
-const emit = defineEmits<{ page: [event: DataTablePageEvent]; delete: [data: any]; edit: [data: any]; details: [data: any] }>();
+const emit = defineEmits<{
+  page: [event: DataTablePageEvent];
+  delete: [data: any];
+  edit: [data: any];
+  details: [data: any];
+  "bulk-delete": [data: any[]];
+}>();
+
+// Search and sort operate only on the currently loaded page: pagination is
+// server-side (lazy), so there is no full dataset on the client to search/sort.
+const searchTerm = ref("");
+const sortField = ref<string | null>(null);
+const sortOrder = ref<1 | -1 | null>(null);
+
+const displayValue = computed(() => {
+  let rows = props.value;
+
+  const term = searchTerm.value.trim().toLowerCase();
+  if (term) {
+    rows = rows.filter((row) =>
+      props.columns.some((col) => String(row[col.field] ?? "").toLowerCase().includes(term)),
+    );
+  }
+
+  if (sortField.value) {
+    const field = sortField.value;
+    const order = sortOrder.value ?? 1;
+    rows = [...rows].sort((a, b) => {
+      const va = a[field];
+      const vb = b[field];
+      if (va == null && vb == null) return 0;
+      if (va == null) return -1 * order;
+      if (vb == null) return 1 * order;
+      if (va < vb) return -1 * order;
+      if (va > vb) return 1 * order;
+      return 0;
+    });
+  }
+
+  return rows;
+});
+
+function onSort(event: DataTableSortEvent) {
+  sortField.value = (event.sortField as string) ?? null;
+  sortOrder.value = event.sortOrder === -1 ? -1 : 1;
+}
+
+const selectedRows = ref<any[]>([]);
+
+// Selected rows may not exist on a different page once the value array changes
+// (page turn, reload after a mutation), so stale selections are dropped.
+watch(
+  () => props.value,
+  () => {
+    selectedRows.value = [];
+  },
+);
+
+function onBulkDeleteClick() {
+  emit("bulk-delete", selectedRows.value);
+  selectedRows.value = [];
+}
 
 const hasActions = !!(
   props.detailsUrl ||
@@ -130,37 +196,61 @@ function toggleMenu(event: Event, data: any) {
 </script>
 
 <template>
-  <div class="rounded-xl border border-surface-300 overflow-hidden">
-    <DataTable
-      :value="value"
-      :loading="loading"
-      lazy
-      paginator
-      row-hover
-      :rows="rows"
-      :rowsPerPageOptions="rowsPerPageOptions"
-      :totalRecords="totalRecords"
-      :first="first"
-      :dataKey="dataKey"
-      class="text-sm"
-      :pt="{ pcPaginator: paginatorPt }"
-      @page="(e) => $emit('page', e)"
-    >
-      <Column v-for="col in columns" :key="col.field" :field="col.field" :header="col.header">
-        <template #body="{ data }">
-          <slot :name="`col-${col.field}`" :data="data">
-            <span :class="col.primary ? 'font-semibold text-color' : 'text-xs text-muted-color'">{{ data[col.field] }}</span>
-          </slot>
-        </template>
-      </Column>
-      <Column v-if="hasActions" header="Actions" class="text-center" style="width: 4rem">
-        <template #body="{ data }">
-          <Button text rounded severity="secondary" aria-haspopup="true" @click="toggleMenu($event, data)">
-            <i class="pi pi-ellipsis-v" />
-          </Button>
-        </template>
-      </Column>
-    </DataTable>
-    <Menu ref="menu" :model="menuItems" :popup="true" :pt="menuPt" />
+  <div class="flex flex-col gap-2">
+    <div class="flex items-center justify-between gap-3">
+      <IconField class="w-full max-w-[280px]">
+        <InputIcon class="pi pi-search" />
+        <InputText v-model="searchTerm" placeholder="Search this page..." class="w-full" />
+      </IconField>
+      <Button
+        v-if="bulkDelete && selectedRows.length"
+        label="Delete selected"
+        icon="pi pi-trash"
+        severity="danger"
+        outlined
+        :badge="String(selectedRows.length)"
+        badge-severity="danger"
+        @click="onBulkDeleteClick"
+      />
+    </div>
+
+    <div class="rounded-xl border border-surface-300 overflow-hidden">
+      <DataTable
+        v-model:selection="selectedRows"
+        :value="displayValue"
+        :loading="loading"
+        lazy
+        paginator
+        row-hover
+        :rows="rows"
+        :rowsPerPageOptions="rowsPerPageOptions"
+        :totalRecords="totalRecords"
+        :first="first"
+        :dataKey="dataKey"
+        :sortField="sortField ?? undefined"
+        :sortOrder="sortOrder ?? undefined"
+        class="text-sm"
+        :pt="{ pcPaginator: paginatorPt }"
+        @page="(e) => $emit('page', e)"
+        @sort="onSort"
+      >
+        <Column v-if="bulkDelete" selectionMode="multiple" header-style="width: 3rem" />
+        <Column v-for="col in columns" :key="col.field" :field="col.field" :header="col.header" sortable>
+          <template #body="{ data }">
+            <slot :name="`col-${col.field}`" :data="data">
+              <span :class="col.primary ? 'font-semibold text-color' : 'text-xs text-muted-color'">{{ data[col.field] }}</span>
+            </slot>
+          </template>
+        </Column>
+        <Column v-if="hasActions" header="Actions" class="text-center" style="width: 4rem">
+          <template #body="{ data }">
+            <Button text rounded severity="secondary" aria-haspopup="true" @click="toggleMenu($event, data)">
+              <i class="pi pi-ellipsis-v" />
+            </Button>
+          </template>
+        </Column>
+      </DataTable>
+      <Menu ref="menu" :model="menuItems" :popup="true" :pt="menuPt" />
+    </div>
   </div>
 </template>

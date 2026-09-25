@@ -44,6 +44,12 @@ const {
   deleteError,
   onDeleteRequest,
   onDeleteConfirm,
+  bulkDeleteDialogVisible,
+  bulkDeleteTargets,
+  bulkDeleteLoading,
+  bulkDeleteError,
+  onBulkDeleteRequest,
+  onBulkDeleteConfirm,
   editDialogVisible,
   editTarget,
   editLoading,
@@ -78,10 +84,12 @@ defineExpose({ reload: () => load(1, rows.value) });
     confirm-details
     confirm-delete
     confirm-edit
+    bulk-delete
     @page="onPage"
     @delete="onDeleteRequest"
     @edit="onEditRequest"
     @details="onDetailsRequest"
+    @bulk-delete="onBulkDeleteRequest"
   >
     <template #col-price="{ data }">
       <span class="text-xs text-muted-color">{{ formatCurrency(data.price) }}</span>
@@ -107,6 +115,16 @@ defineExpose({ reload: () => load(1, rows.value) });
     :loading="deleteLoading"
     :error="deleteError"
     @confirm="onDeleteConfirm"
+  />
+
+  <ConfirmDeleteDialog
+    v-model:visible="bulkDeleteDialogVisible"
+    title="Delete Cars"
+    :message="`Are you sure you want to delete ${bulkDeleteTargets.length} car(s)?`"
+    :details="bulkDeleteTargets.map((car) => ({ label: car.model, value: car.brandName }))"
+    :loading="bulkDeleteLoading"
+    :error="bulkDeleteError"
+    @confirm="onBulkDeleteConfirm"
   />
 
   <EditCarDialog

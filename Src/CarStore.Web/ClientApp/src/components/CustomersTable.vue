@@ -39,6 +39,12 @@ const {
   deleteError,
   onDeleteRequest,
   onDeleteConfirm,
+  bulkDeleteDialogVisible,
+  bulkDeleteTargets,
+  bulkDeleteLoading,
+  bulkDeleteError,
+  onBulkDeleteRequest,
+  onBulkDeleteConfirm,
   editDialogVisible,
   editTarget,
   editLoading,
@@ -71,10 +77,12 @@ defineExpose({ reload: () => load(1, rows.value) });
     confirm-details
     confirm-delete
     confirm-edit
+    bulk-delete
     @page="onPage"
     @delete="onDeleteRequest"
     @edit="onEditRequest"
     @details="onDetailsRequest"
+    @bulk-delete="onBulkDeleteRequest"
   >
     <template #col-createdAt="{ data }">
       <span class="text-xs text-muted-color">{{ formatDate(data.createdAt) }}</span>
@@ -89,6 +97,16 @@ defineExpose({ reload: () => load(1, rows.value) });
     :loading="deleteLoading"
     :error="deleteError"
     @confirm="onDeleteConfirm"
+  />
+
+  <ConfirmDeleteDialog
+    v-model:visible="bulkDeleteDialogVisible"
+    title="Delete Customers"
+    :message="`Are you sure you want to delete ${bulkDeleteTargets.length} customer(s)?`"
+    :details="bulkDeleteTargets.map((customer) => ({ label: customer.fullName, value: customer.email }))"
+    :loading="bulkDeleteLoading"
+    :error="bulkDeleteError"
+    @confirm="onBulkDeleteConfirm"
   />
 
   <EditCustomerDialog

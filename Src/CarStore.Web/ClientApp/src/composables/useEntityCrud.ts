@@ -62,6 +62,48 @@ export function useEntityCrud<TEntity extends { id: number }, TEditPayload>(
     }
   }
 
+  const bulkDeleteDialogVisible = ref(false);
+  const bulkDeleteTargets = ref<TEntity[]>([]);
+  const bulkDeleteLoading = ref(false);
+  const bulkDeleteError = ref<string | null>(null);
+
+  function onBulkDeleteRequest(items: TEntity[]) {
+    if (!items.length) return;
+    bulkDeleteTargets.value = items;
+    bulkDeleteError.value = null;
+    bulkDeleteDialogVisible.value = true;
+  }
+
+  async function onBulkDeleteConfirm() {
+    if (!bulkDeleteTargets.value.length) return;
+    bulkDeleteLoading.value = true;
+    bulkDeleteError.value = null;
+    const targets = bulkDeleteTargets.value;
+    const results = await Promise.all(
+      targets.map(async (item) => {
+        const response = await fetch(`${apiUrl}/${item.id}`, { method: "DELETE" });
+        return response.ok;
+      }),
+    );
+    const failedCount = results.filter((ok) => !ok).length;
+    bulkDeleteLoading.value = false;
+    if (failedCount > 0) {
+      bulkDeleteError.value =
+        failedCount === targets.length
+          ? `Failed to delete the selected ${entityLabel}s.`
+          : `${failedCount} of ${targets.length} ${entityLabel}s could not be deleted.`;
+      await reload();
+      return;
+    }
+    bulkDeleteDialogVisible.value = false;
+    toast.add({
+      severity: "success",
+      summary: `${targets.length} ${entityLabel}${targets.length === 1 ? "" : "s"} deleted`,
+      life: 3000,
+    });
+    await reload();
+  }
+
   const editDialogVisible = ref(false);
   const editTarget = ref<TEntity | null>(null);
   const editLoading = ref(false);
@@ -113,6 +155,12 @@ export function useEntityCrud<TEntity extends { id: number }, TEditPayload>(
     deleteError,
     onDeleteRequest,
     onDeleteConfirm,
+    bulkDeleteDialogVisible,
+    bulkDeleteTargets,
+    bulkDeleteLoading,
+    bulkDeleteError,
+    onBulkDeleteRequest,
+    onBulkDeleteConfirm,
     editDialogVisible,
     editTarget,
     editLoading,

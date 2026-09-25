@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { type DataTablePageEvent } from "primevue/datatable";
 import Message from "primevue/message";
 import DataTableCommon, { type DataTableColumn } from "./common/table/DataTableCommon.vue";
@@ -40,6 +40,12 @@ const {
   deleteError,
   onDeleteRequest,
   onDeleteConfirm,
+  bulkDeleteDialogVisible,
+  bulkDeleteTargets,
+  bulkDeleteLoading,
+  bulkDeleteError,
+  onBulkDeleteRequest,
+  onBulkDeleteConfirm,
   editDialogVisible,
   editTarget,
   editLoading,
@@ -54,6 +60,8 @@ const {
   entityLabel: "brand",
   reload: () => load(Math.floor(first.value / rows.value) + 1, rows.value),
 });
+
+const bulkDeleteBlockedBrands = computed(() => bulkDeleteTargets.value.filter((brand) => brand.carsCount > 0));
 
 onMounted(() => load(1, rows.value));
 
@@ -73,10 +81,12 @@ defineExpose({ reload: () => load(1, rows.value) });
     confirm-details
     confirm-delete
     confirm-edit
+    bulk-delete
     @page="onPage"
     @delete="onDeleteRequest"
     @edit="onEditRequest"
     @details="onDetailsRequest"
+    @bulk-delete="onBulkDeleteRequest"
   >
     <template #col-foundedDate="{ data }">
       <span class="text-xs text-muted-color">{{ formatDate(data.foundedDate) }}</span>
@@ -105,6 +115,22 @@ defineExpose({ reload: () => load(1, rows.value) });
     :loading="deleteLoading"
     :error="deleteError"
     @confirm="onDeleteConfirm"
+  />
+
+  <ConfirmDeleteDialog
+    v-model:visible="bulkDeleteDialogVisible"
+    title="Delete Brands"
+    :message="`Are you sure you want to delete ${bulkDeleteTargets.length} brand(s)?`"
+    :details="bulkDeleteTargets.map((brand) => ({ label: brand.name, value: `${brand.carsCount} car(s)` }))"
+    :confirm-disabled="bulkDeleteBlockedBrands.length > 0"
+    :warning="
+      bulkDeleteBlockedBrands.length > 0
+        ? `${bulkDeleteBlockedBrands.map((brand) => brand.name).join(', ')} still ${bulkDeleteBlockedBrands.length === 1 ? 'has' : 'have'} cars registered. Remove or reassign them before deleting.`
+        : null
+    "
+    :loading="bulkDeleteLoading"
+    :error="bulkDeleteError"
+    @confirm="onBulkDeleteConfirm"
   />
 
   <EditBrandDialog
