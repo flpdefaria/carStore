@@ -68,6 +68,7 @@ defineExpose({ reload: () => load(1, rows.value) });
 <template>
   <Message v-if="error" severity="error" :closable="false" class="mb-4">{{ error }}</Message>
   <DataTableCommon
+    :effect-scope="apiUrl"
     :value="customers"
     :columns="columns"
     :loading="loading"

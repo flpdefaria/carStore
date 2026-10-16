@@ -4,6 +4,7 @@ import * as echarts from "echarts/core";
 import { BarChart as EChartsBar } from "echarts/charts";
 import { GridComponent, TooltipComponent } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
+import { useTheme } from "../../../composables/useTheme";
 
 echarts.use([EChartsBar, GridComponent, TooltipComponent, CanvasRenderer]);
 
@@ -11,6 +12,8 @@ const props = defineProps<{
   labels: string[];
   values: number[];
   valueFormatter?: (value: number) => string;
+  /** CSS custom property for the bar color; defaults to the PrimeVue primary. */
+  colorVar?: string;
 }>();
 
 const el = ref<HTMLDivElement>();
@@ -22,7 +25,7 @@ function themeColor(token: string, fallback: string): string {
 }
 
 function primaryColor(): string {
-  return themeColor("--p-primary-color", "#10b981");
+  return props.colorVar ? themeColor(props.colorVar, "#2f6f9f") : themeColor("--p-primary-color", "#10b981");
 }
 
 function buildOption() {
@@ -30,10 +33,19 @@ function buildOption() {
   const splitLineColor = themeColor("--p-surface-100", "#f3f4f6");
   const axisLabelColor = themeColor("--p-text-muted-color", "#6b7280");
 
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   return {
+    animation: !reduceMotion,
+    animationDuration: 500,
+    animationEasing: "cubicOut" as const,
+    animationDurationUpdate: 300,
     grid: { left: 8, right: 8, top: 16, bottom: 24, containLabel: true },
     tooltip: {
       trigger: "axis" as const,
+      backgroundColor: themeColor("--p-surface-0", "#ffffff"),
+      borderColor: axisLineColor,
+      textStyle: { color: themeColor("--p-text-color", "#334155") },
       valueFormatter: (value: unknown) => (props.valueFormatter ? props.valueFormatter(Number(value)) : String(value)),
     },
     xAxis: {
@@ -67,8 +79,11 @@ onMounted(() => {
   resizeObserver.observe(el.value);
 });
 
+// Colors are read from CSS tokens at option-build time, so a theme switch rebuilds the option.
+const { theme } = useTheme();
+
 watch(
-  () => [props.labels, props.values],
+  () => [props.labels, props.values, theme.value],
   () => chart.value?.setOption(buildOption()),
   { deep: true },
 );

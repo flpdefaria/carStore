@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
+import { flagRows } from "../utils/rowEffects";
 
 function capitalize(label: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1);
@@ -43,6 +44,7 @@ export function useCreateEntity<TPayload>(options: UseCreateEntityOptions) {
         const body = await response.json().catch(() => null);
         throw new Error(body?.message ?? `Request failed with status ${response.status}`);
       }
+      const created = await response.json().catch(() => null);
       visible.value = false;
       toast.add({
         severity: "success",
@@ -50,6 +52,7 @@ export function useCreateEntity<TPayload>(options: UseCreateEntityOptions) {
         life: 3000,
       });
       await options.onCreated();
+      if (created?.id != null) flagRows(options.apiUrl, [created.id], "created", 2400);
     } catch (err) {
       error.value = err instanceof Error ? err.message : `Failed to create the ${options.entityLabel}.`;
     } finally {

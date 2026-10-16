@@ -97,11 +97,22 @@ The palette is almost entirely neutral; color is a signal, not decoration.
 ### Accent (component default, not brand)
 - **Primary / Primary 400 / Primary Emphasis** (`var(--p-primary-color)` etc., PrimeVue Aura default): only surfaces through untouched PrimeVue defaults - focus rings (`focus:ring-primary-400`) and the legacy Razor `.btn-primary`/`.form-control` classes kept for the Customers forms. Never used as the app's visual identity color.
 
+### Data palette: Paint Swatches
+Five automotive paint colors, defined as Tailwind `@theme` tokens in `ClientApp/src/style.css` (`bg-paint-*`, `text-paint-*`, with `/5`-`/12` tints): **Gulf** `#2f6f9f`, **Racing Green** `#2e6b4f`, **Bronze** `#9a6a1c`, **Burgundy** `#8e2f52`, **Graphite** `#475569`. Each holds at least 4.5:1 on white and 3:1 on its own 12% tint.
+- **Data categories:** fleet-by-brand mix bar, brand dots and share bars, in rank order (Gulf, Green, Bronze, Burgundy, Graphite). Values are always labeled; color is never the only cue.
+- **Metric identity:** each Home KPI card carries one swatch as a 5% card tint plus a 12% icon tile (Fleet value Bronze, Cars in stock Gulf, Registered customers Green, Availability Graphite).
+- **Charts:** bar series use Gulf (`BarChart` `color-var`), not the Aura primary.
+
+### Dark theme: "Showroom After Hours"
+Toggled from the sidebar (persisted in `localStorage` as `carstore-theme`, defaulting to the OS preference; applied before first paint by an inline script in `_Layout.cshtml`). Implemented by remapping the `--p-surface-*` scale under `html.app-dark` in `style.css`: Aura's light semantic tokens resolve through that scale, so PrimeVue components, Tailwind surface utilities and the slate accent flip together. Canvas `surface-0` `#0d1117`; cards/sidebar one step up (`surface-50/100`); muted text `surface-500` (5.9:1); body text `surface-700` (14:1). The slate accent becomes a light fill with dark text (primary buttons use `text-surface-0`, never PrimeVue's fixed white). Paint swatches have lifted dark variants (each >= 7:1 on the canvas); status tags/messages use tinted fills with light ink. Theme switches play a circular reveal from the toggle (View Transitions), instant under reduced motion.
+
 ### Danger
 - **Danger** (`#ef4444`) / **Danger Emphasis** (`#dc2626`): delete actions and validation error text/background only.
 
 ### Named Rules
 **The One Accent Rule.** `surface-700`/`surface-800` is the only color that means "act here." It appears on at most one primary button per view and the single active nav item - never on illustrative or decorative elements.
+
+**The Paint-Means-Data Rule.** Paint swatches encode data categories and metric identity only. They never fill buttons, links, nav items or focus states, so they never compete with slate for "act here."
 
 ## Typography
 
@@ -168,7 +179,7 @@ Corners are soft and consistently rounded, scaling with the container's importan
 - **Do** use full-round shapes only for icon-only controls (pagination, avatar); everything else uses `rounded-md/lg/xl`.
 
 ### Don't:
-- **Don't** introduce a second brand accent color or a gradient - the palette stays neutral-plus-one-accent.
+- **Don't** introduce a second action/brand accent color or a gradient - actions stay neutral-plus-one-accent; color beyond slate belongs to the Paint Swatches data palette only.
 - **Don't** add `box-shadow` to cards, dialogs, or menus - it breaks the flat-by-default rule.
 - **Don't** let the PrimeVue Aura default "primary" (green) accent leak into new components - it is a component-default fallback (focus rings, legacy Razor forms), not the brand color.
 - **Don't** shrink the dialog's `rounded-[21px]` or the table shell's `rounded-xl` to match the button's `rounded-md` - radius scales with container size on purpose.

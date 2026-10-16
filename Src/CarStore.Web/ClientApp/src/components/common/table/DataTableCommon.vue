@@ -7,6 +7,7 @@ import Button from "primevue/button";
 import IconField from "primevue/iconfield";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
+import { rowEffectClass } from "../../../utils/rowEffects";
 
 export interface DataTableColumn {
   field: string;
@@ -68,6 +69,8 @@ const props = withDefaults(
     confirmDetails?: boolean;
     /** When true, shows row checkboxes and a "Delete selected" action that emits `bulk-delete`. */
     bulkDelete?: boolean;
+    /** The entity's API url: rows flagged under it by the CRUD composables play their create/edit/delete effect. */
+    effectScope?: string;
   }>(),
   {
     rowsPerPageOptions: () => [10, 20, 50],
@@ -227,6 +230,7 @@ function toggleMenu(event: Event, data: any) {
         :totalRecords="totalRecords"
         :first="first"
         :dataKey="dataKey"
+        :row-class="(row: any) => rowEffectClass(effectScope, row[dataKey])"
         :sortField="sortField ?? undefined"
         :sortOrder="sortOrder ?? undefined"
         class="text-sm"

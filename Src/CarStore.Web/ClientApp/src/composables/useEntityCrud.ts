@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
+import { flagRows, playRowExit } from "../utils/rowEffects";
 
 function capitalize(label: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1);
@@ -54,6 +55,7 @@ export function useEntityCrud<TEntity extends { id: number }, TEditPayload>(
         summary: `${capitalize(entityLabel)} deleted`,
         life: 3000,
       });
+      await playRowExit(apiUrl, [deleteTarget.value.id]);
       await reload();
     } catch (err) {
       deleteError.value = err instanceof Error ? err.message : `Failed to delete the ${entityLabel}.`;
@@ -87,11 +89,13 @@ export function useEntityCrud<TEntity extends { id: number }, TEditPayload>(
     );
     const failedCount = results.filter((ok) => !ok).length;
     bulkDeleteLoading.value = false;
+    const deletedIds = targets.filter((_, i) => results[i]).map((item) => item.id);
     if (failedCount > 0) {
       bulkDeleteError.value =
         failedCount === targets.length
           ? `Failed to delete the selected ${entityLabel}s.`
           : `${failedCount} of ${targets.length} ${entityLabel}s could not be deleted.`;
+      if (deletedIds.length) await playRowExit(apiUrl, deletedIds);
       await reload();
       return;
     }
@@ -101,6 +105,7 @@ export function useEntityCrud<TEntity extends { id: number }, TEditPayload>(
       summary: `${targets.length} ${entityLabel}${targets.length === 1 ? "" : "s"} deleted`,
       life: 3000,
     });
+    await playRowExit(apiUrl, deletedIds);
     await reload();
   }
 
@@ -133,6 +138,7 @@ export function useEntityCrud<TEntity extends { id: number }, TEditPayload>(
         life: 3000,
       });
       await reload();
+      flagRows(apiUrl, [editTarget.value.id], "updated", 2000);
     } catch (err) {
       editError.value = err instanceof Error ? err.message : `Failed to update the ${entityLabel}.`;
     } finally {

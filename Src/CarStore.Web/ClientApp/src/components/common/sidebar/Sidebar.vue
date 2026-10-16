@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import Avatar from "primevue/avatar";
+import { useTheme } from "../../../composables/useTheme";
 
 const route = useRoute();
 
@@ -13,6 +14,8 @@ const navItems = [
 ];
 
 const activeKey = computed(() => route.name as string);
+
+const { theme, toggle: toggleTheme } = useTheme();
 
 // collapsed by default; hovering the rail expands it back to the full layout
 const expanded = ref(false);
@@ -49,6 +52,31 @@ const expanded = ref(false);
     </nav>
 
     <div class="flex-1"></div>
+
+    <!-- Theme switch: styled as a nav row so it reads as part of the rail, not a floating control. -->
+    <button
+      type="button"
+      class="flex h-10 w-full shrink-0 cursor-pointer items-center gap-1.75 overflow-hidden rounded-lg border-0 bg-transparent py-[10.5px] pl-[14.5px] pr-[10.5px] text-sm font-medium text-color transition-colors duration-150 hover:bg-surface-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      aria-label="Dark theme"
+      :aria-pressed="theme === 'dark'"
+      @click="toggleTheme"
+    >
+      <i class="pi shrink-0 text-sm" :class="theme === 'dark' ? 'pi-sun' : 'pi-moon'" />
+      <span v-show="expanded" class="flex min-w-0 flex-1 items-center justify-between gap-2">
+        <span class="truncate whitespace-nowrap">Dark theme</span>
+        <!-- Switch track mirrors aria-pressed for sighted users. -->
+        <span
+          class="relative h-4 w-7 shrink-0 rounded-full transition-colors duration-200"
+          :class="theme === 'dark' ? 'bg-surface-700' : 'bg-surface-300'"
+          aria-hidden="true"
+        >
+          <span
+            class="absolute top-0.5 left-0.5 size-3 rounded-full bg-surface-0 transition-transform duration-200"
+            :class="theme === 'dark' ? 'translate-x-3' : ''"
+          ></span>
+        </span>
+      </span>
+    </button>
 
     <div
       class="flex h-19 w-full items-center gap-1.75 overflow-hidden rounded-xl p-[17.5px]"

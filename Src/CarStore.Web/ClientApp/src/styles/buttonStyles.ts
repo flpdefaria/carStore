@@ -3,5 +3,7 @@
 const buttonBaseClass = "gap-1.75! rounded-md! px-[11.5px]! py-2! text-sm! font-medium!";
 
 export const secondaryButtonClass = `${buttonBaseClass} border-surface-300!`;
-export const primaryButtonClass = `${buttonBaseClass} border-surface-700! bg-surface-700! hover:bg-surface-800!`;
+// Text follows surface-0 rather than PrimeVue's fixed white contrast color, so the slate fill
+// flips to light-on-dark in the dark theme without losing contrast.
+export const primaryButtonClass = `${buttonBaseClass} border-surface-700! bg-surface-700! text-surface-0! hover:bg-surface-800! hover:border-surface-800!`;
 export const dangerButtonClass = buttonBaseClass;
